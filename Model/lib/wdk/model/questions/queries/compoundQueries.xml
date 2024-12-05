@@ -258,7 +258,7 @@ from apidbtuning.CompoundAttributes s
 
 
 <!--    <sqlQuery name="CompoundsByPercentile" 
-              includeProjects="PlasmoDB,TriTrypDB"
+              includeProjects="PlasmoDB,TriTrypDB,UniDB"
               displayName="Compounds by percentile">
       <testParamValues includeProjects="PlasmoDB,TriTrypDB">
 	    <paramValue name="samples_percentile_comp">Log mean (compound_MassSpec)</paramValue>
@@ -409,7 +409,7 @@ and bcpn.source_id  = acpn.source_id
 
 <!-- Lin new
     <sqlQuery name="CompoundsByFoldChange" 
-          includeProjects="PlasmoDB,TriTrypDB"
+          includeProjects="PlasmoDB,TriTrypDB,UniDB"
           displayName="Metabolic compounds by fold change">
     	<testParamValues includeProjects="PlasmoDB,TriTrypDB">
 	    	<paramValue name="samples_fc_comp">WT_mean</paramValue>

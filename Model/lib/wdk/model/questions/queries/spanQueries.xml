@@ -40,11 +40,11 @@
                   queryRef="organismVQ.withStrainsChromosome"
                   displayType="select"
                   quote="true"
-                  includeProjects="TriTrypDB,ToxoDB,PlasmoDB,MicrosporidiaDB,CryptoDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"
+                  includeProjects="TriTrypDB,ToxoDB,PlasmoDB,MicrosporidiaDB,CryptoDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase,UniDB"
                   />
         <paramRef ref="sharedParams.chromosomeOptional"
                   queryRef="SharedVQ.ChromosomeOrderNumSeq"
-                  includeProjects="PlasmoDB,ToxoDB,CryptoDB,TriTrypDB,MicrosporidiaDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"/>
+                  includeProjects="PlasmoDB,ToxoDB,CryptoDB,TriTrypDB,MicrosporidiaDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase,UniDB"/>
         <paramRef ref="sharedParams.sequenceId"/>
         <paramRef ref="sharedParams.start_point" default="1"/>
         <paramRef ref="sharedParams.end_point_segment"/>
@@ -53,7 +53,7 @@
         <column name="source_id"/>
         <column name="project_id"/>
 
-        <sql excludeProjects="UniDB">
+        <sql excludeProjects="UniDB">  <!-- TODO why do we need this?  ds.project_id is not used -->
         <![CDATA[
                  select ids.source_id,gsa.project_id from 
                     ( SELECT distinct ds.source_id, ds.project_id,
