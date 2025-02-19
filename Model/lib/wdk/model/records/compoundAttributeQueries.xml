@@ -1,107 +1,107 @@
 <wdkModel>
   <querySet name="CompoundAttributes" queryType="attribute" isCacheable="false" excludeProjects="EuPathDB,UniDB">
 
-      <defaultTestParamValues>
-          <paramValue name="source_id">CID:93072</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues>
+      <paramValue name="source_id">CID:93072</paramValue>
+    </defaultTestParamValues>
 
-       <testRowCountSql>
-	 SELECT count(*) FROM ApidbTuning.CompoundAttributes
-       </testRowCountSql>
-       
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!--Compound alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <testRowCountSql>
+      SELECT count(*) FROM ApidbTuning.CompoundAttributes
+    </testRowCountSql>
 
-        <sqlQuery name="CompoundAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="old_source_id"/>
-            <sql>
-              <![CDATA[
-                SELECT source_id, 
-                       source_id as old_source_id
-                FROM ApidbTuning.CompoundAttributes 
-              ]]>
-            </sql>
-        </sqlQuery>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--Compound alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-        <sqlQuery name="Bfmv">
-            <column name="source_id"  />
-	    <column name="compound_name"/>
-	    <column name="other_names"/>
-            <column name="compound_link"  />
-            <column name="definition" />
-            <column name="formula" />
-            <column name="secondary_ids"/>
-           <sql>
-            <![CDATA[
-	         SELECT source_id,
-		    compound_name, definition, secondary_ids, other_names,
-		    CASE WHEN source_id IS NULL THEN '-' 
-	            ELSE '<a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId=' || source_id || '">' ||  source_id || '</a>' 
-	            END AS compound_link,
-		    formula
-                FROM ApidbTuning.CompoundAttributes
-	    ]]>
-           </sql>
-	</sqlQuery>
-
-	<sqlQuery name="Synonyms">
-	  <column name="source_id"/>
-	  <column name="synonyms"/>
-	  <sql>
-	    <![CDATA[
-              SELECT ca.source_id, 
-                   apidb.tab_to_string(set(CAST(COLLECT(n.name) AS apidb.varchartab)),', ') as synonyms
-               FROM ApidbTuning.CompoundAttributes ca, chebi.names n
-               WHERE ca.ID = n.compound_id(+)
-               GROUP BY ca.source_id
-	    ]]>
-	  </sql>
-	</sqlQuery>
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!-- Number of associated metabolic pathways -->
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <sqlQuery name="PathwaysCount" doNotTest="true">
-            <column name="source_id"/>
-            <column name="pathway_count"/>
-            <sql>
-            <![CDATA[
-        SELECT count (DISTINCT pc.pathway_id) AS pathway_count, 
-           pc.chebi_accession AS source_id
-        FROM   ApiDBTuning.PathwayCompounds pc 
-        GROUP BY chebi_accession
-            ]]>
-            </sql>
-        </sqlQuery>
-
-
-    <sqlQuery name="DefaultStructure">
-            <column name="source_id" />
-            <column name="default_structure" />
-           <sql>
-            <![CDATA[
-          SELECT c.source_id, default_structure
-          FROM ApidbTuning.CompoundAttributes c, 
-            (WITH nodes AS (
-            SELECT id, compound FROM apidbtuning.compoundId 
-            WHERE type IN ('same ID', 'child ID') )
-            SELECT ca.source_id
-              , s.STRUCTURE AS default_structure
-            FROM apidbtuning.compoundattributes ca
-            , chebi.structures s
-            , nodes n
-            WHERE ca.source_id = n.compound
-            AND n.id = 'CHEBI:'|| s.compound_id
-            --AND s.id = ds.structure_id
-            AND s.type='mol'
-            AND s.dimension='2D'
-            AND s.default_structure = 'Y' ) s
-          WHERE c.source_id = s.source_id(+)
-            ]]>
-            </sql>
+    <sqlQuery name="CompoundAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="old_source_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id,
+                 source_id as old_source_id
+          FROM ApidbTuning.CompoundAttributes
+        ]]>
+      </sql>
     </sqlQuery>
 
+    <sqlQuery name="Bfmv">
+      <column name="source_id"  />
+      <column name="compound_name"/>
+      <column name="other_names"/>
+      <column name="compound_link"  />
+      <column name="definition" />
+      <column name="formula" />
+      <column name="secondary_ids"/>
+      <sql>
+        <![CDATA[
+	      SELECT source_id,
+		    compound_name, definition, secondary_ids, other_names
+		    ,CASE WHEN source_id IS NULL THEN '-'
+	            ELSE '<a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId=' || source_id || '">' ||  source_id || '</a>' 
+            END AS compound_link
+		    ,formula
+          FROM ApidbTuning.CompoundAttributes
+	    ]]>
+      </sql>
+    </sqlQuery>
 
+    <sqlQuery name="Synonyms">
+      <column name="source_id"/>
+      <column name="synonyms"/>
+      <sql>
+        <![CDATA[
+          SELECT ca.source_id
+            , string_agg(n.name, ', ') as synonyms
+          FROM ApidbTuning.CompoundAttributes ca
+            LEFT JOIN chebi.names n ON ca.ID = n.compound_id
+          GROUP BY ca.source_id
+	    ]]>
+      </sql>
+    </sqlQuery>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Number of associated metabolic pathways -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <sqlQuery name="PathwaysCount" doNotTest="true">
+      <column name="source_id"/>
+      <column name="pathway_count"/>
+      <sql>
+        <![CDATA[
+          SELECT count (DISTINCT pc.pathway_id) AS pathway_count,
+             pc.chebi_accession AS source_id
+          FROM ApiDBTuning.PathwayCompounds pc
+          GROUP BY chebi_accession
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="DefaultStructure">
+      <column name="source_id" />
+      <column name="default_structure" />
+      <sql>
+        <![CDATA[
+          SELECT c.source_id, default_structure
+          FROM ApidbTuning.CompoundAttributes c
+            LEFT JOIN (
+              WITH nodes AS (
+                SELECT id, compound
+                FROM apidbtuning.compoundId
+                WHERE type IN ('same ID', 'child ID')
+              )
+              SELECT ca.source_id
+                , s.STRUCTURE AS default_structure
+              FROM apidbtuning.compoundattributes ca
+                , chebi.structures s
+                , nodes n
+              WHERE ca.source_id = n.compound
+                AND n.id = 'CHEBI:'|| s.compound_id
+                --AND s.id = ds.structure_id
+                AND s.type='mol'
+                AND s.dimension='2D'
+                AND s.default_structure = 'Y'
+            ) s ON c.source_id = s.source_id
+        ]]>
+      </sql>
+    </sqlQuery>
   </querySet>
 </wdkModel>

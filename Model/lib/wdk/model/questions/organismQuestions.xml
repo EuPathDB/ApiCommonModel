@@ -20,7 +20,7 @@
               queryRef="OrganismIds.GenomeDataTypes"
               recordClassRef="OrganismRecordClasses.OrganismRecordClass">
 
-      <attributesList excludeProjects="EuPathDB, VectorBase, HostDB"
+      <attributesList excludeProjects="EuPathDB,VectorBase,HostDB,PlasmoDB,TriTrypDB,VectorBase,UniDB"
            summary="species_ncbi_taxon_url, ncbi_taxon_url, genome_source, genome_version, megabpsurl, annotation_version, genecounturl, is_reference_strain, is_in_apollo, apollolink, isOrganellar_flag, contigCount, supercontigCount, chromosomeCount, codinggenecount, othergenecount, pseudogenecount, communitycount, orthologcount, gocount, ecnumbercount, busco_protein, busco_genome"
           sorting="primary_key asc"
       />
@@ -30,8 +30,9 @@
           sorting="primary_key asc"
       />
 
+      <!--TO FIX - No BUSCO columns for Plasmo,TriTrypDB,UniDB for now  -->
       <!-- no BUSCO columns -->
-      <attributesList includeProjects="HostDB"
+      <attributesList includeProjects="HostDB,PlasmoDB,TriTrypDB,UniDB"
            summary="species_ncbi_taxon_url, ncbi_taxon_url, genome_source, genome_version, megabpsurl, annotation_version, genecounturl, is_reference_strain, is_in_apollo, apollolink, isOrganellar_flag, contigCount, supercontigCount, chromosomeCount, codinggenecount, othergenecount, pseudogenecount, communitycount, orthologcount, gocount, ecnumbercount"
           sorting="primary_key asc"
       />

@@ -169,8 +169,10 @@
               <recordClass ref="TranscriptRecordClasses.TranscriptRecordClass" />
               <!--recordClass ref="OrfRecordClasses.OrfRecordClass" excludeProjects="HostDB"/-->
               <recordClass ref="SnpRecordClasses.SnpRecordClass" includeProjects="FungiDB,ToxoDB,PlasmoDB,CryptoDB,AmoebaDB,TriTrypDB" />
+<!--
               <recordClass ref="SnpChipRecordClasses.SnpChipRecordClass" includeProjects="PlasmoDB" />
               <recordClass ref="PopsetRecordClasses.PopsetRecordClass" excludeProjects="FungiDB,TrichDB,HostDB,VectorBase" />
+-->
               <recordClass ref="DynSpanRecordClasses.DynSpanRecordClass" />
         </answerParam>
 
@@ -252,8 +254,10 @@
               <recordClass ref="TranscriptRecordClasses.TranscriptRecordClass" />
               <!-- recordClass ref="OrfRecordClasses.OrfRecordClass" excludeProjects="HostDB"/-->
               <recordClass ref="SnpRecordClasses.SnpRecordClass" includeProjects="FungiDB,AmoebaDB,CryptoDB,PlasmoDB,ToxoDB,TriTrypDB" />
+<!--
               <recordClass ref="SnpChipRecordClasses.SnpChipRecordClass" includeProjects="PlasmoDB" />
               <recordClass ref="PopsetRecordClasses.PopsetRecordClass" excludeProjects="FungiDB,TrichDB,HostDB" />
+-->
               <recordClass ref="DynSpanRecordClasses.DynSpanRecordClass" />
         </answerParam>
         

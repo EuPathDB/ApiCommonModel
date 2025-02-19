@@ -2,52 +2,53 @@
 
   <querySet name="RflpIsolateAttributes" queryType="attribute" isCacheable="false">
 
-       <testRowCountSql>
-	 SELECT count(*) FROM ApidbTuning.RflpGenotypes
-       </testRowCountSql>
+    <testRowCountSql>
+      SELECT count(*) FROM ApidbTuning.RflpGenotypes
+    </testRowCountSql>
 
-        <sqlQuery name="Bfmv">
-            <column name="name"/>
-            <column name="description"/>
-            <column name="type"/>
-            <column name="type_id"/>
-<!--
-            <column name="age_at_death"/>
-            <column name="geographic_location"/>
-            <column name="host"/>
-            <column name="morbidity"/>
-            <column name="organ"/>
--->
-            <column name="genotypes"/>
-            <column name="genotype_number"/>
-           <sql>
-            <![CDATA[
-  select sa.pan_id, sa.name, sa.description, 
-         sa.pan_type_id as type_id, sa.pan_type as type,
---       sa.c_age_at_death as age_at_death, sa.c_geographic_location as geographic_location,
---       sa.c_organism as host, sa.c_morbidity as morbidity, sa.c_organ as organ,
-       rg.genotypes, rgn.genotype_number
-from apidbtuning.samples sa, ApidbTuning.RflpGenotypes rg,
-     (select distinct sd.protocol_app_node_id, RflpGenotypeNumber.genotype_number
-      from apidbtuning.SampleProcess sd, apidb.RflpGenotypeNumber
-      where sd.output_pan_id = RflpGenotypeNumber.protocol_app_node_id) rgn
-where sa.pan_id = rg.protocol_app_node_id
-  and sa.pan_id = rgn.protocol_app_node_id(+)
+    <sqlQuery name="Bfmv">
+      <column name="name"/>
+      <column name="description"/>
+      <column name="type"/>
+      <column name="type_id"/>
+      <!--
+                  <column name="age_at_death"/>
+                  <column name="geographic_location"/>
+                  <column name="host"/>
+                  <column name="morbidity"/>
+                  <column name="organ"/>
+      -->
+      <column name="genotypes"/>
+      <column name="genotype_number"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.pan_id, sa.name, sa.description,
+            sa.pan_type_id as type_id, sa.pan_type as type,
+            -- sa.c_age_at_death as age_at_death, sa.c_geographic_location as geographic_location,
+            -- sa.c_organism as host, sa.c_morbidity as morbidity, sa.c_organ as organ,
+            rg.genotypes, rgn.genotype_number
+          FROM apidbtuning.samples sa
+            INNER JOIN ApidbTuning.RflpGenotypes rg ON sa.pan_id = rg.protocol_app_node_id
+            LEFT JOIN (
+              SELECT distinct sd.protocol_app_node_id, RflpGenotypeNumber.genotype_number
+              FROM apidbtuning.SampleProcess sd, apidb.RflpGenotypeNumber
+              WHERE sd.output_pan_id = RflpGenotypeNumber.protocol_app_node_id
+            ) rgn ON sa.pan_id = rgn.protocol_app_node_id
 	    ]]>
-           </sql>
-	</sqlQuery>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="Alias" doNotTest="true">
-            <column name="name"/>
-            <column name="old_name"/>
-            <sql>
-              <![CDATA[
-                SELECT sa.name, sa.name as old_name
-                FROM apidbtuning.samples sa, ApidbTuning.RflpGenotypes rg
-                WHERE sa.pan_id = rg.protocol_app_node_id
-              ]]>
-            </sql>
-        </sqlQuery>
+    <sqlQuery name="Alias" doNotTest="true">
+      <column name="name"/>
+      <column name="old_name"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.name, sa.name as old_name
+          FROM apidbtuning.samples sa, ApidbTuning.RflpGenotypes rg
+          WHERE sa.pan_id = rg.protocol_app_node_id
+        ]]>
+      </sql>
+    </sqlQuery>
 
   </querySet>
 

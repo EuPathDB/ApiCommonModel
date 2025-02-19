@@ -9,397 +9,389 @@
 
   -->
 
-    <querySet name="SequenceAttributes" queryType="attribute" isCacheable="false">
+  <querySet name="SequenceAttributes" queryType="attribute" isCacheable="false">
 
-            <defaultTestParamValues includeProjects="PlasmoDB">
-               <paramValue name="source_id">Pf3D7_11_v3</paramValue>
-               <paramValue name="project_id">PlasmoDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PlasmoDB">
+      <paramValue name="source_id">Pf3D7_11_v3</paramValue>
+      <paramValue name="project_id">PlasmoDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="ToxoDB,EuPathDB">
-               <paramValue name="source_id">TGME49_chrIII</paramValue>
-               <paramValue name="project_id">ToxoDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="ToxoDB,EuPathDB">
+      <paramValue name="source_id">TGME49_chrIII</paramValue>
+      <paramValue name="project_id">ToxoDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="CryptoDB">
-               <paramValue name="source_id">AAEE01000001</paramValue>
-               <paramValue name="project_id">CryptoDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="CryptoDB">
+      <paramValue name="source_id">AAEE01000001</paramValue>
+      <paramValue name="project_id">CryptoDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="GiardiaDB">
-               <paramValue name="source_id">GLCHR05</paramValue>
-               <paramValue name="project_id">GiardiaDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="GiardiaDB">
+      <paramValue name="source_id">GLCHR05</paramValue>
+      <paramValue name="project_id">GiardiaDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="TrichDB">
-               <paramValue name="source_id">DS113177</paramValue>
-               <paramValue name="project_id">TrichDB</paramValue>
-            </defaultTestParamValues>
-           
-            <!-- TODO revisit source_id --> 
-            <defaultTestParamValues includeProjects="TriTrypDB">
-               <paramValue name="source_id">LmjF.36</paramValue>
-               <paramValue name="project_id">TriTrypDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="TrichDB">
+      <paramValue name="source_id">DS113177</paramValue>
+      <paramValue name="project_id">TrichDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="AmoebaDB">
-               <paramValue name="source_id">DS571186</paramValue>
-               <paramValue name="project_id">AmoebaDB</paramValue>
-            </defaultTestParamValues>
+    <!-- TODO revisit source_id -->
+    <defaultTestParamValues includeProjects="TriTrypDB">
+      <paramValue name="source_id">LmjF.36</paramValue>
+      <paramValue name="project_id">TriTrypDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="MicrosporidiaDB">
-               <paramValue name="source_id">ECIII_CH04</paramValue>
-               <paramValue name="project_id">MicrosporidiaDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="AmoebaDB">
+      <paramValue name="source_id">DS571186</paramValue>
+      <paramValue name="project_id">AmoebaDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="PiroplasmaDB">
-               <paramValue name="source_id">AAXT01000006</paramValue>
-               <paramValue name="project_id">PiroplasmaDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="MicrosporidiaDB">
+      <paramValue name="source_id">ECIII_CH04</paramValue>
+      <paramValue name="project_id">MicrosporidiaDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="HostDB">
-               <paramValue name="source_id">chr1</paramValue>
-               <paramValue name="project_id">HostDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PiroplasmaDB">
+      <paramValue name="source_id">AAXT01000006</paramValue>
+      <paramValue name="project_id">PiroplasmaDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="FungiDB">
-               <paramValue name="source_id">CM002240</paramValue>
-               <paramValue name="project_id">FungiDB</paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="HostDB">
+      <paramValue name="source_id">chr1</paramValue>
+      <paramValue name="project_id">HostDB</paramValue>
+    </defaultTestParamValues>
 
-            <defaultTestParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
-               <paramValue name="source_id"></paramValue>
-               <paramValue name="project_id"></paramValue>
-            </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="FungiDB">
+      <paramValue name="source_id">CM002240</paramValue>
+      <paramValue name="project_id">FungiDB</paramValue>
+    </defaultTestParamValues>
 
-
-            <testRowCountSql excludeProjects="EuPathDB">
-               select count(na_sequence_id)
-               from dots.NaSequence
-               where external_database_release_id in (
-                 select distinct(dbr.external_database_release_id)
-                 from ApidbTuning.GenomicSeqAttributes a, sres.ExternalDatabase db,
-                      sres.ExternalDatabaseRelease dbr
-                 where db.name = a.database_name
-                   and dbr.version = a.database_version
-                   and dbr.external_database_id = db.external_database_id
-                 )
-               and subclass_view in ('VirtualSequence', 'ExternalNASequence')
- 
-            </testRowCountSql>
-
-            <testRowCountSql includeProjects="EuPathDB">
-               SELECT count(*) FROM ApidbTuning.GenomicSeqAttributes
-            </testRowCountSql>
+    <defaultTestParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
+      <paramValue name="source_id"></paramValue>
+      <paramValue name="project_id"></paramValue>
+    </defaultTestParamValues>
 
 
+    <testRowCountSql excludeProjects="EuPathDB">
+      SELECT count(na_sequence_id)
+      FROM dots.NaSequence
+      WHERE external_database_release_id in (
+        SELECT distinct(dbr.external_database_release_id)
+        FROM ApidbTuning.GenomicSeqAttributes a, sres.ExternalDatabase db,
+          sres.ExternalDatabaseRelease dbr
+        WHERE db.name = a.database_name
+          AND dbr.version = a.database_version
+          AND dbr.external_database_id = db.external_database_id
+      )
+      and subclass_view in ('VirtualSequence', 'ExternalNASequence')
+    </testRowCountSql>
 
- <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!-- Genomic Sequence ID alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <testRowCountSql includeProjects="EuPathDB">
+      SELECT count(*) FROM ApidbTuning.GenomicSeqAttributes
+    </testRowCountSql>
 
-        <sqlQuery name="SequenceAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="old_source_id"/>
-            <column name="old_project_id"/>
-            <sql>
-              <![CDATA[
-                SELECT distinct a.sequence as source_id, 
-                       sa.project_id,
-                       a.ID as old_source_id, sa.project_id AS old_project_id
-                FROM ApidbTuning.GenomicSequenceId a, apidbtuning.genomicseqattributes sa
-                WHERE a.sequence = sa.source_id
-              ]]>
-            </sql>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Genomic Sequence ID alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-        </sqlQuery>
-
-
-
-
-
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!-- BFMV -->  
-       <!-- There are currently two flavors of this query, one for the portal
-            and one for components.  The component version references the
-            ApidbTuning.Scaffold_Map tuning table (which doesn't exist in portal
-            instances) in order to work around a bug in ApidbTuning.GenomicSeqAttributes.
-            The bug is that when a contig is mapped to a scaffold that's mapped
-            to a chromosome, the "chromosome" field of the scaffold gets
-            populated but in the contig it does not. Once this bug is fixed,
-            everybody can use the query now used for the portal (that is, the
-            one which does not reference scaffold_map).                  -->
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <sqlQuery name="Bfmv">
-        <testParamValues includeProjects="GiardiaDB">
-        <paramValue name="source_id">CH991770</paramValue>
-        </testParamValues>      
-            <column name="chromosome" sortingColumn="chromosome_order_num"/>
-            <column name="chromosome_order_num"/>
-            <column name="description"/>
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id" ignoreCase="true"/>
-            <column name="lc_project_id"/>
-            <column name="a_count"  />
-            <column name="c_count"/>
-            <column name="g_count" />
-            <column name="t_count" />
-            <column name="other_count" />
-            <column name="length"/>
-            <column name="is_top_level" />
-            <column name="formatted_length" sortingColumn="length"/>
-            <column name="at_percent"/>
-            <column name="organism_full" ignoreCase="true"/>
-            <column name="formatted_organism"
-                    sortingColumn="organism_full" ignoreCase="true"/>
-            <column name="genbank_accession" ignoreCase="true"/>
-            <column name="externalDbName"/>
-            <column name="externalDbVersion" />
-            <column name="sequence_type" />
-            <column name="has_msa" excludeProjects="EuPathDB"/>
-            <column name="download_link" excludeProjects="EuPathDB"/>
-            <column name="user_comment_link_url" ignoreCase="false"/>
-            <sql excludeProjects="EuPathDB">
-            <![CDATA[
-                     SELECT bfmv.source_id, bfmv.project_id, lower(bfmv.project_id) as lc_project_id,
-                     bfmv.a_count, bfmv.c_count, bfmv.g_count, bfmv.t_count, bfmv.other_count,
-                    bfmv.length, bfmv.at_percent, bfmv.organism as organism_full, bfmv.is_top_level,
-                    trim(to_char(bfmv.length,'999,999,999')) as formatted_length,
-                    '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
-                    REGEXP_REPLACE(SUBSTR(bfmv.organism, INSTR(bfmv.organism, ' ')), '[[:space:]]+',
-                                   chr(38) || 'nbsp;') || '</i>'
-                      AS formatted_organism,
-                    bfmv.ncbi_tax_id, 
-                    bfmv.genbank_accession, bfmv.database_name,
-                    bfmv.database_version as externalDbVersion, database_name as externalDbName,
-                    CASE WHEN bfmv.chromosome_order_num is null 
-                      THEN 'Not Assigned' ELSE bfmv.chromosome END as chromosome,
-                    CASE WHEN bfmv.chromosome_order_num is null 
-                      THEN 'Not Assigned' 
-                      ELSE to_char(bfmv.chromosome_order_num) END as chromosome_order_num,
-                    CASE WHEN (bfmv.sequence_description) IS NOT NULL 
-                        THEN bfmv.sequence_description
-                      WHEN (chromosome IS NOT NULL) 
-                        THEN organism||' - Chromosome '||chromosome_order_num
-                    ELSE organism END AS description,
-                   bfmv.sequence_type, bfmv.has_msa
-                   , '<a href="@WEBAPP_BASE_URL@/downloads/Current_Release/' || bfmv.name_for_filenames || '/">Data files</a>' as download_link
-                   , '@WEBAPP_BASE_URL@/user-comments/add?stableId='||bfmv.source_id
-                   ||'&commentTargetId=genome'
-                   ||'&externalDbName='||bfmv.database_name
-                   ||'&externalDbVersion='||bfmv.database_version
-                   as user_comment_link_url
-                   FROM ApidbTuning.GenomicSeqAttributes bfmv
-             ]]>
-           </sql>
-           <sql includeProjects="EuPathDB">
-            <![CDATA[
-                SELECT bfmv.source_id, bfmv.project_id, lower(bfmv.project_id) as lc_project_id,
-                    bfmv.a_count, bfmv.c_count,
-                    bfmv.g_count, bfmv.t_count, bfmv.other_count,
-                    bfmv.length, bfmv.at_percent, bfmv.organism as organism_full, bfmv.is_top_level,
-                    trim(to_char(bfmv.length,'999,999,999')) as formatted_length,
-                    '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
-                    REGEXP_REPLACE(SUBSTR(bfmv.organism, INSTR(bfmv.organism, ' ')), '[[:space:]]+',
-                                   chr(38) || 'nbsp;') || '</i>'
-                      AS formatted_organism,
-                    bfmv.ncbi_tax_id, 
-                    CASE WHEN (bfmv.sequence_description) IS NOT NULL 
-                        THEN bfmv.sequence_description
-                      WHEN (chromosome IS NOT NULL) 
-                        THEN organism||' - Chromosome '||chromosome_order_num
-                    ELSE organism END AS description,
-                    bfmv.genbank_accession, bfmv.database_name,
-                    bfmv.database_version as externalDbVersion, database_name as externalDbName,
-                    bfmv.chromosome, bfmv.chromosome_order_num,
-                   bfmv.sequence_type, '' as user_comment_link_url
-                   FROM ApidbTuning.GenomicSeqAttributes bfmv
-             ]]>
-           </sql>
-        </sqlQuery>
-
-        <sqlQuery name="genomicGTracks" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id"/>
-            <column name="organismAbbrev"/>
-            <column name="genomic_gtracks" />
-            <sql>
-            <![CDATA[  
-            select ga.source_id as source_id, ga.project_id, o.public_abbrev as organismAbbrev,
-              CASE WHEN (ga.length>300000 and o.is_annotated_genome=1) THEN 'GeneDensity' 
-                   ELSE gto.gtracks END as genomic_gtracks
-            from apidbtuning.gbrowsetracksorganism gto, apidbtuning.genomicseqattributes ga, apidb.organism o
-            where ga.organism = gto.organism
-              and gto.type = 'genomic'
-              and ga.taxon_id = o.taxon_id
-            union 
-            select ga.source_id as source_id, ga.project_id, o.public_abbrev as organismAbbrev,
-              CASE WHEN (ga.length>300000 and o.is_annotated_genome=1) THEN 'GeneDensity' 
-                   ELSE 'ProtAlign%1EORF300%1ETandemRepeat%1ELowComplexity' 
-                     END as genomic_gtracks
-            from apidbtuning.gbrowsetracksorganism gto, apidbtuning.genomicseqattributes ga, apidb.organism o
-            where ga.organism = gto.organism(+)
-            and ga.organism not in (select distinct organism from apidbtuning.gbrowsetracksorganism gto where gto.type = 'genomic')
-              and ga.taxon_id = o.taxon_id
-            ]]>
-           </sql>
-        </sqlQuery>        
-
-        <sqlQuery name="GeneCount">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="gene_count"/>
-            <sql>
-            <![CDATA[
-           select sa.source_id, sa.project_id, nvl(the_count, 0) as gene_count
-           from ApidbTuning.GenomicSeqAttributes sa,
-             (select sequence_id as source_id, count(*) as the_count
-              from ApidbTuning.GeneAttributes ga
-              group by sequence_id) gc
-           where sa.source_id = gc.source_id(+)
-             ]]>
-           </sql>
-        </sqlQuery>
-
-
-
-        <sqlQuery name="IsAnnotated" excludeProjects="EuPathDB">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="is_annotated"/>
-            <sql>
-            <![CDATA[
-               SELECT sa.source_id, sa.project_id,
-                      CASE WHEN (p.dataset_presenter_id in
-                             (SELECT dataset_presenter_id FROM apidbtuning.datasetpublication WHERE pmid IS NOT NULL ) )
-                      THEN 1 ELSE 0 END AS is_annotated
-               FROM APIDBTUNING.datasetnametaxon dt,
-                    ApidbTuning.GenomicSeqAttributes sa,
-                    apidb.datasource ds,
-                    apidbtuning.datasetpresenter p
-               WHERE sa.taxon_id  = dt.taxon_id
-                AND dt.name       = ds.name
-                AND ds.type       = 'genome'
-                AND dt.dataset_presenter_id = p.dataset_presenter_id
-             ]]>
-           </sql>
-        </sqlQuery>
-
-
-        <sqlQuery name="PresenterInfo" excludeProjects="EuPathDB">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="release_policy"/>
-            <column name="attribution"/>
-            <column name="dataset_page"/>
-            <sql>
-            <![CDATA[
-select gs.source_id
- , gs.project_id
- , dp.description as attribution
- , dp.release_policy
- , '<a href = "/a/app/record/dataset/' || dp.dataset_presenter_id || '">' || dp.display_name || '</a><br>' as dataset_page
-from apidbtuning.genomicseqattributes gs
-, apidbtuning.datasetpresenter dp
-, apidbtuning.datasetnametaxon dnt
-where gs.taxon_id = dnt.taxon_id 
-and dnt.name like '%_primary_genome_RSRC'
-and dnt.dataset_presenter_id = dp.dataset_presenter_id
-             ]]>
-           </sql>
-        </sqlQuery>
-
+    <sqlQuery name="SequenceAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="old_source_id"/>
+      <column name="old_project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT distinct a.sequence as source_id,
+                 sa.project_id,
+                 a.ID as old_source_id, sa.project_id AS old_project_id
+          FROM ApidbTuning.GenomicSequenceId a, apidbtuning.genomicseqattributes sa
+          WHERE a.sequence = sa.source_id
+        ]]>
+      </sql>
+    </sqlQuery>
 
 
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-    <!-- GFF sequence-->  
+    <!-- BFMV -->
+    <!-- There are currently two flavors of this query, one for the portal
+         and one for components.  The component version references the
+         ApidbTuning.Scaffold_Map tuning table (which doesn't exist in portal
+         instances) in order to work around a bug in ApidbTuning.GenomicSeqAttributes.
+         The bug is that when a contig is mapped to a scaffold that's mapped
+         to a chromosome, the "chromosome" field of the scaffold gets
+         populated but in the contig it does not. Once this bug is fixed,
+         everybody can use the query now used for the portal (that is, the
+         one which does not reference scaffold_map).                  -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <sqlQuery name="Bfmv">
+      <testParamValues includeProjects="GiardiaDB">
+        <paramValue name="source_id">CH991770</paramValue>
+      </testParamValues>
+      <column name="chromosome" sortingColumn="chromosome_order_num"/>
+      <column name="chromosome_order_num"/>
+      <column name="description"/>
+      <column name="source_id" ignoreCase="true"/>
+      <column name="project_id" ignoreCase="true"/>
+      <column name="lc_project_id"/>
+      <column name="a_count"  />
+      <column name="c_count"/>
+      <column name="g_count" />
+      <column name="t_count" />
+      <column name="other_count" />
+      <column name="length"/>
+      <column name="is_top_level" />
+      <column name="formatted_length" sortingColumn="length"/>
+      <column name="at_percent"/>
+      <column name="organism_full" ignoreCase="true"/>
+      <column name="formatted_organism"
+              sortingColumn="organism_full" ignoreCase="true"/>
+      <column name="genbank_accession" ignoreCase="true"/>
+      <column name="externalDbName"/>
+      <column name="externalDbVersion" />
+      <column name="sequence_type" />
+      <column name="has_msa" excludeProjects="EuPathDB"/>
+      <column name="download_link" excludeProjects="EuPathDB"/>
+      <column name="user_comment_link_url" ignoreCase="false"/>
+      <sql excludeProjects="EuPathDB">
+        <![CDATA[
+          SELECT
+            bfmv.source_id, bfmv.project_id, lower(bfmv.project_id) as lc_project_id
+            , bfmv.a_count, bfmv.c_count, bfmv.g_count, bfmv.t_count, bfmv.other_count
+            , bfmv.length, bfmv.at_percent, bfmv.organism as organism_full, bfmv.is_top_level
+            , trim(to_char(bfmv.length,'999,999,999')) as formatted_length
+            , '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.'
+              || REGEXP_REPLACE(SUBSTR(bfmv.organism, strpos(bfmv.organism, ' ')), '[[:space:]]+', chr(38) || 'nbsp;')
+              || '</i>' AS formatted_organism
+            , bfmv.ncbi_tax_id
+            , bfmv.genbank_accession, bfmv.database_name
+            , bfmv.database_version as externalDbVersion, database_name as externalDbName
+            , CASE WHEN bfmv.chromosome_order_num is null
+              THEN 'Not Assigned' ELSE bfmv.chromosome END as chromosome
+            , CASE WHEN bfmv.chromosome_order_num is null
+              THEN 'Not Assigned'
+              ELSE bfmv.chromosome_order_num::varchar END as chromosome_order_num
+            , CASE WHEN (bfmv.sequence_description) IS NOT NULL
+                THEN bfmv.sequence_description
+                WHEN (chromosome IS NOT NULL)
+                THEN organism||' - Chromosome '||chromosome_order_num
+                ELSE organism END AS description
+            , bfmv.sequence_type, bfmv.has_msa
+            , '<a href="@WEBAPP_BASE_URL@/downloads/Current_Release/' || bfmv.name_for_filenames || '/">Data files</a>' as download_link
+            , '@WEBAPP_BASE_URL@/user-comments/add?stableId='
+               ||bfmv.source_id
+               ||'&commentTargetId=genome'
+               ||'&externalDbName='||bfmv.database_name
+               ||'&externalDbVersion='||bfmv.database_version
+              as user_comment_link_url
+          FROM ApidbTuning.GenomicSeqAttributes bfmv
+        ]]>
+      </sql>
+      <sql includeProjects="EuPathDB">
+        <![CDATA[
+          SELECT bfmv.source_id, bfmv.project_id, lower(bfmv.project_id) as lc_project_id,
+              bfmv.a_count, bfmv.c_count,
+              bfmv.g_count, bfmv.t_count, bfmv.other_count,
+              bfmv.length, bfmv.at_percent, bfmv.organism as organism_full, bfmv.is_top_level,
+              trim(to_char(bfmv.length,'999,999,999')) as formatted_length,
+              '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
+              REGEXP_REPLACE(SUBSTR(bfmv.organism, strpos(bfmv.organism, ' ')), '[[:space:]]+',
+                             chr(38) || 'nbsp;') || '</i>'
+                AS formatted_organism,
+              bfmv.ncbi_tax_id,
+              CASE WHEN (bfmv.sequence_description) IS NOT NULL
+                  THEN bfmv.sequence_description
+                WHEN (chromosome IS NOT NULL)
+                  THEN organism||' - Chromosome '||chromosome_order_num
+              ELSE organism END AS description,
+              bfmv.genbank_accession, bfmv.database_name,
+              bfmv.database_version as externalDbVersion, database_name as externalDbName,
+              bfmv.chromosome, bfmv.chromosome_order_num,
+             bfmv.sequence_type, '' as user_comment_link_url
+          FROM ApidbTuning.GenomicSeqAttributes bfmv
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="genomicGTracks" excludeProjects="EuPathDB">
+      <column name="source_id" />
+      <column name="project_id"/>
+      <column name="organismAbbrev"/>
+      <column name="genomic_gtracks" />
+      <sql>
+        <![CDATA[
+          SELECT ga.source_id as source_id, ga.project_id, o.public_abbrev as organismAbbrev,
+            CASE WHEN (ga.length>300000 and o.is_annotated_genome=1) THEN 'GeneDensity'
+                 ELSE gto.gtracks END as genomic_gtracks
+          FROM apidbtuning.gbrowsetracksorganism gto, apidbtuning.genomicseqattributes ga, apidb.organism o
+          WHERE ga.organism = gto.organism
+            AND gto.type = 'genomic'
+            AND ga.taxon_id = o.taxon_id
+          UNION
+          SELECT ga.source_id as source_id, ga.project_id, o.public_abbrev as organismAbbrev,
+            CASE WHEN (ga.length>300000 and o.is_annotated_genome=1) THEN 'GeneDensity'
+                 ELSE 'ProtAlign%1EORF300%1ETandemRepeat%1ELowComplexity'
+                   END as genomic_gtracks
+          FROM apidbtuning.genomicseqattributes ga
+            INNER JOIN apidb.organism o ON ga.taxon_id = o.taxon_id
+            LEFT JOIN apidbtuning.gbrowsetracksorganism gto ON ga.organism = gto.organism
+          WHERE ga.organism not in (select distinct organism from apidbtuning.gbrowsetracksorganism gto where gto.type = 'genomic')
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="GeneCount">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="gene_count"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.source_id, sa.project_id, coalesce(the_count, 0) as gene_count
+          FROM ApidbTuning.GenomicSeqAttributes sa
+            LEFT JOIN (
+             SELECT sequence_id as source_id, count(*) as the_count
+              FROM ApidbTuning.GeneAttributes ga
+              GROUP BY sequence_id
+            ) gc ON sa.source_id = gc.source_id
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <sqlQuery name="IsAnnotated" excludeProjects="EuPathDB">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="is_annotated"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.source_id, sa.project_id,
+                CASE WHEN (p.dataset_presenter_id in
+                       (SELECT dataset_presenter_id FROM apidbtuning.datasetpublication WHERE pmid IS NOT NULL ) )
+                THEN 1 ELSE 0 END AS is_annotated
+          FROM APIDBTUNING.datasetnametaxon dt,
+              ApidbTuning.GenomicSeqAttributes sa,
+              apidb.datasource ds,
+              apidbtuning.datasetpresenter p
+          WHERE sa.taxon_id  = dt.taxon_id
+            AND dt.name       = ds.name
+            AND ds.type       = 'genome'
+            AND dt.dataset_presenter_id = p.dataset_presenter_id
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="PresenterInfo" excludeProjects="EuPathDB">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="release_policy"/>
+      <column name="attribution"/>
+      <column name="dataset_page"/>
+      <sql>
+        <![CDATA[
+          SELECT gs.source_id
+           , gs.project_id
+           , dp.description as attribution
+           , dp.release_policy
+           , '<a href = "/a/app/record/dataset/' || dp.dataset_presenter_id || '">' || dp.display_name || '</a><br>' as dataset_page
+          FROM apidbtuning.genomicseqattributes gs
+            , apidbtuning.datasetpresenter dp
+            , apidbtuning.datasetnametaxon dnt
+          WHERE gs.taxon_id = dnt.taxon_id
+            and dnt.name like '%_primary_genome_RSRC'
+            and dnt.dataset_presenter_id = dp.dataset_presenter_id
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- GFF sequence-->
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="SequenceGffSequence" excludeProjects="EuPathDB">
-        <column name="source_id"/>
-        <column name="project_id"/>
-        <column name="gff_sequence"/>
-        <sql>
-            select ns.source_id, gs.project_id,
-                   ns.sequence as gff_sequence
-            from ApidbTuning.GenomicSeqAttributes gs,
-                 dots.NaSequence ns
-            where ns.na_sequence_id = gs.na_sequence_id
-        </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="gff_sequence"/>
+      <sql>
+        SELECT ns.source_id, gs.project_id,
+          ns.sequence as gff_sequence
+        FROM ApidbTuning.GenomicSeqAttributes gs,
+          dots.NaSequence ns
+        WHERE ns.na_sequence_id = gs.na_sequence_id
+      </sql>
     </sqlQuery>
 
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-    <!-- GFF attributes (other than sequence) -->  
+    <!-- GFF attributes (other than sequence) -->
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="SequenceGffAttrs" excludeProjects="EuPathDB">
-        <column name="source_id"/>
-        <column name="project_id"/>
-        <column name="gff_seqid"/>
-        <column name="gff_source"/>
-        <column name="gff_type"/>
-        <column name="gff_fstart"/>
-        <column name="gff_fend"/>
-        <column name="gff_score"/>
-        <column name="gff_strand"/>
-        <column name="gff_phase"/>
-        <column name="gff_attr_id"/>
-        <column name="gff_attr_web_id"/>
-        <column name="gff_attr_name"/>
-        <column name="gff_attr_description"/>
-        <column name="gff_attr_size"/>
-        <column name="gff_attr_molecule_type"/>
-        <column name="gff_attr_organism_name"/>
-        <column name="gff_attr_translation_table"/>
-        <column name="gff_attr_topology"/>
-        <column name="gff_attr_localization"/>
-        <column name="gff_is_top_level"/>
-        <sql>
-           select ns.source_id, gs.project_id,
-                   ns.source_id as gff_seqid,
-                   gs.project_id as gff_source,
-                   s.name as gff_type,
-                   1 as gff_fstart,
-                   ns.length as gff_fend,
-                   '.' as gff_score,
-                   '+' as gff_strand,
-                   '.' as gff_phase,
-                  ns.source_id as gff_attr_id,
-                   ns.source_id as gff_attr_web_id,
-                   ns.source_id as gff_attr_name,
-                   ns.description as gff_attr_description,
-                   ns.length as gff_attr_size,
-                   'dsDNA' as gff_attr_molecule_type,
-                   SUBSTR(tn.name, 1, INSTR(tn.name || '  ', ' ', 1, 2) - 1) as gff_attr_organism_name,
-                   g.ncbi_genetic_code_id as gff_attr_translation_table,
-                   (CASE WHEN g.ncbi_genetic_code_id = 4 THEN 'circular' ELSE 'linear' END) as gff_attr_topology,
-                   (CASE WHEN s.name = 'mitochondrial_chromosome' THEN 'mitochondria' 
-                         WHEN s.name = 'apicoplast_chromosome' THEN 'plastid'
-                         ELSE 'nuclear' END) as gff_attr_localization
-            from ApidbTuning.GenomicSeqAttributes gs,
-                 dots.NaSequence ns,
-                 sres.externaldatabase ed,
-                 sres.externaldatabaserelease edr,
-                 sres.TaxonName tn,
-                 sres.Taxon t, 
-                 sres.GeneticCode g,
-                 sres.OntologyTerm s
-            where ns.na_sequence_id = gs.na_sequence_id
-              and ns.external_database_release_id = edr.external_database_release_id
-              and edr.external_database_id = ed.external_database_id
-              and ns.taxon_id = tn.taxon_id
-              and tn.name_class = 'scientific name'
-              and gs.taxon_id = t.taxon_id
-              and gs.so_id = s.source_id
-              and (   (t.genetic_code_id = g.genetic_code_id 
-                       and s.name in ('random_sequence', 'contig', 'chromosome', 'supercontig'))
-                   or (t.mitochondrial_genetic_code_id = g.genetic_code_id 
-                       and s.name in ('mitochondrial_chromosome', 'apicoplast_chromosome')))
-        </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="gff_seqid"/>
+      <column name="gff_source"/>
+      <column name="gff_type"/>
+      <column name="gff_fstart"/>
+      <column name="gff_fend"/>
+      <column name="gff_score"/>
+      <column name="gff_strand"/>
+      <column name="gff_phase"/>
+      <column name="gff_attr_id"/>
+      <column name="gff_attr_web_id"/>
+      <column name="gff_attr_name"/>
+      <column name="gff_attr_description"/>
+      <column name="gff_attr_size"/>
+      <column name="gff_attr_molecule_type"/>
+      <column name="gff_attr_organism_name"/>
+      <column name="gff_attr_translation_table"/>
+      <column name="gff_attr_topology"/>
+      <column name="gff_attr_localization"/>
+      <column name="gff_is_top_level"/>
+      <sql>
+        SELECT ns.source_id, gs.project_id,
+          ns.source_id as gff_seqid,
+          gs.project_id as gff_source,
+          s.name as gff_type,
+          1 as gff_fstart,
+          ns.length as gff_fend,
+          '.' as gff_score,
+          '+' as gff_strand,
+          '.' as gff_phase,
+          ns.source_id as gff_attr_id,
+          ns.source_id as gff_attr_web_id,
+          ns.source_id as gff_attr_name,
+          ns.description as gff_attr_description,
+          ns.length as gff_attr_size,
+          'dsDNA' as gff_attr_molecule_type,
+          --TODO add this back
+          --SUBSTR(tn.name, 1, regexp_instr(tn.name || '  ', ' ', 1, 2) - 1) as gff_attr_organism_name,
+          tn.name as gff_attr_organism_name,
+          g.ncbi_genetic_code_id as gff_attr_translation_table,
+          (CASE WHEN g.ncbi_genetic_code_id = 4 THEN 'circular' ELSE 'linear' END) as gff_attr_topology,
+          (CASE WHEN s.name = 'mitochondrial_chromosome' THEN 'mitochondria'
+          WHEN s.name = 'apicoplast_chromosome' THEN 'plastid'
+          ELSE 'nuclear' END) as gff_attr_localization
+        FROM ApidbTuning.GenomicSeqAttributes gs,
+          dots.NaSequence ns,
+          sres.externaldatabase ed,
+          sres.externaldatabaserelease edr,
+          sres.TaxonName tn,
+          sres.Taxon t,
+          sres.GeneticCode g,
+          sres.OntologyTerm s
+        WHERE ns.na_sequence_id = gs.na_sequence_id
+          AND ns.external_database_release_id = edr.external_database_release_id
+          AND edr.external_database_id = ed.external_database_id
+          AND ns.taxon_id = tn.taxon_id
+          AND tn.name_class = 'scientific name'
+          AND gs.taxon_id = t.taxon_id
+          AND gs.so_id = s.source_id
+          AND (
+            (t.genetic_code_id = g.genetic_code_id AND s.name in ('random_sequence', 'contig', 'chromosome', 'supercontig'))
+            OR
+            (t.mitochondrial_genetic_code_id = g.genetic_code_id AND s.name in ('mitochondrial_chromosome', 'apicoplast_chromosome'))
+          )
+      </sql>
     </sqlQuery>
-
-
   </querySet>
-
 </wdkModel>

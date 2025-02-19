@@ -1,82 +1,82 @@
 <wdkModel>
-    <querySet name="SnpChipAttributes" queryType="attribute" isCacheable="false" includeProjects="PlasmoDB,UniDB">
+  <querySet name="SnpChipAttributes" queryType="attribute" isCacheable="false" includeProjects="PlasmoDB,UniDB">
 
 
-      <defaultTestParamValues includeProjects="PlasmoDB,UniDB">
-         <paramValue name="source_id">Pf_01_000539044_barcode</paramValue>
-         <paramValue name="project_id">PlasmoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PlasmoDB,UniDB">
+      <paramValue name="source_id">Pf_01_000539044_barcode</paramValue>
+      <paramValue name="project_id">PlasmoDB</paramValue>
+    </defaultTestParamValues>
 
-       <testRowCountSql>
-          SELECT count(*) FROM ApidbTuning.SnpChipAttributes
-       </testRowCountSql>
-       
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!--SnpChip alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <testRowCountSql>
+      SELECT count(*) FROM ApidbTuning.SnpChipAttributes
+    </testRowCountSql>
 
-        <sqlQuery name="SnpChipAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="old_source_id"/>
-            <column name="old_project_id"/>
-            <sql>
-              <![CDATA[
-                SELECT source_id, 
-                       'PlasmoDB' AS project_id,
-                       source_id as old_source_id,
-                       'PlasmoDB' AS old_project_id
-                FROM ApidbTuning.SnpChipAttributes
-              ]]>
-            </sql>
-        </sqlQuery>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--SnpChip alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-        <sqlQuery name="Bfmv">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="type" />
-            <column name="dataset" ignoreCase="true"/>
-            <column name="seq_source_id"  sortingColumn="chromosome_order_num"/>
-            <column name="start_min"  sortingColumn="start_min" />
-            <column name="start_min_text"  sortingColumn="start_min" />
-            <column name="chromosome_order_num"  sortingColumn="chromosome_order_num" />
-            <column name="is_coding"  />
-            <column name="position_in_CDS"  />
-            <column name="position_in_protein"  />
-            <column name="has_nonsynonymous_allele"  />
-            <column name="gene_source_id"  ignoreCase="true"/>
-            <column name="gene_strand"  />
-            <column name="lflank"  ignoreCase="true"/>
-            <column name="allele"  sortingColumn="reference_na" ignoreCase="true"/>
-            <column name="rflank"  ignoreCase="true"/>
-            <column name="lflank_gene_strand"  sortingColumn="lflank" ignoreCase="true"/>
-            <column name="allele_gene_strand"  sortingColumn="allele" ignoreCase="true"/>
-            <column name="rflank_gene_strand"  sortingColumn="rflank" ignoreCase="true"/>
-            <column name="organism_text"  ignoreCase="true"/>
-            <column name="formatted_organism"  sortingColumn="organism_text" />
-            <column name="ncbi_tax_id"  />
-            <column name="minor_allele_frequency"  />
-            <column name="major_allele_frequency"  />
-            <column name="distinct_strain_count"  />
-            <column name="snp_context"  />
-            <column name="snp_context_gene_strand"  />
-            <column name="major_product"  />
-            <column name="major_allele"  />
-            <column name="minor_product"  />
-            <column name="minor_allele"  />
-            <column name="reference_na"  />
-            <column name="reference_aa"  />
-            <column name="reference_strain"  />
-            <column name="na_sequence_id"  />
-            <column name="lc_project_id"  />
-            <column name="context_start"  />
-            <column name="context_end"  />
-            <sql>
-            <![CDATA[
+    <sqlQuery name="SnpChipAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="old_source_id"/>
+      <column name="old_project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id,
+                 'PlasmoDB' AS project_id,
+                 source_id as old_source_id,
+                 'PlasmoDB' AS old_project_id
+          FROM ApidbTuning.SnpChipAttributes
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="Bfmv">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="type"/>
+      <column name="dataset" ignoreCase="true"/>
+      <column name="seq_source_id" sortingColumn="chromosome_order_num"/>
+      <column name="start_min" sortingColumn="start_min"/>
+      <column name="start_min_text" sortingColumn="start_min"/>
+      <column name="chromosome_order_num" sortingColumn="chromosome_order_num"/>
+      <column name="is_coding"/>
+      <column name="position_in_CDS"/>
+      <column name="position_in_protein"/>
+      <column name="has_nonsynonymous_allele"/>
+      <column name="gene_source_id" ignoreCase="true"/>
+      <column name="gene_strand"/>
+      <column name="lflank" ignoreCase="true"/>
+      <column name="allele" sortingColumn="reference_na" ignoreCase="true"/>
+      <column name="rflank" ignoreCase="true"/>
+      <column name="lflank_gene_strand" sortingColumn="lflank" ignoreCase="true"/>
+      <column name="allele_gene_strand" sortingColumn="allele" ignoreCase="true"/>
+      <column name="rflank_gene_strand" sortingColumn="rflank" ignoreCase="true"/>
+      <column name="organism_text" ignoreCase="true"/>
+      <column name="formatted_organism" sortingColumn="organism_text"/>
+      <column name="ncbi_tax_id"/>
+      <column name="minor_allele_frequency"/>
+      <column name="major_allele_frequency"/>
+      <column name="distinct_strain_count"/>
+      <column name="snp_context"/>
+      <column name="snp_context_gene_strand"/>
+      <column name="major_product"/>
+      <column name="major_allele"/>
+      <column name="minor_product"/>
+      <column name="minor_allele"/>
+      <column name="reference_na"/>
+      <column name="reference_aa"/>
+      <column name="reference_strain"/>
+      <column name="na_sequence_id"/>
+      <column name="lc_project_id"/>
+      <column name="context_start"/>
+      <column name="context_end"/>
+      <sql>
+        <![CDATA[
            SELECT bfmv.source_id as source_id, bfmv.project_id, 
                   na_sequence_id, lower(bfmv.project_id) as lc_project_id,
                   bfmv.chromosome_order_num,
-                  nvl(dsa.display_name, bfmv.dataset) as dataset,
+                  coalesce(dsa.display_name, bfmv.dataset) as dataset,
                   bfmv.seq_source_id, 
                   bfmv.type,
                   bfmv.start_min,
@@ -84,23 +84,22 @@
                   bfmv.start_min + 15000 as context_end,
                   trim(to_char(bfmv.start_min,'99,999,999')) as start_min_text,
                   CASE
-                  WHEN bfmv.reference_strain = 'iowa_II' THEN 'IOWA II'
-                  WHEN bfmv.reference_strain = 'md' THEN 'MD'
-                  WHEN bfmv.reference_strain = 'tu114' THEN 'TU114'
-                  ELSE bfmv.reference_strain
+                    WHEN bfmv.reference_strain = 'iowa_II' THEN 'IOWA II'
+                    WHEN bfmv.reference_strain = 'md' THEN 'MD'
+                    WHEN bfmv.reference_strain = 'tu114' THEN 'TU114'
+                    ELSE bfmv.reference_strain
                   END as reference_strain,
                   bfmv.reference_na, 
-                  decode(bfmv.is_coding, 1, 'coding', 'non-coding') as is_coding,
+                  CASE bfmv.is_coding WHEN 1 THEN 'coding' ELSE 'non-coding' END as is_coding,
                   bfmv.position_in_CDS,
                   bfmv.position_in_protein, bfmv.reference_aa, 
                   case when is_coding = 0 then null
-                    else decode(has_nonsynonymous_allele, 'yes', 'Has Non-Synonymous', 'Synonymous')
-                 end  has_nonsynonymous_allele,
+                    else CASE has_nonsynonymous_allele WHEN 'yes' THEN 'Has Non-Synonymous' ELSE 'Synonymous' END
+                    end  has_nonsynonymous_allele,
                   bfmv.gene_source_id, bfmv.gene_strand, bfmv.lflank,
                   bfmv.rflank, bfmv.reference_na as allele, bfmv.organism as organism_text, bfmv.ncbi_tax_id,
-                  '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
-                  REGEXP_REPLACE(SUBSTR(bfmv.organism, INSTR(bfmv.organism, ' ')), '[[:space:]]+',
-                                 chr(38) || 'nbsp;') || '</i>'
+                  '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.'
+                    || REGEXP_REPLACE(SUBSTR(bfmv.organism, strpos(bfmv.organism, ' ')), '[[:space:]]+', chr(38) || 'nbsp;') || '</i>'
                     AS formatted_organism,
                   bfmv.minor_allele_frequency, bfmv.major_allele_frequency,
                   bfmv.minor_allele_count + bfmv.major_allele_count as distinct_strain_count,
@@ -117,43 +116,40 @@
                   bfmv.lflank||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||bfmv.reference_na||'</span>'||bfmv.rflank as snp_context,
                   CASE WHEN bfmv.gene_strand = 'reverse' THEN apidb.reverse_complement(bfmv.rflank)||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||apidb.reverse_complement(bfmv.reference_na) ||'</span>'||apidb.reverse_complement(bfmv.lflank)
                        ELSE null END as snp_context_gene_strand
-       FROM   ApidbTuning.SnpChipAttributes bfmv,  apidbtuning.DatasetPresenter dsa
-       WHERE bfmv.dataset = dsa.name (+)
-             ]]>
-           </sql>
-
-        </sqlQuery>
-
-
-        <sqlQuery name="Browser" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id"/>
-            <column name="organismAbbrev"/>
-            <sql>
-            <![CDATA[
-             SELECT sa.source_id, sa.project_id, attr.public_abbrev as organismAbbrev
-             FROM apidbtuning.snpChipAttributes sa, apidbtuning.organismAttributes attr
-             WHERE sa.organism = attr.organism_name 
-            ]]>
-           </sql>
-        </sqlQuery>
+          FROM ApidbTuning.SnpChipAttributes bfmv
+            LEFT JOIN apidbtuning.DatasetPresenter dsa ON bfmv.dataset = dsa.name
+        ]]>
+      </sql>
+    </sqlQuery>
 
 
+    <sqlQuery name="Browser" excludeProjects="EuPathDB">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="organismAbbrev"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.source_id, sa.project_id, attr.public_abbrev as organismAbbrev
+          FROM apidbtuning.snpChipAttributes sa, apidbtuning.organismAttributes attr
+          WHERE sa.organism = attr.organism_name
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="Sequence" excludeProjects="EuPathDB" doNotTest="1">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="lflank"/>
-            <column name="allele"/>
-            <column name="rflank"/>
-            <sql>
-            <![CDATA[    
-            SELECT snp.source_id, 'PlasmoDB' AS project_id,
-                   lflank, rflank, reference_na as allele
-            FROM  ApidbTuning.SnpChipAttributes snp
 
-             ]]>
-           </sql>
-        </sqlQuery>
-    </querySet>
+    <sqlQuery name="Sequence" excludeProjects="EuPathDB" doNotTest="1">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="lflank"/>
+      <column name="allele"/>
+      <column name="rflank"/>
+      <sql>
+        <![CDATA[
+          SELECT snp.source_id, 'PlasmoDB' AS project_id,
+                 lflank, rflank, reference_na as allele
+          FROM  ApidbTuning.SnpChipAttributes snp
+        ]]>
+      </sql>
+    </sqlQuery>
+  </querySet>
 </wdkModel>

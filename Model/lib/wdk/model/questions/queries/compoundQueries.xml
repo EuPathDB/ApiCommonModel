@@ -1,133 +1,134 @@
 <wdkModel>
   <querySet name="CompoundIds" queryType="id" isCacheable="true"
-	    excludeProjects="EuPathDB,UniDB">
+            excludeProjects="EuPathDB,UniDB">
 
     <!-- ************************************************************ -->
-    <!-- Compound Id -->  
+    <!-- Compound Id -->
     <!-- ************************************************************ -->
- 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- Query for AllCompounds Question (NEEDED for SiteSearch tests) -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Query for AllCompounds Question (NEEDED for SiteSearch tests) -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
     <sqlQuery name="AllCompounds">
-        <column name="source_id"/>
-       <sql>
-         <![CDATA[
-select s.source_id
-from apidbtuning.CompoundAttributes s
-         ]]>
-       </sql>
+      <column name="source_id"/>
+      <sql>
+        <![CDATA[
+          SELECT s.source_id
+          FROM apidbtuning.CompoundAttributes s
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <sqlQuery name="CompoundsByCompoundID" doNotTest="true"  excludeProjects="EuPathDB"
+    <sqlQuery name="CompoundsByCompoundID" doNotTest="true" excludeProjects="EuPathDB"
               displayName="ID">
-        <paramRef ref="compoundParams.ds_compound_id"/>
-        <column name="source_id"/>
-        <column name="input_compound"/>
-        <sql>
-            <![CDATA[
-            SELECT distinct c.source_id, 
-              apidb.tab_to_string(SET(CAST(COLLECT(ds.source_id) AS apidb.varchartab))) as input_compound
-            FROM  apidbtuning.CompoundId cid,  apidbtuning.CompoundAttributes c, ($$ds_compound_id$$) ds
-            WHERE  cid.id = ds.source_id
+      <paramRef ref="compoundParams.ds_compound_id"/>
+      <column name="source_id"/>
+      <column name="input_compound"/>
+      <sql>
+        <![CDATA[
+          SELECT distinct c.source_id,
+            string_agg(ds.source_id, ',') as input_compound
+          FROM  apidbtuning.CompoundId cid,  apidbtuning.CompoundAttributes c, ($$ds_compound_id$$) ds
+          WHERE  cid.id = ds.source_id
             AND cid.compound = c.source_id
-            GROUP BY c.source_id
-               ]]>
-        </sql>
+          GROUP BY c.source_id
+        ]]>
+      </sql>
     </sqlQuery>
 
     <processQuery name="CompoundsByCompoundID" includeProjects="EuPathDB"
-          doNotTest="true"
-          processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"> 
-        <paramRef ref="compoundParams.ds_compound_id" noTranslation="true"/>
-        <wsColumn name="source_id" width="50" wsName="source_id"/>
-    </processQuery>   
-
-    <!-- ************************************************************ -->
-    <!-- Compounds By Text Search -->  
-    <!-- ************************************************************ -->
-
-    <processQuery name="CompoundsByText"
-          processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
-       <paramRef ref="sharedParams.text_expression"/>
-       <paramRef ref="sharedParams.document_type" default="compound"/>
-       <paramRef ref="sharedParams.text_fields"/>
-       <!-- the parameter below caches the results for 30 minutes -->
-       <paramRef ref="sharedParams.timestamp" interval="1800" />
-       <wsColumn name="source_id" width="50"/>
-       <wsColumn name="max_score" width="10" columnType="float"/>
+                  doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="compoundParams.ds_compound_id" noTranslation="true"/>
+      <wsColumn name="source_id" width="50" wsName="source_id"/>
     </processQuery>
 
     <!-- ************************************************************ -->
-    <!-- Compounds By EC Number -->  
+    <!-- Compounds By Text Search -->
     <!-- ************************************************************ -->
- 
+
+    <processQuery name="CompoundsByText"
+                  processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
+      <paramRef ref="sharedParams.text_expression"/>
+      <paramRef ref="sharedParams.document_type" default="compound"/>
+      <paramRef ref="sharedParams.text_fields"/>
+      <!-- the parameter below caches the results for 30 minutes -->
+      <paramRef ref="sharedParams.timestamp" interval="1800"/>
+      <wsColumn name="source_id" width="50"/>
+      <wsColumn name="max_score" width="10" columnType="float"/>
+    </processQuery>
+
+    <!-- ************************************************************ -->
+    <!-- Compounds By EC Number -->
+    <!-- ************************************************************ -->
+
     <sqlQuery name="CompoundsByEcReaction" excludeProjects="EuPathDB">
 
-      <paramRef ref="compoundParams.enzyme" />
-      <paramRef ref="compoundParams.compound_type" />
+      <paramRef ref="compoundParams.enzyme"/>
+      <paramRef ref="compoundParams.compound_type"/>
       <column name="source_id"/>
       <column name="ec_number"/>
       <sql>
-	<![CDATA[
-        SELECT DISTINCT ca.source_id
-        , pr.enzyme as ec_number
-        FROM apidbtuning.pathwaycompounds pc
-        , apidbtuning.pathwayreactions pr
-        , apidbtuning.compoundattributes ca
-        WHERE pr.enzyme = $$enzyme$$
-        AND pc.reaction_id = pr.reaction_id
-        AND ((pr.is_reversible = 0 AND pc.type = $$compound_type$$) OR (pr.is_reversible = 1 AND $$compound_type$$ = 'substrate/product') OR $$compound_type$$ = 'either')
-        AND ca.source_id = pc.chebi_accession
-	]]>
-        </sql>
+        <![CDATA[
+          SELECT DISTINCT ca.source_id
+            , pr.enzyme as ec_number
+          FROM apidbtuning.pathwaycompounds pc
+            , apidbtuning.pathwayreactions pr
+            , apidbtuning.compoundattributes ca
+          WHERE pr.enzyme = $$enzyme$$
+            AND pc.reaction_id = pr.reaction_id
+            AND ((pr.is_reversible = 0 AND pc.type = $$compound_type$$) OR (pr.is_reversible = 1 AND $$compound_type$$ = 'substrate/product') OR $$compound_type$$ = 'either')
+            AND ca.source_id = pc.chebi_accession
+	    ]]>
+      </sql>
     </sqlQuery>
 
     <processQuery name="CompoundsByEcReaction" includeProjects="EuPathDB"
-		  doNotTest="true"
-		  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"> 
-      <paramRef ref="compoundParams.enzyme" />
-      <paramRef ref="compoundParams.compound_type" />
+                  doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="compoundParams.enzyme"/>
+      <paramRef ref="compoundParams.compound_type"/>
       <wsColumn name="source_id" width="50" wsName="source_id"/>
-      <wsColumn name="compound" width="32"/>   
-      <wsColumn name="ec_number" width="32"/>   
-    </processQuery>   
+      <wsColumn name="compound" width="32"/>
+      <wsColumn name="ec_number" width="32"/>
+    </processQuery>
 
 
-    <sqlQuery name="CompoundsByPathway" doNotTest="true"  excludeProjects="EuPathDB"
+    <sqlQuery name="CompoundsByPathway" doNotTest="true" excludeProjects="EuPathDB"
               displayName="compounds by pathway">
 
-     <!-- <paramRef ref="pathwayParams.metabolic_pathway_id_with_compounds"/>-->
+      <!-- <paramRef ref="pathwayParams.metabolic_pathway_id_with_compounds"/>-->
       <paramRef ref="pathwayParams.pathways_source"/>
       <paramRef ref="pathwayParams.metabolic_pathway_id"/>
       <paramRef ref="pathwayParams.pathway_wildcard"/>
       <column name="source_id"/>
       <sql>
-	<![CDATA[
-        SELECT DISTINCT ca.source_id
-        FROM apidbtuning.pathwaycompounds pc
-        , apidbtuning.pathwayattributes pa
-        , sres.externaldatabase ed
-        , sres.externaldatabaserelease edr
-        , apidbtuning.compoundattributes ca
-        WHERE (pa.pathway_id = $$metabolic_pathway_id$$
-            OR lower(pa.name) LIKE '%' || REPLACE(REPLACE(REPLACE(REPLACE(lower($$pathway_wildcard$$),' ',''),'-', '%'),'*','%'),'any','%') || '%'
+        <![CDATA[
+          SELECT DISTINCT ca.source_id
+          FROM apidbtuning.pathwaycompounds pc
+            , apidbtuning.pathwayattributes pa
+            , sres.externaldatabase ed
+            , sres.externaldatabaserelease edr
+            , apidbtuning.compoundattributes ca
+          WHERE (
+              pa.pathway_id = $$metabolic_pathway_id$$
+              OR lower(pa.name) LIKE '%' || REPLACE(REPLACE(REPLACE(REPLACE(lower($$pathway_wildcard$$),' ',''),'-', '%'),'*','%'),'any','%') || '%'
             )
-        AND pc.pathway_id = pa.pathway_id
-        AND ed.name = pc.ext_db_name
-        AND edr.external_database_id = ed.external_database_id
-        AND (edr.external_database_release_id = $$pathways_source$$ OR $$pathways_source$$ = 1)
-        AND ca.source_id = pc.chebi_accession
+            AND pc.pathway_id = pa.pathway_id
+            AND ed.name = pc.ext_db_name
+            AND edr.external_database_id = ed.external_database_id
+            AND (edr.external_database_release_id = $$pathways_source$$ OR $$pathways_source$$ = 1)
+            AND ca.source_id = pc.chebi_accession
 	    ]]>
-        </sql>
+      </sql>
     </sqlQuery>
 
     <processQuery name="CompoundsByPathway" includeProjects="EuPathDB"
-		  doNotTest="true"
-		  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"> 
+                  doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
       <paramRef ref="pathwayParams.metabolic_pathway_id_with_compounds" noTranslation="true"/>
       <wsColumn name="source_id" width="50" wsName="source_id"/>
-    </processQuery>   
+    </processQuery>
 
 
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -135,26 +136,26 @@ from apidbtuning.CompoundAttributes s
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="CompoundsByMolecularWeight" excludeProjects="EuPathDB">
-        <paramRef ref="compoundParams.min_molecular_weight"/>
-        <paramRef ref="compoundParams.max_molecular_weight"/>
-        <column name="source_id"/>
-	<column name="molecular_wt"/>
-        <sql>
-            <![CDATA[
-            SELECT source_id, mass as molecular_wt
-	    FROM ApidbTuning.CompoundAttributes
-	    WHERE mass <= $$max_molecular_weight$$
-                  AND mass >= $$min_molecular_weight$$
-           ]]>
-       </sql>
+      <paramRef ref="compoundParams.min_molecular_weight"/>
+      <paramRef ref="compoundParams.max_molecular_weight"/>
+      <column name="source_id"/>
+      <column name="molecular_wt"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, mass as molecular_wt
+          FROM ApidbTuning.CompoundAttributes
+          WHERE mass <= $$max_molecular_weight$$
+            AND mass >= $$min_molecular_weight$$
+        ]]>
+      </sql>
     </sqlQuery>
 
     <processQuery name="CompoundsByMolecularWeight" includeProjects="EuPathDB"
-		  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
       <paramRef ref="compoundParams.min_molecular_weight"/>
       <paramRef ref="compoundParams.max_molecular_weight"/>
       <wsColumn name="source_id" width="50" wsName="source_id"/>
-      <wsColumn name="molecular_wt" width="32"/>   
+      <wsColumn name="molecular_wt" width="32"/>
     </processQuery>
 
 
@@ -163,80 +164,80 @@ from apidbtuning.CompoundAttributes s
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="CompoundsByMolecularFormula" excludeProjects="EuPathDB">
-        <paramRef ref="compoundParams.input_formula"/>
-        <column name="source_id"/>
-        <sql>
-            <![CDATA[
-            SELECT source_id
-            FROM ApidbTuning.CompoundAttributes 
-            WHERE formula LIKE REPLACE($$input_formula$$,'*','%')
-           ]]>
-       </sql>
+      <paramRef ref="compoundParams.input_formula"/>
+      <column name="source_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id
+          FROM ApidbTuning.CompoundAttributes
+          WHERE formula LIKE REPLACE($$input_formula$$,'*','%')
+        ]]>
+      </sql>
     </sqlQuery>
 
     <processQuery name="CompoundsByMolecularFormula" includeProjects="EuPathDB"
-		  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
       <paramRef ref="compoundParams.input_formula"/>
       <wsColumn name="source_id" width="50" wsName="source_id"/>
-      <wsColumn name="molecular_formula" width="32"/>   
+      <wsColumn name="molecular_formula" width="32"/>
     </processQuery>
 
     <!-- ************************************************************ -->
-    <!-- Transform : Compounds By Gene ID -->  
+    <!-- Transform : Compounds By Gene ID -->
     <!-- ************************************************************ -->
- 
+
     <sqlQuery name="CompoundsByGeneID" doNotTest="true"
               displayName="ID by gene">
 
-      <paramRef ref="geneParams.gene_result" />
-      <paramRef ref="compoundParams.compound_type" />
+      <paramRef ref="geneParams.gene_result"/>
+      <paramRef ref="compoundParams.compound_type"/>
       <column name="source_id"/>
       <column name="genes"/>
       <column name="gene_count"/>
-      <column name="wdk_weight" />
+      <column name="wdk_weight"/>
 
       <sql>
-	<![CDATA[
-    SELECT DISTINCT ca.source_id
-    , count(distinct ds.source_id) as gene_count
-    , apidb.tab_to_string(set(cast(collect(ds.source_id) as apidb.varchartab))) as genes
-    , max(ds.wdk_weight) as wdk_weight
-    FROM ($$gene_result$$) ds
-    , apidbtuning.transcriptpathway tp
-    , apidbtuning.pathwayreactions pr
-    , apidbtuning.pathwaycompounds pc
-    , apidbtuning.compoundattributes ca
-    WHERE tp.gene_source_id = ds.gene_source_id
-    AND tp.ec_number_gene like replace(pr.enzyme, '-', '%')
-    AND pr.reaction_id = pc.reaction_id
-    AND pr.ext_db_name = pc.ext_db_name
-    AND pc.pathway_id = tp.pathway_id
-    AND ca.source_id = pc.chebi_accession
-    AND ((pr.is_reversible = 0 AND pc.type = $$compound_type$$) OR (pr.is_reversible = 1 AND $$compound_type$$ = 'substrate/product') OR $$compound_type$$ = 'either')
-    GROUP BY ca.source_id
-	]]>
-        </sql>
+        <![CDATA[
+          SELECT DISTINCT ca.source_id
+            , count(distinct ds.source_id) as gene_count
+            , string_agg(ds.source_id, ',') as genes
+            , max(ds.wdk_weight) as wdk_weight
+          FROM ($$gene_result$$) ds
+            , apidbtuning.transcriptpathway tp
+            , apidbtuning.pathwayreactions pr
+            , apidbtuning.pathwaycompounds pc
+            , apidbtuning.compoundattributes ca
+          WHERE tp.gene_source_id = ds.gene_source_id
+            AND tp.ec_number_gene like replace(pr.enzyme, '-', '%')
+            AND pr.reaction_id = pc.reaction_id
+            AND pr.ext_db_name = pc.ext_db_name
+            AND pc.pathway_id = tp.pathway_id
+            AND ca.source_id = pc.chebi_accession
+            AND ((pr.is_reversible = 0 AND pc.type = $$compound_type$$) OR (pr.is_reversible = 1 AND $$compound_type$$ = 'substrate/product') OR $$compound_type$$ = 'either')
+          GROUP BY ca.source_id
+        ]]>
+      </sql>
     </sqlQuery>
 
 
     <!-- ************************************************************ -->
-    <!-- Transform : Compounds By Pathway ID -->  
+    <!-- Transform : Compounds By Pathway ID -->
     <!-- ************************************************************ -->
- 
+
     <sqlQuery name="CompoundsByPathwayID" doNotTest="true"
               displayName="ID by pathway">
 
       <paramRef ref="pathwayParams.pathway_result"/>
-      <paramRef ref="compoundParams.compound_type" />
+      <paramRef ref="compoundParams.compound_type"/>
       <column name="source_id"/>
-      <column name="pathways"/> 
-      <column name="pathway_trans_count"/> 
-      <column name="wdk_weight" />
+      <column name="pathways"/>
+      <column name="pathway_trans_count"/>
+      <column name="wdk_weight"/>
 
       <sql>
-	<![CDATA[
+        <![CDATA[
         SELECT DISTINCT ca.source_id
-        , apidb.tab_to_string(set(cast(collect(ds.source_id) as apidb.varchartab))) as pathways
+        , string_agg(ds.source_id, ',') as pathways
         , count(distinct ds.source_id) as pathway_trans_count
         , max(ds.wdk_weight) as wdk_weight
         FROM ($$pathway_result$$)ds
@@ -252,403 +253,402 @@ from apidbtuning.CompoundAttributes s
         AND ((pr.is_reversible = 0 AND pc.type = $$compound_type$$) OR (pr.is_reversible = 1 AND $$compound_type$$ = 'substrate/product') OR $$compound_type$$ = 'either')
         GROUP BY ca.source_id
 	]]>
-        </sql>
+      </sql>
     </sqlQuery>
 
 
+    <!--    <sqlQuery name="CompoundsByPercentile"
+                  includeProjects="PlasmoDB,TriTrypDB"
+                  displayName="Compounds by percentile">
+          <testParamValues includeProjects="PlasmoDB,TriTrypDB">
+            <paramValue name="samples_percentile_comp">Log mean (compound_MassSpec)</paramValue>
+          </testParamValues>
 
-<!--    <sqlQuery name="CompoundsByPercentile" 
+          <paramRef ref="compoundParams.profileset" />
+          <paramRef ref="compoundParams.samples_percentile" />
+          <paramRef ref="compoundParams.min_percentile" default="80"/>
+          <paramRef ref="compoundParams.max_percentile" default="100"/>
+          <paramRef ref="compoundParams.any_or_all_percentile_compound_peaks"/>
+          <paramRef ref="compoundParams.is_preferred_compound"/>
+
+          <column name="source_id"/>
+          <column name="matched_result"/>
+          <column name="max_max_percentile" />
+          <column name="max_min_percentile" />
+          <column name="max_mass"/>
+          <column name="max_retention_time"/>
+
+          <column name="above_peak_count"/>
+          <column name="below_peak_count"/>
+          <column name="peak_count"/>
+
+          <sql>
+        <![CDATA[
+    WITH samples AS (
+        select percentile
+        , min(percentile) as min_percentile
+        , max(percentile) as max_percentile
+        , compound_id
+        , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
+        , mass
+        , retention_time
+        from (
+            select sum(cmsr.percentile) as percentile
+            , chebi.compound_id
+            , min(cp.mass) as mass
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id)
+                END as compound_peaks_id
+            from
+            apidb.compoundpeakschebi chebi
+            , apidb.compoundmassspecresult cmsr
+            , APIDB.compoundpeaks cp
+            where chebi.compound_id IS NOT NULL
+            and cmsr.protocol_app_node_id in ($$samples_percentile$$)
+            and chebi.compound_peaks_id = cmsr.compound_peaks_id
+            and cp.compound_peaks_id = chebi.compound_peaks_id
+            and chebi.is_preferred_compound in ($$is_preferred_compound$$)
+            group by chebi.compound_id
+
+            , cmsr.protocol_app_node_id
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id) END
+            )
+            group by compound_id, compound_peaks_id, mass, retention_time, percentile
+    )
+    , peaksPerCompound as (
+        select  compound_id, source_id
+        , count (*) as peak_count
+        FROM (
+            select distinct chebi.compound_id
+            , chebi.compound_peaks_id
+            , cmsr.protocol_app_node_id
+        , ca.source_id
+            from apidb.compoundpeakschebi chebi
+            , APIDB.compoundmassspecresult cmsr
+        , apidbtuning.compoundattributes ca
+            where cmsr.protocol_app_node_id in ($$samples_percentile$$)
+            and chebi.compound_peaks_id = cmsr.compound_peaks_id
+        and ca.id = chebi.compound_id
+        )
+        group by  compound_id, source_id
+    )
+    , diff_exp_peaks as (
+        select ca.source_id
+        , ca.id
+        , samples.compound_peaks_id
+        , samples.mass
+        , samples.retention_time
+        , samples.percentile
+        , samples.min_percentile
+        , samples.max_percentile
+        from samples
+        , apidbtuning.compoundattributes ca
+        WHERE samples.compound_id   = ca.id
+        AND  samples.percentile BETWEEN $$min_percentile$$ AND  $$max_percentile$$
+    )
+    , above_cutoff_peaks_number as (
+         select source_id
+        , count (*) as above_peak_count
+        FROM (
+            select distinct source_id
+            , compound_peaks_id
+            from diff_exp_peaks dep
+        )
+        group by source_id
+    )
+    , below_cutoff_peaks_number as (
+       select acpn.source_id, (ppc.peak_count - acpn.above_peak_count) as below_peak_count
+        FROM  peaksPerCompound ppc
+        LEFT JOIN above_cutoff_peaks_number acpn
+        ON acpn.source_id = ppc.source_id
+
+    )
+
+    , diff_exp_compounds as (
+        select dep.source_id
+        , max(dep.percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_percentile
+        , max(dep.min_percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_min_percentile
+        , max(dep.max_percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_max_percentile
+        , max(dep.mass) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_mass
+        , max(dep.retention_time) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_retention_time
+        from diff_exp_peaks   dep
+        , apidbtuning.compoundattributes ca
+        where dep.source_id = ca.source_id
+        group by dep.source_id
+    )
+    , anyOrAll as (
+        select dep.source_id
+        from diff_exp_peaks dep
+        , peaksPerCompound ppc
+        WHERE ppc.compound_id = dep.id
+        HAVING ('any' = $$any_or_all_percentile_compound_peaks$$
+            OR count(*) = ppc.peak_count)
+        GROUP BY dep.source_id, ppc.peak_count
+    )
+    select acpn.above_peak_count,bcpn.below_peak_count,  ppc.peak_count,  dec.*, 'Y' as matched_result
+    from anyOrAll aoa
+    , diff_exp_compounds dec
+    , APIDBTUNING.compoundattributes ca
+    , peaksPerCompound ppc
+    , above_cutoff_peaks_number acpn
+    , below_cutoff_peaks_number bcpn
+    where aoa.source_id = dec.source_id
+    and ca.source_id = aoa.source_id
+    and ppc.compound_id = ca.id
+    and acpn.source_id = dec.source_id
+    and bcpn.source_id  = acpn.source_id
+           ]]>
+          </sql>
+        </sqlQuery>-->
+
+
+    <!-- Lin new
+        <sqlQuery name="CompoundsByFoldChange"
               includeProjects="PlasmoDB,TriTrypDB"
-              displayName="Compounds by percentile">
-      <testParamValues includeProjects="PlasmoDB,TriTrypDB">
-	    <paramValue name="samples_percentile_comp">Log mean (compound_MassSpec)</paramValue>
-      </testParamValues>
+              displayName="Metabolic compounds by fold change">
+            <testParamValues includeProjects="PlasmoDB,TriTrypDB">
+                <paramValue name="samples_fc_comp">WT_mean</paramValue>
+            </testParamValues>
 
-      <paramRef ref="compoundParams.profileset" />
-      <paramRef ref="compoundParams.samples_percentile" />
-      <paramRef ref="compoundParams.min_percentile" default="80"/>
-      <paramRef ref="compoundParams.max_percentile" default="100"/>
-      <paramRef ref="compoundParams.any_or_all_percentile_compound_peaks"/>
-      <paramRef ref="compoundParams.is_preferred_compound"/>
-      
-      <column name="source_id"/>
-      <column name="matched_result"/>
-      <column name="max_max_percentile" />
-      <column name="max_min_percentile" />
-      <column name="max_mass"/>
-      <column name="max_retention_time"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.profileset" />
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_ref_generic" />
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_comp_generic" />
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.fold_change_compound"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.regulated_dir"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.min_max_avg_ref"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.min_max_avg_comp"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.is_preferred_compound"/>
+        <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.any_or_all_compound_peaks"/>
+        <column name="source_id"/>
+        <column name="max_fold_change"/>
+        <column name="max_one_value"/>
+        <column name="max_two_value"/>
+        <column name="max_one_min"/>
+        <column name="max_two_min"/>
+        <column name="max_one_max"/>
+        <column name="max_two_max"/>
+        <column name="max_one_mean"/>
+        <column name="max_two_mean"/>
+        <column name="max_one_median"/>
+        <column name="max_two_median"/>
+        <column name="max_mass"/>
+        <column name="max_retention_time"/>
+        <column name="above_peak_count"/>
+        <column name="below_peak_count"/>
+        <column name="peak_count"/>
 
-      <column name="above_peak_count"/>
-      <column name="below_peak_count"/>
-      <column name="peak_count"/>      
+            <sql>
+      <![CDATA[
 
-      <sql>
-	<![CDATA[
-WITH samples AS ( 
-    select percentile
-    , min(percentile) as min_percentile
-    , max(percentile) as max_percentile
-    , compound_id
-    , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
-    , mass
-    , retention_time
-    from (
-        select sum(cmsr.percentile) as percentile 
-        , chebi.compound_id
-        , min(cp.mass) as mass
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id)
-            END as compound_peaks_id
-        from 
-        apidb.compoundpeakschebi chebi
-        , apidb.compoundmassspecresult cmsr  
-        , APIDB.compoundpeaks cp
-        where chebi.compound_id IS NOT NULL
-        and cmsr.protocol_app_node_id in ($$samples_percentile$$)
-        and chebi.compound_peaks_id = cmsr.compound_peaks_id
-        and cp.compound_peaks_id = chebi.compound_peaks_id
-        and chebi.is_preferred_compound in ($$is_preferred_compound$$) 
-        group by chebi.compound_id
-        
-        , cmsr.protocol_app_node_id
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id) END
-        )
-        group by compound_id, compound_peaks_id, mass, retention_time, percentile
-)
-, peaksPerCompound as ( 
-    select  compound_id, source_id
-    , count (*) as peak_count
-    FROM (
-        select distinct chebi.compound_id
-        , chebi.compound_peaks_id
-        , cmsr.protocol_app_node_id
-	, ca.source_id
-        from apidb.compoundpeakschebi chebi
-        , APIDB.compoundmassspecresult cmsr
-	, apidbtuning.compoundattributes ca
-        where cmsr.protocol_app_node_id in ($$samples_percentile$$) 
-        and chebi.compound_peaks_id = cmsr.compound_peaks_id
-	and ca.id = chebi.compound_id
+    WITH one AS (
+        select $$min_max_avg_ref$$(value) as value
+        , avg(value) as mean
+        , min(value) as min
+        , max(value) as max
+        , median(value) as median
+        , compound_id
+        , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
+        , mass
+        , retention_time
+        from (
+            select sum(cmsr.value) as value
+            , chebi.compound_id
+            , protocol_app_node_id
+            , min(cp.mass) as mass
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id)
+                END as compound_peaks_id
+            from
+            apidb.compoundpeakschebi chebi
+            , apidb.compoundmassspecresult cmsr
+            , APIDB.compoundpeaks cp
+            where chebi.compound_id IS NOT NULL
+            and cmsr.protocol_app_node_id in ($$samples_fc_ref_generic$$)
+            and chebi.compound_peaks_id = cmsr.compound_peaks_id
+            and cp.compound_peaks_id = chebi.compound_peaks_id
+            and chebi.is_preferred_compound in ($$is_preferred_compound$$)
+            group by chebi.compound_id
+            , cmsr.protocol_app_node_id
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id) END
+            )
+            group by compound_id, compound_peaks_id, mass, retention_time
     )
-    group by  compound_id, source_id
-)
-, diff_exp_peaks as ( 
-    select ca.source_id
-    , ca.id
-    , samples.compound_peaks_id
-    , samples.mass
-    , samples.retention_time
-    , samples.percentile 
-    , samples.min_percentile
-    , samples.max_percentile
-    from samples
-    , apidbtuning.compoundattributes ca
-    WHERE samples.compound_id   = ca.id
-    AND  samples.percentile BETWEEN $$min_percentile$$ AND  $$max_percentile$$   
-)
-, above_cutoff_peaks_number as (
-     select source_id
-    , count (*) as above_peak_count
-    FROM (
-        select distinct source_id
-        , compound_peaks_id
+    , two as (
+        select $$min_max_avg_comp$$(value) as value
+        , avg(value) as mean
+        , min(value) as min
+        , max(value) as max
+        , median(value) as median
+        , compound_id
+        , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
+        , mass
+        , retention_time
+        from (
+            select sum(cmsr.value) as value
+            , chebi.compound_id
+            , protocol_app_node_id
+            , min(cp.mass) as mass
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id)
+                END as compound_peaks_id
+            from
+            apidb.compoundpeakschebi chebi
+            , apidb.compoundmassspecresult cmsr
+            , apidb.compoundpeaks cp
+            where chebi.compound_id IS NOT NULL
+            and cmsr.protocol_app_node_id in ($$samples_fc_comp_generic$$)
+            and chebi.compound_peaks_id = cmsr.compound_peaks_id
+            and cp.compound_peaks_id = chebi.compound_peaks_id
+            and chebi.is_preferred_compound in ($$is_preferred_compound$$)
+            group by chebi.compound_id
+            , cmsr.protocol_app_node_id
+            , cp.retention_time
+            , CASE WHEN chebi.isotopomer IS NOT NULL
+                THEN NULL
+                ELSE to_char(chebi.compound_peaks_id) END
+            )
+            group by compound_id, compound_peaks_id, mass, retention_time
+    )
+    , peaksPerCompound as (
+        select compound_id, source_id
+        , count (*) as peak_count
+        FROM (
+            select distinct chebi.compound_id
+            , chebi.compound_peaks_id
+        , ca.source_id
+            from apidb.compoundpeakschebi chebi
+            , APIDB.compoundmassspecresult cmsr
+        , apidbtuning.compoundattributes ca
+            where cmsr.protocol_app_node_id in ($$samples_fc_ref_generic$$, $$samples_fc_comp_generic$$)
+            and chebi.compound_peaks_id = cmsr.compound_peaks_id
+        and ca.id = chebi.compound_id
+        )
+        group by compound_id, source_id
+    )
+    , diff_exp_peaks as (
+        select ca.source_id
+        , ca.id
+        , one.compound_peaks_id
+        , one.mass
+        , one.retention_time
+        , one.value as one_value
+        , one.mean as one_mean
+        , one.min as one_min
+        , one.max as one_max
+        , one.median as one_median
+        , two.value as two_value
+        , two.mean as two_mean
+        , two.min as two_min
+        , two.max as two_max
+        , two.median as two_median
+        , CASE WHEN one.value >= two.value
+            THEN round(greatest(one.value, 1)/(greatest(two.value, 1)),2)
+            ELSE round(greatest(two.value, 1)/(greatest(one.value, 1)),2)
+            END AS fold_change
+        from one
+        , two
+        , apidbtuning.compoundattributes ca
+        WHERE one.compound_id = two.compound_id
+        AND one.compound_peaks_id = two.compound_peaks_id
+        AND one.compound_id   = ca.id
+
+        AND $$regulated_dir$$  (
+        CASE
+          WHEN (greatest(one.value, 1) >= greatest(two.value, 1)
+          AND greatest(two.value, 1)    > 0)
+          THEN -((greatest(one.value, 1) )/(greatest(two.value, 1) ))
+          WHEN (greatest(two.value, 1)> greatest(one.value, 1)
+          AND greatest(one.value, 1)   > 0)
+          THEN ((greatest(two.value, 1) )/(greatest(one.value, 1) ))
+          END ) >= $$fold_change_compound$$
+    )
+    , above_cutoff_peaks_number as (
+         select source_id
+        , count (*) as above_peak_count
+        FROM (
+            select distinct source_id
+            , compound_peaks_id
+            from diff_exp_peaks dep
+        )
+        group by source_id
+    )
+    , below_cutoff_peaks_number as (
+       select acpn.source_id, (ppc.peak_count - acpn.above_peak_count) as below_peak_count
+        FROM  peaksPerCompound ppc
+        LEFT JOIN above_cutoff_peaks_number acpn
+        ON acpn.source_id = ppc.source_id
+
+    )
+
+    , diff_exp_compounds as (
+        select dep.source_id
+        , max(dep.fold_change) as max_fold_change
+        , max(dep.one_value) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_value
+        , max(dep.one_mean) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_mean
+        , max(dep.one_min) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_min
+        , max(dep.one_max) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_max
+        , max(dep.one_median) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_median
+        , max(dep.two_value) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_value
+        , max(dep.two_mean) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_mean
+        , max(dep.two_min) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_min
+        , max(dep.two_max) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_max
+        , max(dep.two_median) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_median
+        , max(dep.mass) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_mass
+        , max(dep.retention_time) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_retention_time
         from diff_exp_peaks dep
+        , apidbtuning.compoundattributes ca
+        where dep.source_id = ca.source_id
+        group by dep.source_id
     )
-    group by source_id
-)
-, below_cutoff_peaks_number as (
-   select acpn.source_id, (ppc.peak_count - acpn.above_peak_count) as below_peak_count
-    FROM  peaksPerCompound ppc
-    LEFT JOIN above_cutoff_peaks_number acpn
-    ON acpn.source_id = ppc.source_id
-
-)
-
-, diff_exp_compounds as ( 
-    select dep.source_id
-    , max(dep.percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_percentile
-    , max(dep.min_percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_min_percentile
-    , max(dep.max_percentile) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_max_percentile
-    , max(dep.mass) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_mass
-    , max(dep.retention_time) KEEP (DENSE_RANK LAST ORDER BY dep.percentile) as max_retention_time
-    from diff_exp_peaks   dep
-    , apidbtuning.compoundattributes ca
-    where dep.source_id = ca.source_id
-    group by dep.source_id
-)
-, anyOrAll as ( 
-    select dep.source_id
-    from diff_exp_peaks dep
-    , peaksPerCompound ppc
-    WHERE ppc.compound_id = dep.id
-    HAVING ('any' = $$any_or_all_percentile_compound_peaks$$
-        OR count(*) = ppc.peak_count)
-    GROUP BY dep.source_id, ppc.peak_count
-)
-select acpn.above_peak_count,bcpn.below_peak_count,  ppc.peak_count,  dec.*, 'Y' as matched_result
-from anyOrAll aoa
-, diff_exp_compounds dec
-, APIDBTUNING.compoundattributes ca
-, peaksPerCompound ppc
-, above_cutoff_peaks_number acpn
-, below_cutoff_peaks_number bcpn
-where aoa.source_id = dec.source_id
-and ca.source_id = aoa.source_id
-and ppc.compound_id = ca.id
-and acpn.source_id = dec.source_id
-and bcpn.source_id  = acpn.source_id		 
-   	]]>
-      </sql>
-    </sqlQuery>-->
-    
-
-<!-- Lin new
-    <sqlQuery name="CompoundsByFoldChange" 
-          includeProjects="PlasmoDB,TriTrypDB"
-          displayName="Metabolic compounds by fold change">
-    	<testParamValues includeProjects="PlasmoDB,TriTrypDB">
-	    	<paramValue name="samples_fc_comp">WT_mean</paramValue>
-    	</testParamValues>
-
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.profileset" />
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_ref_generic" />
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_comp_generic" />
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.fold_change_compound"/>
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.regulated_dir"/>
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.min_max_avg_ref"/>
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.min_max_avg_comp"/>
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.is_preferred_compound"/>
-    <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.any_or_all_compound_peaks"/>
-    <column name="source_id"/>
-    <column name="max_fold_change"/>
-    <column name="max_one_value"/>
-    <column name="max_two_value"/>
-    <column name="max_one_min"/>
-    <column name="max_two_min"/>
-    <column name="max_one_max"/>
-    <column name="max_two_max"/>
-    <column name="max_one_mean"/>
-    <column name="max_two_mean"/>
-    <column name="max_one_median"/>
-    <column name="max_two_median"/>
-    <column name="max_mass"/>
-    <column name="max_retention_time"/>
-    <column name="above_peak_count"/>
-    <column name="below_peak_count"/>
-    <column name="peak_count"/>
-
-    	<sql>
-  <![CDATA[
-
-WITH one AS (
-    select $$min_max_avg_ref$$(value) as value
-    , avg(value) as mean
-    , min(value) as min
-    , max(value) as max
-    , median(value) as median
-    , compound_id
-    , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
-    , mass
-    , retention_time
-    from (
-        select sum(cmsr.value) as value 
-        , chebi.compound_id
-        , protocol_app_node_id
-        , min(cp.mass) as mass
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id)
-            END as compound_peaks_id
-        from 
-        apidb.compoundpeakschebi chebi
-        , apidb.compoundmassspecresult cmsr  
-        , APIDB.compoundpeaks cp
-        where chebi.compound_id IS NOT NULL
-        and cmsr.protocol_app_node_id in ($$samples_fc_ref_generic$$)
-        and chebi.compound_peaks_id = cmsr.compound_peaks_id
-        and cp.compound_peaks_id = chebi.compound_peaks_id
-        and chebi.is_preferred_compound in ($$is_preferred_compound$$)
-        group by chebi.compound_id
-        , cmsr.protocol_app_node_id
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id) END
-        )
-        group by compound_id, compound_peaks_id, mass, retention_time
-)
-, two as (
-    select $$min_max_avg_comp$$(value) as value 
-    , avg(value) as mean
-    , min(value) as min
-    , max(value) as max
-    , median(value) as median
-    , compound_id
-    , nvl(compound_peaks_id, mass || '|' || retention_time) as compound_peaks_id
-    , mass
-    , retention_time
-    from (
-        select sum(cmsr.value) as value 
-        , chebi.compound_id
-        , protocol_app_node_id
-        , min(cp.mass) as mass
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id)
-            END as compound_peaks_id
-        from 
-        apidb.compoundpeakschebi chebi
-        , apidb.compoundmassspecresult cmsr
-        , apidb.compoundpeaks cp
-        where chebi.compound_id IS NOT NULL
-        and cmsr.protocol_app_node_id in ($$samples_fc_comp_generic$$)
-        and chebi.compound_peaks_id = cmsr.compound_peaks_id
-        and cp.compound_peaks_id = chebi.compound_peaks_id
-        and chebi.is_preferred_compound in ($$is_preferred_compound$$)
-        group by chebi.compound_id
-        , cmsr.protocol_app_node_id
-        , cp.retention_time
-        , CASE WHEN chebi.isotopomer IS NOT NULL
-            THEN NULL
-            ELSE to_char(chebi.compound_peaks_id) END
-        )
-        group by compound_id, compound_peaks_id, mass, retention_time
-)
-, peaksPerCompound as (
-    select compound_id, source_id
-    , count (*) as peak_count
-    FROM (
-        select distinct chebi.compound_id
-        , chebi.compound_peaks_id
-	, ca.source_id
-        from apidb.compoundpeakschebi chebi
-        , APIDB.compoundmassspecresult cmsr
-	, apidbtuning.compoundattributes ca
-        where cmsr.protocol_app_node_id in ($$samples_fc_ref_generic$$, $$samples_fc_comp_generic$$)
-        and chebi.compound_peaks_id = cmsr.compound_peaks_id
-	and ca.id = chebi.compound_id
-    )
-    group by compound_id, source_id
-)
-, diff_exp_peaks as (
-    select ca.source_id
-    , ca.id
-    , one.compound_peaks_id
-    , one.mass
-    , one.retention_time
-    , one.value as one_value
-    , one.mean as one_mean
-    , one.min as one_min
-    , one.max as one_max
-    , one.median as one_median
-    , two.value as two_value
-    , two.mean as two_mean
-    , two.min as two_min
-    , two.max as two_max
-    , two.median as two_median
-    , CASE WHEN one.value >= two.value
-        THEN round(greatest(one.value, 1)/(greatest(two.value, 1)),2) 
-        ELSE round(greatest(two.value, 1)/(greatest(one.value, 1)),2)
-        END AS fold_change
-    from one
-    , two
-    , apidbtuning.compoundattributes ca
-    WHERE one.compound_id = two.compound_id
-    AND one.compound_peaks_id = two.compound_peaks_id
-    AND one.compound_id   = ca.id
-    
-    AND $$regulated_dir$$  (                                                                                                   
-    CASE                                                                                                                        
-      WHEN (greatest(one.value, 1) >= greatest(two.value, 1)                                                     
-      AND greatest(two.value, 1)    > 0)                                                                    
-      THEN -((greatest(one.value, 1) )/(greatest(two.value, 1) ))                                                      
-      WHEN (greatest(two.value, 1)> greatest(one.value, 1)                                                       
-      AND greatest(one.value, 1)   > 0)                                                     
-      THEN ((greatest(two.value, 1) )/(greatest(one.value, 1) ))                                                   
-      END ) >= $$fold_change_compound$$
-)
-, above_cutoff_peaks_number as (
-     select source_id
-    , count (*) as above_peak_count
-    FROM (
-        select distinct source_id
-        , compound_peaks_id
+    , anyOrAll as (
+        select dep.source_id
         from diff_exp_peaks dep
+        , peaksPerCompound ppc
+        WHERE ppc.compound_id = dep.id
+        HAVING ('any' = $$any_or_all_compound_peaks$$
+            OR count(*) = ppc.peak_count)
+        GROUP BY dep.source_id, ppc.peak_count
     )
-    group by source_id
-)
-, below_cutoff_peaks_number as (
-   select acpn.source_id, (ppc.peak_count - acpn.above_peak_count) as below_peak_count
-    FROM  peaksPerCompound ppc
-    LEFT JOIN above_cutoff_peaks_number acpn
-    ON acpn.source_id = ppc.source_id
-
-)
-
-, diff_exp_compounds as (
-    select dep.source_id
-    , max(dep.fold_change) as max_fold_change
-    , max(dep.one_value) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_value
-    , max(dep.one_mean) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_mean
-    , max(dep.one_min) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_min
-    , max(dep.one_max) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_max
-    , max(dep.one_median) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_one_median
-    , max(dep.two_value) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_value
-    , max(dep.two_mean) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_mean
-    , max(dep.two_min) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_min
-    , max(dep.two_max) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_max
-    , max(dep.two_median) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_two_median
-    , max(dep.mass) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_mass
-    , max(dep.retention_time) KEEP (DENSE_RANK LAST ORDER BY dep.fold_change) as max_retention_time
-    from diff_exp_peaks dep
-    , apidbtuning.compoundattributes ca
-    where dep.source_id = ca.source_id
-    group by dep.source_id
-)
-, anyOrAll as (
-    select dep.source_id
-    from diff_exp_peaks dep
+    select acpn.above_peak_count,bcpn.below_peak_count,  ppc.peak_count, dec.*
+    from pc.anyOrAll aoa
+    , diff_exp_compounds dec
+    , APIDBTUNING.compoundattributes ca
     , peaksPerCompound ppc
-    WHERE ppc.compound_id = dep.id
-    HAVING ('any' = $$any_or_all_compound_peaks$$
-        OR count(*) = ppc.peak_count)
-    GROUP BY dep.source_id, ppc.peak_count
-)
-select acpn.above_peak_count,bcpn.below_peak_count,  ppc.peak_count, dec.*
-from pc.anyOrAll aoa
-, diff_exp_compounds dec
-, APIDBTUNING.compoundattributes ca
-, peaksPerCompound ppc
-, above_cutoff_peaks_number acpn
-, below_cutoff_peaks_number bcpn
-where aoa.source_id = dec.source_id
-and ca.source_id = aoa.source_id
-and ppc.compound_id = ca.id
-and acpn.source_id = dec.source_id
-and bcpn.source_id  = acpn.source_id
+    , above_cutoff_peaks_number acpn
+    , below_cutoff_peaks_number bcpn
+    where aoa.source_id = dec.source_id
+    and ca.source_id = aoa.source_id
+    and ppc.compound_id = ca.id
+    and acpn.source_id = dec.source_id
+    and bcpn.source_id  = acpn.source_id
 
 
-    ]]>
-        </sql>
-	</sqlQuery> -->
+        ]]>
+            </sql>
+        </sqlQuery> -->
 
-    <sqlQuery name="CompoundsByFoldChange"                                                                                                                           
+    <sqlQuery name="CompoundsByFoldChange"
               includeProjects="PlasmoDB,UniDB"
               displayName="Compounds by fold change">
       <testParamValues includeProjects="PlasmoDB">
-            <paramValue name="samples_fc_comp">Percoll pH 6.4 pellet</paramValue>
+        <paramValue name="samples_fc_comp">Percoll pH 6.4 pellet</paramValue>
       </testParamValues>
 
-      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.profileset" />
-      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_ref_generic" />
-      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_comp_generic" />
+      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.profileset"/>
+      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_ref_generic"/>
+      <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.samples_fc_comp_generic"/>
       <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.fold_change_compound"/>
       <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.regulated_dir"/>
       <paramRef groupRef="paramGroups.dynamicParams" ref="compoundParams.min_max_avg_ref"/>
@@ -668,102 +668,104 @@ and bcpn.source_id  = acpn.source_id
 
       <sql>
         <![CDATA[
-        SELECT  CASE WHEN (one.value >= two.value) 
-            THEN round(one.value/two.value,2) 
-            ELSE round(two.value/one.value,2)  END AS fold_change
-        , one.value as one_value
-        , two.value as two_value
-        , one.min as one_min
-        , two.min as two_min
+          SELECT
+            CASE WHEN (one.value >= two.value)
+              THEN round(one.value/two.value,2)
+              ELSE round(two.value/one.value,2)
+            END AS fold_change
+            , one.value as one_value
+            , two.value as two_value
+            , one.min as one_min
+            , two.min as two_min
             , one.max as one_max
-        , two.max as two_max
-        , one.mean as one_mean
-        , two.mean as two_mean
-        , one.median as one_median
-        , two.median as two_median
-        , ca.source_id
-        FROM
-            (SELECT round($$min_max_avg_ref$$(value), 2) as value
-            , round(min(value), 2) as min
-            , round(max(value), 2) as max
-            , round(avg(value), 2) as mean
-            , round(median(value), 2) as median
-            , compound_id
-            FROM (
-                SELECT SUM(r.value) AS value
-                , r.compound_id
-                FROM apidbtuning.profileType pt
-                , study.study s
-                , study.studyLink sl
-                , study.protocolAppNode pan
-                , results.compoundMassSpec r
-                WHERE pt.profile_set_name    = s.name
-                AND sl.study_id              = s.study_id
-                AND sl.protocol_app_node_id  = pan.protocol_app_node_id
-                AND pan.protocol_app_node_id = r.protocol_app_node_id
-                AND pan.protocol_app_node_id in ($$samples_fc_ref_generic$$)
-                GROUP BY r.compound_id, pan.protocol_app_node_id
-            )
-            GROUP BY compound_id
-        ) one,
-            (SELECT round($$min_max_avg_comp$$(value), 2) as value
-            , round(min(value), 2) as min
-            , round(max(value), 2) as max
-            , round(avg(value), 2) as mean
-            , round(median(value), 2) as median
-            , compound_id
-            FROM (
-                SELECT SUM(r.value) AS value
-                , r.compound_id
-                FROM apidbtuning.profileType pt
-                , study.study s
-                , study.studyLink sl
-                , study.protocolAppNode pan
-                , results.compoundMassSpec r
-                WHERE pt.profile_set_name    = s.name
-                AND sl.study_id              = s.study_id
-                AND sl.protocol_app_node_id  = pan.protocol_app_node_id
-                AND pan.protocol_app_node_id = r.protocol_app_node_id
-                AND pan.protocol_app_node_id in ($$samples_fc_comp_generic$$)
-                GROUP BY r.compound_id, pan.protocol_app_node_id
-            )
-            GROUP BY compound_id
-        ) two,
-        apidbtuning.compoundAttributes ca
-        WHERE one.compound_id = two.compound_id
-        AND one.compound_id   = ca.id
-        AND $$regulated_dir$$ (
-            CASE
-                WHEN (one.value >= two.value
-                    AND two.value    > 0)
-                    THEN -((one.value )/(two.value ))
-                WHEN (two.value > one.value
-                    AND one.value   > 0)
-                    THEN ((two.value )/(one.value ))
-        END ) >= $$fold_change_compound$$
-        ORDER BY fold_change
+            , two.max as two_max
+            , one.mean as one_mean
+            , two.mean as two_mean
+            , one.median as one_median
+            , two.median as two_median
+            , ca.source_id
+          FROM (
+              SELECT round($$min_max_avg_ref$$(value), 2) as value
+              , round(min(value), 2) as min
+              , round(max(value), 2) as max
+              , round(avg(value), 2) as mean
+              , round(median(value), 2) as median
+              , compound_id
+              FROM (
+                  SELECT SUM(r.value) AS value
+                  , r.compound_id
+                  FROM apidbtuning.profileType pt
+                  , study.study s
+                  , study.studyLink sl
+                  , study.protocolAppNode pan
+                  , results.compoundMassSpec r
+                  WHERE pt.profile_set_name    = s.name
+                  AND sl.study_id              = s.study_id
+                  AND sl.protocol_app_node_id  = pan.protocol_app_node_id
+                  AND pan.protocol_app_node_id = r.protocol_app_node_id
+                  AND pan.protocol_app_node_id in ($$samples_fc_ref_generic$$)
+                  GROUP BY r.compound_id, pan.protocol_app_node_id
+              ) t
+              GROUP BY compound_id
+            ) one,
+            (
+              SELECT round($$min_max_avg_comp$$(value), 2) as value
+              , round(min(value), 2) as min
+              , round(max(value), 2) as max
+              , round(avg(value), 2) as mean
+              , round(median(value), 2) as median
+              , compound_id
+              FROM (
+                  SELECT SUM(r.value) AS value
+                  , r.compound_id
+                  FROM apidbtuning.profileType pt
+                  , study.study s
+                  , study.studyLink sl
+                  , study.protocolAppNode pan
+                  , results.compoundMassSpec r
+                  WHERE pt.profile_set_name    = s.name
+                  AND sl.study_id              = s.study_id
+                  AND sl.protocol_app_node_id  = pan.protocol_app_node_id
+                  AND pan.protocol_app_node_id = r.protocol_app_node_id
+                  AND pan.protocol_app_node_id in ($$samples_fc_comp_generic$$)
+                  GROUP BY r.compound_id, pan.protocol_app_node_id
+              ) t
+              GROUP BY compound_id
+            ) two,
+          apidbtuning.compoundAttributes ca
+          WHERE one.compound_id = two.compound_id
+          AND one.compound_id   = ca.id
+          AND $$regulated_dir$$ (
+              CASE
+                  WHEN (one.value >= two.value
+                      AND two.value    > 0)
+                      THEN -((one.value )/(two.value ))
+                  WHEN (two.value > one.value
+                      AND one.value   > 0)
+                      THEN ((two.value )/(one.value ))
+          END ) >= $$fold_change_compound$$
+          ORDER BY fold_change
         ]]>
-        </sql>
+      </sql>
     </sqlQuery>
 
 
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Dont Care - fake query for internal use -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->                                                     
-  <!-- Dont Care - fake query for internal use -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-    <sqlQuery name="DontCare" doNotTest="true" >
-<!--        <column name="project_id"/> -->
-        <column name="source_id"/>
-<!--        <column name="gene_source_id"/> -->
-        <column name="matched_result"/>
-        <sql>
-            select source_id, id, 'Y' as matched_result
-            from ApidbTuning.CompoundAttributes
-            where source_id = 'life_is_sweet' 
-        </sql>
+    <sqlQuery name="DontCare" doNotTest="true">
+      <!--        <column name="project_id"/> -->
+      <column name="source_id"/>
+      <!--        <column name="gene_source_id"/> -->
+      <column name="matched_result"/>
+      <sql>
+        SELECT source_id, id, 'Y' as matched_result
+        FROM ApidbTuning.CompoundAttributes
+        WHERE source_id = 'life_is_sweet'
+      </sql>
     </sqlQuery>
 
-   </querySet>
+  </querySet>
 
 </wdkModel>

@@ -423,11 +423,11 @@ sub addSynteny {
   my $sql = "select otr.organism, oa.internal_abbrev as public_abbrev, otr.phylum, otr.genus, otr.species, otr.kingdom, otr.class, gt.gtracks
             from APIDBTUNING.ORGANISMSELECTTAXONRANK otr
                , APIDBTUNING.ORGANISMATTRIBUTES oa
-               , (select * from APIDBTUNING.GBROWSETRACKSORGANISM where type = 'synteny' ) gt
+               RIGHT JOIN (select * from APIDBTUNING.GBROWSETRACKSORGANISM where type = 'synteny' ) gt
+                ON oa.ORGANISM_NAME = gt.organism
             where oa.ORGANISM_NAME = otr.organism 
             and oa.IS_ANNOTATED_GENOME = 1
-            and oa.PROJECT_ID in (select distinct name from core.projectinfo)
-            and oa.ORGANISM_NAME = gt.organism (+)";
+            and oa.PROJECT_ID in (select distinct name from core.projectinfo)";
 
   my $hasSyntenyTracks = 0;
 

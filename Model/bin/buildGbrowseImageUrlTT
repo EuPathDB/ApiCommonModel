@@ -87,9 +87,9 @@ sub run{
   ## the synteny tracks defined in gbrewseImageUrls.xml are only from reference strains.  When the users
   ## is viewing a non-reference genome, we want to show that track at the top followed by the reference for that
   ## species followed by the rest of the subtracks.
-  my $orgSql = "select distinct ga.organism,o.IS_REFERENCE_STRAIN
-from apidb.organism o, geneattributes ga
-where ga.taxon_id = o.taxon_id";
+  my $orgSql = "SELECT distinct ga.organism,o.IS_REFERENCE_STRAIN
+FROM apidb.organism o, geneattributes ga
+WHERE ga.taxon_id = o.taxon_id";
   my $orgStmt = $dbh->prepare($orgSql);
   $orgStmt->execute();
   my $orgRef; ##value is reference 0|1
@@ -235,17 +235,16 @@ sub getOrgToRef{
 }
 
 sub createEmptyTable {
-     my ($dbh, $suffix) = @_;
+  my ($dbh, $suffix) = @_;
 
-    $dbh->do(<<SQL) or die "creating table";
-     create table GbrowseTracksOrganism$suffix (
-	organism     varchar2(80),
-        type         varchar2(20),
-	gtracks      varchar2(2000)
-  ) nologging
+  $dbh->do(<<SQL) or die "creating table";
+    CREATE TABLE GbrowseTracksOrganism$suffix (
+	    organism     varchar(80),
+      type         varchar(20),
+	    gtracks      varchar(2000)
+  )
 SQL
-$dbh->{PrintError} = 0;
-
+  $dbh->{PrintError} = 0;
 }
 
 sub createIndex {

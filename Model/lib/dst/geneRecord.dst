@@ -7,7 +7,6 @@ prop=specialLinkExternalDbName
                        union
                          select '${datasetName}' as genome_db_name,
                                 '${specialLinkExternalDbName}' as dbref_db_name
-                         from dual
 >templateTextEnd<
 
 [templateStart]
@@ -19,5 +18,4 @@ prop=datasetName
                        union
                          select '${specialLinkDisplayText}' as display_text,
                                 '${datasetName}' as genome_db_name
-                         from dual
 >templateTextEnd<

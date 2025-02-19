@@ -9,7 +9,6 @@ use XML::Simple;
 use File::Basename;
 
 use DBI;
-use DBD::Oracle;
 
 use Getopt::Long qw(GetOptions);
 
@@ -22,14 +21,14 @@ use EbrcModelCommon::Model::tmUtils;
 my ($help, $propfile, $instance, $schema, $suffix, $prefix, $filterValue, $debug);
 
 GetOptions("propfile=s" => \$propfile,
-           "instance=s" => \$instance,
-           "schema=s" => \$schema,
-           "suffix=s" => \$suffix,
-           "prefix=s" => \$prefix,
-           "filterValue=s" => \$filterValue,
-           "debug!" => \$debug,
-           "help|h" => \$help,
-          );
+  "instance=s" => \$instance,
+  "schema=s" => \$schema,
+  "suffix=s" => \$suffix,
+  "prefix=s" => \$prefix,
+  "filterValue=s" => \$filterValue,
+  "debug!" => \$debug,
+  "help|h" => \$help,
+);
 
 die "required parameter missing" unless ($propfile && $instance && $suffix);
 
@@ -52,7 +51,7 @@ sub run{
 
   # parse Tab file
 
-  my $insertStatement = "INSERT INTO SampleDisplayInfo$suffix(dataset_name, sample, sample_display_name, sort_order, html_color) VALUES (?,?,?,?,?)";
+  my $insertStatement = "INSERT INTO SampleDisplayInfo$suffix(dataset_name, sample, sample_display_name, sort_order, html_color) VALUES (?,?,?, NULLIF(?,'')::Numeric,?)";
   my $insertRow = $dbh->prepare($insertStatement);
   createEmptyTable($dbh,$suffix);
   if ($tabFileLocation =~ /\.xls$/ || $tabFileLocation =~ /\.xlsx$/) {
@@ -82,14 +81,14 @@ sub run{
               push(@row, $cellValue);
             }
 
-	    my ($ext_db_name, $sample, $sample_display, $sort_order, $color ) = @row ;
+            my ($ext_db_name, $sample, $sample_display, $sort_order, $color ) = @row ;
 
             # skip comments / header
-	    next if($ext_db_name =~ /^#/);
+            next if($ext_db_name =~ /^#/);
 
-	    if ($ext_db_name) {
-	      $insertRow->execute($ext_db_name, $sample, $sample_display, $sort_order,$color);
-	    }
+            if ($ext_db_name) {
+              $insertRow->execute($ext_db_name, $sample, $sample_display, $sort_order,$color);
+            }
           }
         }
       }
@@ -101,25 +100,24 @@ sub run{
 }
 
 sub createEmptyTable {
-     my ($dbh, $suffix) = @_;
+  my ($dbh, $suffix) = @_;
 
-    $dbh->do(<<SQL) or die "creating table";
+  $dbh->do(<<SQL) or die "creating table";
      create table SampleDisplayInfo$suffix (
-       dataset_name varchar2(255),
-	sample       varchar2(255),
-	sample_display_name       varchar2(255),
-        sort_order   number,
-        html_color   varchar2(64)
-  ) nologging
+       dataset_name          varchar(255),
+	     sample                varchar(255),
+	     sample_display_name   varchar(255),
+       sort_order            numeric,
+       html_color            varchar(64)
+     )
 SQL
-$dbh->{PrintError} = 0;
+  $dbh->{PrintError} = 0;
 
-    $dbh->do(<<SQL) or die "creating index";
+  $dbh->do(<<SQL) or die "creating index";
      create index sdi_dsn_ix$suffix 
        on SampleDisplayInfo$suffix (dataset_name)
-       tablespace indx
 SQL
-$dbh->{PrintError} = 0;
+  $dbh->{PrintError} = 0;
 
 }
 

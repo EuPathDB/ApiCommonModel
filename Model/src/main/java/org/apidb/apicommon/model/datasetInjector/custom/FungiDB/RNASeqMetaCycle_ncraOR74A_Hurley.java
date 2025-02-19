@@ -24,7 +24,8 @@ public class RNASeqMetaCycle_ncraOR74A_Hurley extends RNASeqMetaCycle {
     } 
 
   @Override
-  public void injectTemplates() {
+  public void injectTemplates() { }
+  public void TODO_injectTemplates() {
       setShortAttribution();
 
       String projectName = getPropValue("projectName");

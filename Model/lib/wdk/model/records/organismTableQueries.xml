@@ -32,7 +32,7 @@ order by count(*) desc
             <column name="pseudo"/>
             <sql>
             <![CDATA[
-select oa.project_id, oa.source_id, ga.gene_type, decode(ga.is_pseudo, 1, 'yes', 'no') as pseudo, count(*) as gene_count
+select oa.project_id, oa.source_id, ga.gene_type, CASE ga.is_pseudo WHEN 1 THEN 'yes' ELSE 'no' END as pseudo, count(*) as gene_count
 from apidbtuning.organismattributes oa, apidbtuning.geneattributes ga
 where oa.component_taxon_id = ga.taxon_id
 and oa.project_id = ga.project_id

@@ -120,7 +120,7 @@ from apidbtuning.organismattributes oa
 , apidbtuning.datasetnametaxon dnt
 where dnt.taxon_id = oa.COMPONENT_TAXON_ID
 union
-select 'any', -1 from dual
+select 'any', -1
          ]]>
             </sql>
    </sqlQuery>

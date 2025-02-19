@@ -11,7 +11,7 @@ my $GUS_HOME = $ENV{GUS_HOME};
 my $CLASSPATH = &FgpUtil::Util::CommandHelper::getJavaClasspath($GUS_HOME);
 my $sysProps = &FgpUtil::Util::CommandHelper::getSystemProps($GUS_HOME, 'Ssgcid');
 
-my ($propfile, $instance, $schema, $suffix, $prefix, $filterValue, $debug, $password);
+my ($propfile, $instance, $schema, $suffix, $prefix, $filterValue, $debug, $username, $password);
 
 Getopt::Long::Configure("pass_through");
 GetOptions("propfile=s" => \$propfile,
@@ -24,7 +24,7 @@ GetOptions("propfile=s" => \$propfile,
 	  );
 die "required parameter missing" unless ($propfile && $instance && $suffix);
 
-($instance, $schema, $password) = EbrcModelCommon::Model::tmUtils::getDbLoginInfo($instance, $schema, $propfile);
+($instance, $schema, $username, $password) = EbrcModelCommon::Model::tmUtils::getDbLoginInfo($instance, $schema, $propfile);
 
 # fetch JSON from SSGCID
 my $filename = "/tmp/ssgcid" . $suffix . ".json";
@@ -33,7 +33,7 @@ system("wget http://www.ssgcid.org/eupath/list_all?format=json --no-check-certif
 # run Java program
 open(PROGRAM, "|java $sysProps -classpath $CLASSPATH org.apidb.apicommon.model.ssgcid.Ssgcid $suffix");
 
-print PROGRAM "$instance\n$schema\n$password";
+print PROGRAM "$instance\n$schema\n$username\n$password";
 
 close(PROGRAM) or die "error in called program";
 

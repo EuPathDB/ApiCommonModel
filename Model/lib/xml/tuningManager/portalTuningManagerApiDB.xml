@@ -347,7 +347,6 @@ $dbh->do($sql) or die $dbh->errstr;
     <sql>
       <![CDATA[
         create index rflpgnix&1 on RflpGenotypeNumber&1 (protocol_app_node_id)
-        tablespace indx
       ]]>
     </sql>
   </tuningTable>

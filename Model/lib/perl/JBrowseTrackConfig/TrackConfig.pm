@@ -197,9 +197,21 @@ sub getJBrowseObject{
     }
 
     if(ref($store) eq 'ApiCommonModel::Model::JBrowseTrackConfig::GFFStore' ||
-        ref($store) eq 'ApiCommonModel::Model::JBrowseTrackConfig::BigWigStore') {
+        ref($store) eq 'ApiCommonModel::Model::JBrowseTrackConfig::BigWigStore' ||
+	ref($store) eq 'ApiCommonModel::Model::JBrowseTrackConfig::BedStore') {
+	my $query = $store->getQuery();
         my $urlTemplate = $store->getUrlTemplate();
         $jbrowseObject->{urlTemplate}= $urlTemplate if($urlTemplate);
+        $jbrowseObject->{query} = {'feature' => $query };
+        my $queryParams = $store->getQueryParamsHash();
+        
+	# add query param values
+        if($queryParams) {
+            foreach my $pk(keys %$queryParams) {
+                $jbrowseObject->{query}->{$pk} = $queryParams->{$pk};
+            }
+        }	
+
     }
 
 

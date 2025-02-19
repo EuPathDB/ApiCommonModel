@@ -108,10 +108,10 @@ sub createEmptyTable {
 
     $dbh->do(<<SQL) or die "creating table";
      create table ProfileSetDisplayInfo$suffix (
-       dataset_name varchar2(255),
-	profile_set_name       varchar2(255),
-	profile_set_display_name       varchar2(255)
-  ) nologging
+      dataset_name              varchar(255),
+	    profile_set_name          varchar(255),
+	    profile_set_display_name  varchar(255)
+  )
 SQL
 $dbh->{PrintError} = 0;
 }

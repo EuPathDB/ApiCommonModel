@@ -27,12 +27,12 @@ public class Ssgcid {
 
   public static void createTuningTable(Connection dbc, String suffix) throws SQLException {
     String createSql = new String("create table ssgcid" + suffix + "(\n" +
-        "target             varchar2(13),\n" +
-        "eupathdb           varchar2(32),\n" +
-        "status             varchar2(30),\n" +
-        "selection_criteria varchar2(81),\n" +
-        "has_clone          varchar2(5),\n" +
-        "has_protein        varchar2(5)\n" + ")");
+        "target             varchar(13),\n" +
+        "eupathdb           varchar(32),\n" +
+        "status             varchar(30),\n" +
+        "selection_criteria varchar(81),\n" +
+        "has_clone          varchar(5),\n" +
+        "has_protein        varchar(5)\n" + ")");
     try (Statement createStmt = dbc.createStatement()) {
       createStmt.executeUpdate(createSql.toString());
     }
@@ -48,18 +48,24 @@ public class Ssgcid {
 
     String instance = "";
     String schema = "";
+    String username = "";
     String password = "";
 
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     instance = in.readLine();
     schema = in.readLine();
+    username = in.readLine();
     password = in.readLine();
 
-    ConnectionPoolConfig config = SimpleDbConfig.create(SupportedPlatform.ORACLE,
-        "jdbc:oracle:oci:@" + instance, schema, password);
+    String dbname = instance.split(";")[0].split("=")[1];
+    String host = instance.split(";")[1].split("=")[1];
+
+    ConnectionPoolConfig config = SimpleDbConfig.create(SupportedPlatform.POSTGRESQL,
+        "jdbc:postgresql://" + host + "/" + dbname, username, password);
     try (DatabaseInstance db = new DatabaseInstance(config);
          Connection dbc = db.getDataSource().getConnection()) {
 
+      dbc.createStatement().execute("SET search_path TO "+ schema);
       createTuningTable(dbc, suffix);
 
       String insertSql = new String("insert into ssgcid" + suffix +

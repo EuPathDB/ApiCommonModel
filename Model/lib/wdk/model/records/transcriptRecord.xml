@@ -1207,10 +1207,11 @@
             <columnAttribute name="release_policy"  displayName="Release Policy"   inReportMaker="false"/>
 	  </attributeQueryRef>
 -->
+<!-- TO FIX, NOT available right now
 	  <attributeQueryRef ref="TranscriptAttributes.GenomicSequenceLength" excludeProjects="EuPathDB">
             <columnAttribute name="genomic_sequence_length"  displayName="Genomic Length"/>
 	  </attributeQueryRef>
-
+-->
 
 
           <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -1393,7 +1394,7 @@
                 ]]>
             </text>
          </textAttribute>
-
+<!-- CHECK AND FIX for UniDB ; unify! -->
         <attributeQueryRef ref="TranscriptAttributes.CellularLocalization" includeProjects="GiardiaDB,UniDB">
           <columnAttribute name="dic_img_uri" displayName="DIC Image"/>
           <columnAttribute name="gfp_img_uri" displayName="GFP Image"/>
@@ -1507,7 +1508,7 @@
             <columnAttribute name="tigrfam_description" displayName="TigrFam Description"/>
         </attributeQueryRef>
 
-
+<!-- 
         <attributeQueryRef ref="TranscriptAttributes.tbruTREU927_RNAi_Horn_cdsColums" includeProjects="TriTrypDB,UniDB">
             <columnAttribute name="no_tet_cds" displayName="Tet- Cont (CDS only)"/>
             <columnAttribute name="bfd3_cds" displayName="BFd3 (CDS only)"/>
@@ -1533,7 +1534,7 @@
             <columnAttribute name="fc_dif_model" displayName="difn/Tet- (CDS+UTR)"/>
 
          </attributeQueryRef>
-
+-->
 
 
 	 <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -1574,9 +1575,9 @@
 
 
         <attributeQueryRef ref="TranscriptAttributes.TrypLOPIT" includeProjects="TriTrypDB,UniDB">
-          <columnAttribute name="prob_MAP" displayName="Bloodstream form Probability"  help="the probability calculated for bloodstream form"/>
-	  <columnAttribute name="prob_MCMC" displayName="Procyclic form Probability" help="the probability calculated for procyclic form"/>
-	  <columnAttribute name="MAP_location" displayName="bloodstream form location" help="the location predicted for bloodstream form" >
+          <columnAttribute name="prob_MAP_tryp" displayName="Bloodstream form Probability"  help="the probability calculated for bloodstream form"/>
+	  <columnAttribute name="prob_MCMC_tryp" displayName="Procyclic form Probability" help="the probability calculated for procyclic form"/>
+	  <columnAttribute name="MAP_location_tryp" displayName="bloodstream form location" help="the location predicted for bloodstream form" >
               <reporter name="wordCloud" displayName="Word Cloud" scopes=""
                       implementation="org.eupathdb.common.model.report.EbrcWordCloudAttributeReporter">
                 <description>
@@ -1584,7 +1585,7 @@
                 </description>
               </reporter>
             </columnAttribute>
-          <columnAttribute name="MCMC_location" displayName="procyclic form location" help="the predicted location for procyclic form " >
+          <columnAttribute name="MCMC_location_tryp" displayName="procyclic form location" help="the predicted location for procyclic form " >
               <reporter name="wordCloud" displayName="Word Cloud" scopes=""
                       implementation="org.eupathdb.common.model.report.EbrcWordCloudAttributeReporter">
                 <description>

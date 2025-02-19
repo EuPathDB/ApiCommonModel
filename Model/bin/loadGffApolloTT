@@ -240,30 +240,30 @@ sub createTables {
 
     $dbh->do(<<SQL) or die "creating ApolloUpdate table";
 create table ${prefix}ApolloUpdate$suffix (
-   NA_SEQUENCE_ID  NUMBER(10),
-   SeqID           varchar2(50),
-   Source          varchar2(200),
-   Type            varchar2(50),
-   MAPPING_START   number(10),
-   MAPPING_END     number(10),
-   Score           varchar2(50),
-   Strand          varchar2(1),
-   Phase           varchar2(1),
-   ATTR            CLOB,   
-   creationdate    varchar2(10),
-   apolloid        number(10),
-   parent_attr     varchar2(50),
-   id_attr         varchar2(50),
-   apolloProduct   varchar2(3000),
-   apolloSymbol    varchar2(20),
-   apolloOwner     varchar2(1000),
-   apolloGoTerm    varchar2(3000),
-   apolloPmid      varchar2(3000),
-   apolloTranscript varchar2(200),
-   apolloEvidenceCode varchar2(200),
-   apolloObsolete varchar2(10),
-   apolloEvidenceCodeAssignment varchar2(200)
-) nologging
+   NA_SEQUENCE_ID  numeric(10),
+   SeqID           varchar(50),
+   Source          varchar(200),
+   Type            varchar(50),
+   MAPPING_START   numeric(10),
+   MAPPING_END     numeric(10),
+   Score           varchar(50),
+   Strand          varchar(1),
+   Phase           varchar(1),
+   ATTR            TEXT,
+   creationdate    varchar(10),
+   apolloid        numeric(10),
+   parent_attr     varchar(50),
+   id_attr         varchar(50),
+   apolloProduct   varchar(3000),
+   apolloSymbol    varchar(10),
+   apolloOwner     varchar(1000),
+   apolloGoTerm    varchar(3000),
+   apolloPmid      varchar(3000),
+   apolloTranscript varchar(200),
+   apolloEvidenceCode varchar(200),
+   apolloObsolete varchar(10),
+   apolloEvidenceCodeAssignment varchar(200)
+)
 SQL
 }
 
@@ -279,10 +279,10 @@ sub createApolloIdTable {
 
     $dbh->do(<<SQL) or die "creating ApolloID  table";
 create table ${prefix}ApolloID$suffix (
-    ORGANISM         VARCHAR2(100), 
-    COMMONNAME       VARCHAR2(100), 
-    APOLLOID         VARCHAR2(50)
-) nologging
+    ORGANISM         VARCHAR(100),
+    COMMONNAME       VARCHAR(100),
+    APOLLOID         VARCHAR(50)
+)
 SQL
 }
 

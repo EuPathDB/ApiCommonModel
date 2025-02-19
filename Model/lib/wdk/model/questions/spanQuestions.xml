@@ -398,7 +398,7 @@
  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!-- SNPs  Chips -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
+<!--
     <question name="SnpsChipsBySpanLogic"
               displayName="SNPs By Relative Location"
               shortDisplayName="SNPs by Rel Loc"
@@ -424,7 +424,7 @@
            <columnAttribute name="matched_regions" displayName="Matched Regions" truncateTo="4000"/>
          </dynamicAttributes>
     </question>
-
+-->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!-- DynSpans   -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->

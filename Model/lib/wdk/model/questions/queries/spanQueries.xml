@@ -1,99 +1,102 @@
 <wdkModel>
 
-<querySet name="SpanId" queryType="id" isCacheable="true">
+  <querySet name="SpanId" queryType="id" isCacheable="true">
 
 
     <!-- ************************************************************ -->
-    <!-- SegIds  only WEBSERVICES   -->  
+    <!-- SegIds  only WEBSERVICES   -->
     <!-- ************************************************************ -->
- 
-    <sqlQuery name="DynSpansBySegIds" doNotTest="true" excludeProjects="EuPathDB"   >
-        <paramRef ref="SpanParams.span_id" default=""/> 
 
-        <column name="source_id"/>
-        <column name="project_id"/>
+    <sqlQuery name="DynSpansBySegIds" doNotTest="true" excludeProjects="EuPathDB">
+      <paramRef ref="SpanParams.span_id" default=""/>
 
-        <sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+
+      <sql>
         <![CDATA[
-            SELECT DISTINCT ds.source_id, '@PROJECT_ID@' AS project_id 
-             FROM ($$span_id$$) ds
-           ]]>
-        </sql>
+          SELECT DISTINCT ds.source_id, '@PROJECT_ID@' AS project_id
+          FROM ($$span_id$$) ds
+        ]]>
+      </sql>
     </sqlQuery>
 
-      <processQuery name="DynSpansBySegIds" includeProjects="EuPathDB" doNotTest="true"
-              processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-        <paramRef ref="SpanParams.span_id" noTranslation="true"/>
+    <processQuery name="DynSpansBySegIds" includeProjects="EuPathDB" doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="SpanParams.span_id" noTranslation="true"/>
 
-        <wsColumn name="source_id" width="80" wsName="source_id"/>
-        <wsColumn name="project_id" width="20" wsName="project_id"/>
+      <wsColumn name="source_id" width="80" wsName="source_id"/>
+      <wsColumn name="project_id" width="20" wsName="project_id"/>
 
-     </processQuery>
+    </processQuery>
 
     <!-- ************************************************************ -->
-    <!-- SourceId -->  
+    <!-- SourceId -->
     <!-- ************************************************************ -->
- 
 
-    <sqlQuery name="DynSpansBySourceId" doNotTest="true" excludeProjects="EuPathDB"  >
-        <paramRef ref="organismParams.organismSinglePick"
-                  queryRef="organismVQ.withStrainsChromosome"
-                  displayType="select"
-                  quote="true"
-                  includeProjects="TriTrypDB,ToxoDB,PlasmoDB,MicrosporidiaDB,CryptoDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"
-                  />
-        <paramRef ref="sharedParams.chromosomeOptional"
-                  queryRef="SharedVQ.ChromosomeOrderNumSeq"
-                  includeProjects="PlasmoDB,ToxoDB,CryptoDB,TriTrypDB,MicrosporidiaDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"/>
-        <paramRef ref="sharedParams.sequenceId"/>
-        <paramRef ref="sharedParams.start_point" default="1"/>
-        <paramRef ref="sharedParams.end_point_segment"/>
-        <paramRef ref="SpanParams.sequence_strand"/>
-        <paramRef ref="SpanParams.span_id" default=""/> 
-        <column name="source_id"/>
-        <column name="project_id"/>
 
-        <sql excludeProjects="UniDB">
+    <sqlQuery name="DynSpansBySourceId" doNotTest="true" excludeProjects="EuPathDB">
+      <paramRef ref="organismParams.organismSinglePick"
+                queryRef="organismVQ.withStrainsChromosome"
+                displayType="select"
+                quote="true"
+                includeProjects="TriTrypDB,ToxoDB,PlasmoDB,MicrosporidiaDB,CryptoDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"
+      />
+      <paramRef ref="sharedParams.chromosomeOptional"
+                queryRef="SharedVQ.ChromosomeOrderNumSeq"
+                includeProjects="PlasmoDB,ToxoDB,CryptoDB,TriTrypDB,MicrosporidiaDB,PiroplasmaDB,FungiDB,GiardiaDB,VectorBase"/>
+      <paramRef ref="sharedParams.sequenceId"/>
+      <paramRef ref="sharedParams.start_point" default="1"/>
+      <paramRef ref="sharedParams.end_point_segment"/>
+      <paramRef ref="SpanParams.sequence_strand"/>
+      <paramRef ref="SpanParams.span_id" default=""/>
+      <column name="source_id"/>
+      <column name="project_id"/>
+
+      <sql excludeProjects="UniDB">
         <![CDATA[
-                 select ids.source_id,gsa.project_id from 
-                    ( SELECT distinct ds.source_id, ds.project_id,
-                        regexp_substr(ds.source_id, '[^:]+', 1, 1) as seq_source_id
-                             FROM ($$span_id$$) ds) ids, apidbtuning.genomicseqattributes gsa
-                             where gsa.source_id = ids.seq_source_id
-           ]]>
-        </sql>
+          SELECT ids.source_id,gsa.project_id
+          FROM ( SELECT DISTINCT ds.source_id, ds.project_id, regexp_substr(ds.source_id, '[^:]+', 1, 1) as seq_source_id
+                 FROM ($$span_id$$) ds
+            ) ids, apidbtuning.genomicseqattributes gsa
+          WHERE gsa.source_id = ids.seq_source_id
+        ]]>
+      </sql>
 
-        <sql includeProjects="UniDB">
+      <sql includeProjects="UniDB">
         <![CDATA[
-                 select ids.source_id,gsa.project_id from 
-                    ( SELECT distinct ds.source_id,
-                        regexp_substr(ds.source_id, '[^:]+', 1, 1) as seq_source_id
-                             FROM ($$span_id$$) ds) ids, apidbtuning.genomicseqattributes gsa
-                             where gsa.source_id = ids.seq_source_id
-           ]]>
-        </sql>
+          SELECT ids.source_id,gsa.project_id
+          FROM (
+              SELECT distinct ds.source_id, regexp_substr(ds.source_id, '[^:]+', 1, 1) as seq_source_id
+              FROM ($$span_id$$) ds
+            ) ids, apidbtuning.genomicseqattributes gsa
+          WHERE gsa.source_id = ids.seq_source_id
+        ]]>
+      </sql>
 
     </sqlQuery>
 
-      <processQuery name="DynSpansBySourceId" includeProjects="EuPathDB" doNotTest="true"
-              processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-        <paramRef ref="organismParams.organismSinglePick" queryRef="organismVQ.withStrainsChromosome" displayType="select" multiPick="false" noTranslation="true">
-                 <help>Select organism you wish to query against</help></paramRef>
-        <paramRef ref="sharedParams.chromosomeOptional"  quote="false" noTranslation="true"/>
-        <paramRef ref="sharedParams.sequenceId"/>
-        <paramRef ref="sharedParams.start_point"/>
-        <paramRef ref="sharedParams.end_point_segment"/>
-        <paramRef ref="SpanParams.sequence_strand"/>
-        <paramRef ref="SpanParams.span_id" noTranslation="true"/>
+    <processQuery name="DynSpansBySourceId" includeProjects="EuPathDB" doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="organismParams.organismSinglePick" queryRef="organismVQ.withStrainsChromosome" displayType="select"
+                multiPick="false" noTranslation="true">
+        <help>Select organism you wish to query against</help>
+      </paramRef>
+      <paramRef ref="sharedParams.chromosomeOptional" quote="false" noTranslation="true"/>
+      <paramRef ref="sharedParams.sequenceId"/>
+      <paramRef ref="sharedParams.start_point"/>
+      <paramRef ref="sharedParams.end_point_segment"/>
+      <paramRef ref="SpanParams.sequence_strand"/>
+      <paramRef ref="SpanParams.span_id" noTranslation="true"/>
 
-        <wsColumn name="source_id" width="80" wsName="source_id"/>
-        <wsColumn name="project_id" width="20" wsName="project_id"/>
+      <wsColumn name="source_id" width="80" wsName="source_id"/>
+      <wsColumn name="project_id" width="20" wsName="project_id"/>
 
-     </processQuery>
-    
-<!-- +++++++++++++++++++++++++++++++++++++++++++++++-->   
-<!-- Long read novel gene model search query 	    --> 
-<!-- +++++++++++++++++++++++++++++++++++++++++++++++-->    
+    </processQuery>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- Long read novel gene model search query 	    -->
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="DynSpansLongReadBySourceId" includeProjects="PlasmoDB,ToxoDB">
         <paramRef ref="geneParams.long_read_datasets"/>
@@ -112,10 +115,9 @@
         <column name="contextEnd"/>
         <column name="transcript_novelty"/>
         <column name="total_count"/>
-        
+
 	<sql includeProjects="PlasmoDB,ToxoDB">
         <![CDATA[
-
         SELECT DISTINCT * FROM (
             SELECT DISTINCT source_id
             , project_id
@@ -127,7 +129,7 @@
             , internal_abbrev
             , organism
             , dataset_name || '_high_confidence_models' as dataset_name
-            , LISTAGG(DISTINCT transcript_novelty) WITHIN GROUP (ORDER BY transcript_novelty) AS transcript_novelty
+            , STRING_AGG(DISTINCT transcript_novelty ORDER BY transcript_novelty) AS transcript_novelty
             , SUM(reads) AS total_count
             FROM (
                 SELECT DISTINCT lrt.na_seq_source_id AS chr_source_id
@@ -169,7 +171,7 @@
     </sqlQuery>
 
 
-   <processQuery name="DynSpansLongReadBySourceId" 
+   <processQuery name="DynSpansLongReadBySourceId"
              includeProjects="EuPathDB"
              processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
         <paramRef ref="geneParams.long_read_datasets"/>
@@ -208,10 +210,10 @@
         <![CDATA[
 
 
-	select 
+	select
                      chr_source_id, min_start, min_start - 1000 as contextStart, max_end , max_end + 1000 as contextEnd, organism, project_id, source_id ,internal_abbrev, Confidence, annotated_intron, Intron_novelty
                      from (
-select INTRON_FEATURE_ID as feature_id,                                                                                                                                                      
+select INTRON_FEATURE_ID as feature_id,
                      segment_start - 10 as startm,
 		     case when gij.annotated_intron = 'No' then 'Novel' else 'Known' end as Intron_novelty,
                      segment_END + 10 as end,
@@ -227,7 +229,7 @@ select INTRON_FEATURE_ID as feature_id,
                      gsa.organism,
                      gsa.project_id,
 		     ab.internal_abbrev,
-		     gij.sequence_source_id || ':' || gij.segment_start || '-' ||  gij.segment_end || DECODE(gij.is_reversed, 0,':f', 1,':r') as source_id
+		     gij.sequence_source_id || ':' || gij.segment_start || '-' ||  gij.segment_end || CASE gij.is_reversed WHEN 0 THEN ':f' WHEN 1 THEN ':r' END as source_id
                 from ApidbTuning.GeneIntronJunction gij, ApidbTuning.GeneIntJuncStats stats ,sres.taxonname tn ,apidbtuning.genomicseqattributes gsa ,apidbtuning.organismattributes ab
                 WHERE gij.na_sequence_id = stats.na_sequence_id
                 and gsa.taxon_id = tn.taxon_id
@@ -240,7 +242,7 @@ select INTRON_FEATURE_ID as feature_id,
                 AND (gij.contained = 0 or gij.percent_max >= 2 /*stats.perc0005_annot_percent_max*/)
                 --AND gij.gene_source_id is NULL
 Union
-select INTRON_FEATURE_ID as feature_id, 
+select INTRON_FEATURE_ID as feature_id,
                      segment_start - 10 as startm,
 		     case when gij.annotated_intron = 'No' then 'Novel' else 'Known' end as Intron_novelty,
                      segment_END + 10 as end,
@@ -256,7 +258,7 @@ select INTRON_FEATURE_ID as feature_id,
                      gsa.organism,
 		     gsa.project_id,
                      ab.internal_abbrev,
-		     gij.sequence_source_id || ':' || gij.segment_start || '-' ||  gij.segment_end || DECODE(gij.is_reversed, 0,':f', 1,':r') as source_id
+		     gij.sequence_source_id || ':' || gij.segment_start || '-' ||  gij.segment_end || CASE gij.is_reversed WHEN 0 THEN ':f' WHEN 1 THEN ':r' as source_id
                 from ApidbTuning.GeneIntronJunction gij, ApidbTuning.GeneIntJuncStats stats, sres.taxonname tn ,apidbtuning.genomicseqattributes gsa ,apidbtuning.organismattributes ab
                 WHERE gij.na_sequence_id = stats.na_sequence_id
                 and gsa.taxon_id = tn.taxon_id
@@ -273,7 +275,7 @@ select INTRON_FEATURE_ID as feature_id,
                 AND gij.segment_end - gij.segment_start <= stats.max_intron_length * 2
                 AND gij.total_unique >=  CASE WHEN contained = 1 THEN stats.perc01_annot_score ELSE 5*stats.perc01_annot_score END
                 AND (gij.contained = 0 or gij.percent_max >= 2 /*stats.perc0005_annot_percent_max*/)
-                
+
                )
 )
 where (confidence = $$Intron_junction_confidence$$ or 'all' = $$Intron_junction_confidence$$)
@@ -284,7 +286,7 @@ and annotated_intron in ($$Intron_junction_novelty$$)
 
     </sqlQuery>
 
-    <processQuery name="DynSpansIntronJunction" 
+    <processQuery name="DynSpansIntronJunction"
              includeProjects="EuPathDB"
              processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
 	<paramRef ref="organismParams.organism_span"/>
@@ -299,37 +301,35 @@ and annotated_intron in ($$Intron_junction_novelty$$)
 
 <!-- +++++++++++++++++++++++++++++++++++++++++++++++-->
 
- <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-  <!-- Location : NOT IN USE **   for eupath this sql needs to get the project from the apidb.sequenceattribute table  -->
-  <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Location : NOT IN USE **   for eupath this sql needs to get the project from the apidb.sequenceattribute table  -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-   <sqlQuery name="DynSpansByLocation" excludeProjects="EuPathDB"  doNotTest="true">
-        <paramRef ref="sharedParams.sequenceId"/>
-        <paramRef ref="sharedParams.start_point"/>
-        <paramRef ref="sharedParams.end_point"/>
-        <column name="project_id"/>
-        <column name="source_id" width="80"/>
-        <sql>
-            <![CDATA[
-            SELECT 
-              $$sequenceId$$ || ':' || $$start_point$$  || '-' || $$end_point$$ || ':f' 
-                  as source_id,  '@PROJECT_ID@' as project_id
-           FROM dual
-
-           ]]>
-       </sql>
+    <sqlQuery name="DynSpansByLocation" excludeProjects="EuPathDB" doNotTest="true">
+      <paramRef ref="sharedParams.sequenceId"/>
+      <paramRef ref="sharedParams.start_point"/>
+      <paramRef ref="sharedParams.end_point"/>
+      <column name="project_id"/>
+      <column name="source_id" width="80"/>
+      <sql>
+        <![CDATA[
+          SELECT
+            $$sequenceId$$ || ':' || $$start_point$$  || '-' || $$end_point$$ || ':f' as source_id
+            , '@PROJECT_ID@' as project_id
+        ]]>
+      </sql>
     </sqlQuery>
 
-     <processQuery name="DynSpansByLocation" includeProjects="EuPathDB" doNotTest="true"
-              processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-         <paramRef ref="sharedParams.sequenceId" noTranslation="true"/>
-        <paramRef ref="sharedParams.start_point"/>
-        <paramRef ref="sharedParams.end_point"/>
+    <processQuery name="DynSpansByLocation" includeProjects="EuPathDB" doNotTest="true"
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="sharedParams.sequenceId" noTranslation="true"/>
+      <paramRef ref="sharedParams.start_point"/>
+      <paramRef ref="sharedParams.end_point"/>
 
-        <wsColumn name="source_id" width="80" wsName="source_id"/>
-        <wsColumn name="project_id" width="20" wsName="project_id"/>
+      <wsColumn name="source_id" width="80" wsName="source_id"/>
+      <wsColumn name="project_id" width="20" wsName="project_id"/>
 
-     </processQuery>
+    </processQuery>
 
     <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- Motif search -->
@@ -338,8 +338,10 @@ and annotated_intron in ($$Intron_junction_novelty$$)
     <processQuery name="DynSpansByMotifSearch" excludeProjects="EuPathDB"
                   processName="org.apidb.apicomplexa.wsfplugin.motifsearch.DnaMotifPlugin">
       <paramRef ref="genomicSimilarityParams.motif_organism" quote="false"/>
-      <paramRef ref="sharedParams.motif_expression" excludeProjects="FungiDB" default="[TG].{5,6}YGCACACAN[TCA]H" noTranslation="true"/>
-      <paramRef ref="sharedParams.motif_expression" includeProjects="FungiDB" default="[AT]GAAACA" noTranslation="true"/>
+      <paramRef ref="sharedParams.motif_expression" excludeProjects="FungiDB" default="[TG].{5,6}YGCACACAN[TCA]H"
+                noTranslation="true"/>
+      <paramRef ref="sharedParams.motif_expression" includeProjects="FungiDB" default="[AT]GAAACA"
+                noTranslation="true"/>
       <wsColumn name="source_id" width="80" wsName="SourceID"/>
       <wsColumn name="project_id" width="32" wsName="ProjectId"/>
       <wsColumn name="Locations" width="3999"/>
@@ -350,152 +352,153 @@ and annotated_intron in ($$Intron_junction_novelty$$)
 
     <processQuery name="DynSpansByMotifSearch" includeProjects="EuPathDB" doNotTest="true"
                   processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-      <paramRef ref="genomicSimilarityParams.motif_organism" quote="false" selectMode="none"/>       
+      <paramRef ref="genomicSimilarityParams.motif_organism" quote="false" selectMode="none"/>
       <paramRef ref="sharedParams.motif_expression" default="[TG].{5,6}YGCACACAN[TCA]H" noTranslation="true"/>
       <wsColumn name="source_id" width="80" wsName="source_id"/>
       <wsColumn name="project_id" width="32" wsName="project_id"/>
-      <wsColumn name="Locations"   width="3999"/>
+      <wsColumn name="Locations" width="3999"/>
       <wsColumn name="MatchCount" width="15"/>
       <wsColumn name="Sequence" width="3999"/>
       <wsColumn name="MatchSequences" width="3999"/>
     </processQuery>
 
     <processQuery name="RecordsBySpanLogic" doNotTest="true"
-                   processName="org.apidb.apicomplexa.wsfplugin.spanlogic.SpanCompositionPlugin">
-        <paramRef ref="SpanParams.span_sentence" />
-        <paramRef ref="SpanParams.span_operation"          quote="false"/>
-        <paramRef ref="SpanParams.span_strand"             quote="false"/>
-        <paramRef ref="SpanParams.span_output"             quote="false"/>
-        <paramRef ref="SpanParams.region_a" />
-        <paramRef ref="SpanParams.region_b" />
-        <paramRef ref="SpanParams.span_a"                   noTranslation="true"/>
-        <paramRef ref="SpanParams.span_begin_a"            quote="false"/>
-        <paramRef ref="SpanParams.span_begin_direction_a" quote="false"/>
-        <paramRef ref="SpanParams.span_begin_offset_a"/>
-	<paramRef ref="SpanParams.span_end_a"                   quote="false"/>
-        <paramRef ref="SpanParams.span_end_direction_a"   quote="false"/>
-        <paramRef ref="SpanParams.span_end_offset_a"/>
-        <paramRef ref="SpanParams.span_b"                   noTranslation="true"/>
-        <paramRef ref="SpanParams.span_begin_b"            quote="false"/>
-        <paramRef ref="SpanParams.span_begin_direction_b" quote="false"/>
-        <paramRef ref="SpanParams.span_begin_offset_b"/>
-	<paramRef ref="SpanParams.span_end_b"                   quote="false"/>
-        <paramRef ref="SpanParams.span_end_direction_b"   quote="false"/>
-        <paramRef ref="SpanParams.span_end_offset_b"/>
-        <wsColumn name="project_id" width="32"/>
-        <wsColumn name="source_id" width="80"/>
-        <wsColumn name="wdk_weight" width="12" columnType="number"/>
-        <wsColumn name="feature_region" width="100"/>
-        <wsColumn name="matched_regions" width="4000"/>
-        <wsColumn name="matched_count" width="12" columnType="number"/>
-        <wsColumn name="matched_result" width="1"/>
+                  processName="org.apidb.apicomplexa.wsfplugin.spanlogic.SpanCompositionPlugin">
+      <paramRef ref="SpanParams.span_sentence"/>
+      <paramRef ref="SpanParams.span_operation" quote="false"/>
+      <paramRef ref="SpanParams.span_strand" quote="false"/>
+      <paramRef ref="SpanParams.span_output" quote="false"/>
+      <paramRef ref="SpanParams.region_a"/>
+      <paramRef ref="SpanParams.region_b"/>
+      <paramRef ref="SpanParams.span_a" noTranslation="true"/>
+      <paramRef ref="SpanParams.span_begin_a" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_direction_a" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_offset_a"/>
+      <paramRef ref="SpanParams.span_end_a" quote="false"/>
+      <paramRef ref="SpanParams.span_end_direction_a" quote="false"/>
+      <paramRef ref="SpanParams.span_end_offset_a"/>
+      <paramRef ref="SpanParams.span_b" noTranslation="true"/>
+      <paramRef ref="SpanParams.span_begin_b" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_direction_b" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_offset_b"/>
+      <paramRef ref="SpanParams.span_end_b" quote="false"/>
+      <paramRef ref="SpanParams.span_end_direction_b" quote="false"/>
+      <paramRef ref="SpanParams.span_end_offset_b"/>
+      <wsColumn name="project_id" width="32"/>
+      <wsColumn name="source_id" width="80"/>
+      <wsColumn name="wdk_weight" width="12" columnType="number"/>
+      <wsColumn name="feature_region" width="100"/>
+      <wsColumn name="matched_regions" width="4000"/>
+      <wsColumn name="matched_count" width="12" columnType="number"/>
+      <wsColumn name="matched_result" width="1"/>
     </processQuery>
-    
+
     <processQuery name="TranscriptsBySpanLogic" doNotTest="true"
-                   processName="org.apidb.apicomplexa.wsfplugin.spanlogic.TranscriptSpanCompositionPlugin">
-        <paramRef ref="SpanParams.span_sentence" />
-        <paramRef ref="SpanParams.span_operation"          quote="false"/>
-        <paramRef ref="SpanParams.span_strand"             quote="false"/>
-        <paramRef ref="SpanParams.span_output"             quote="false"/>
-        <paramRef ref="SpanParams.region_a" />
-        <paramRef ref="SpanParams.region_b" />
-        <paramRef ref="SpanParams.span_a"                   noTranslation="true"/>
-        <paramRef ref="SpanParams.span_begin_a"            quote="false"/>
-        <paramRef ref="SpanParams.span_begin_direction_a" quote="false"/>
-        <paramRef ref="SpanParams.span_begin_offset_a"/>
-	<paramRef ref="SpanParams.span_end_a"                   quote="false"/>
-        <paramRef ref="SpanParams.span_end_direction_a"   quote="false"/>
-        <paramRef ref="SpanParams.span_end_offset_a"/>
-        <paramRef ref="SpanParams.span_b"                   noTranslation="true"/>
-        <paramRef ref="SpanParams.span_begin_b"            quote="false"/>
-        <paramRef ref="SpanParams.span_begin_direction_b" quote="false"/>
-        <paramRef ref="SpanParams.span_begin_offset_b"/>
-	<paramRef ref="SpanParams.span_end_b"                   quote="false"/>
-        <paramRef ref="SpanParams.span_end_direction_b"   quote="false"/>
-        <paramRef ref="SpanParams.span_end_offset_b"/>
-        <wsColumn name="project_id" width="32"/>
-        <wsColumn name="source_id" width="80"/>
-        <wsColumn name="gene_source_id" width="80"/>
-        <wsColumn name="wdk_weight" width="12" columnType="number"/>
-        <wsColumn name="feature_region" width="100"/>
-        <wsColumn name="matched_regions" width="4000"/>
-        <wsColumn name="matched_count" width="12" columnType="number"/>
-        <wsColumn name="matched_result" width="1"/>
+                  processName="org.apidb.apicomplexa.wsfplugin.spanlogic.TranscriptSpanCompositionPlugin">
+      <paramRef ref="SpanParams.span_sentence"/>
+      <paramRef ref="SpanParams.span_operation" quote="false"/>
+      <paramRef ref="SpanParams.span_strand" quote="false"/>
+      <paramRef ref="SpanParams.span_output" quote="false"/>
+      <paramRef ref="SpanParams.region_a"/>
+      <paramRef ref="SpanParams.region_b"/>
+      <paramRef ref="SpanParams.span_a" noTranslation="true"/>
+      <paramRef ref="SpanParams.span_begin_a" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_direction_a" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_offset_a"/>
+      <paramRef ref="SpanParams.span_end_a" quote="false"/>
+      <paramRef ref="SpanParams.span_end_direction_a" quote="false"/>
+      <paramRef ref="SpanParams.span_end_offset_a"/>
+      <paramRef ref="SpanParams.span_b" noTranslation="true"/>
+      <paramRef ref="SpanParams.span_begin_b" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_direction_b" quote="false"/>
+      <paramRef ref="SpanParams.span_begin_offset_b"/>
+      <paramRef ref="SpanParams.span_end_b" quote="false"/>
+      <paramRef ref="SpanParams.span_end_direction_b" quote="false"/>
+      <paramRef ref="SpanParams.span_end_offset_b"/>
+      <wsColumn name="project_id" width="32"/>
+      <wsColumn name="source_id" width="80"/>
+      <wsColumn name="gene_source_id" width="80"/>
+      <wsColumn name="wdk_weight" width="12" columnType="number"/>
+      <wsColumn name="feature_region" width="100"/>
+      <wsColumn name="matched_regions" width="4000"/>
+      <wsColumn name="matched_count" width="12" columnType="number"/>
+      <wsColumn name="matched_result" width="1"/>
     </processQuery>
-    
-    
+
+
     <sqlQuery name="ByWeightFilter" doNotTest="true">
-        <paramRef ref="SpanParams.span_result"/>
-        <paramRef ref="sharedParams.min_weight" default="0"/>
-        <paramRef ref="sharedParams.max_weight" default="100"/>
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <column name="wdk_weight" />
-        <sql>
-            <![CDATA[
+      <paramRef ref="SpanParams.span_result"/>
+      <paramRef ref="sharedParams.min_weight" default="0"/>
+      <paramRef ref="sharedParams.max_weight" default="100"/>
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
             SELECT a.source_id, a.project_id, a.wdk_weight
             FROM $$span_result$$ a
             WHERE a.wdk_weight >= $$min_weight$$
               AND a.wdk_weight <= $$max_weight$$
             ]]>
-       </sql>
+      </sql>
     </sqlQuery>
 
 
-    <sqlQuery name="SpansByeQTLtoGenes" includeProjects="PlasmoDB,UniDB" >
+    <sqlQuery name="SpansByeQTLtoGenes" includeProjects="PlasmoDB,UniDB">
 
-        <paramRef ref="sharedParams.ds_gene_ids" default="PF3D7_1334400, PF3D7_1336300"/>
-        <paramRef ref="geneParams.lod_score" default="1.5"/>
-        <paramRef ref="geneParams.liberal_conservative"/>
-        <paramRef ref="geneParams.any_or_all_DynSeg"/>
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <column name="lod_score"/>
-        <column name="sequence_id"/>
-        <column name="start_loc"/>
-        <column name="end_loc"/>
-        <column name="assoc_genes"/>
+      <paramRef ref="sharedParams.ds_gene_ids" default="PF3D7_1334400, PF3D7_1336300"/>
+      <paramRef ref="geneParams.lod_score" default="1.5"/>
+      <paramRef ref="geneParams.liberal_conservative"/>
+      <paramRef ref="geneParams.any_or_all_DynSeg"/>
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <column name="lod_score"/>
+      <column name="sequence_id"/>
+      <column name="start_loc"/>
+      <column name="end_loc"/>
+      <column name="assoc_genes"/>
       <sql>
-          <![CDATA[
-    SELECT sequence_id, start_loc, end_loc, sequence_id || ':' || start_loc || '-' || end_loc || ':f' as source_id, 
-           '@PROJECT_ID@' as project_id, max(lod_score) as lod_score,
-           apidb.tab_to_string(set(CAST(COLLECT(gene_id order by gene_id) AS apidb.varchartab)),', ') as assoc_genes
-    FROM  (SELECT  ga.source_id as gene_id,ens.source_id as sequence_id,
-                    CASE WHEN ($$liberal_conservative$$ = 'liberal') THEN nl.start_min ELSE nl.start_max END as start_loc,
-                    CASE WHEN ($$liberal_conservative$$ = 'liberal') THEN nl.end_max ELSE nl.end_min END as end_loc,
-                    CASE WHEN (gls.LOD_SCORE_EXP = 0) THEN to_char(gls.LOD_SCORE_MANT)
-                               ELSE to_char(to_binary_double(gls.LOD_SCORE_MANT|| 'e' || gls.LOD_SCORE_EXP),'99.99EEEE') 
-                    END as lod_score
-           FROM    dots.chromosomeelementfeature  cef, apidb.nafeaturehaploblock gls,
-                    dots.externalnasequence ens, dots.nalocation nl, apidbTuning.geneattributes ga, apidbtuning.GeneId gi, ($$ds_gene_ids$$) ds 
-           where lower(gi.id) = lower(ds.gene_source_id)
-           and ga.source_ID = gi.gene
-           and gls.na_feature_id = ga.na_feature_id
-           and cef.name = gls.HAPLOTYPE_BLOCK_NAME
-           and nl.na_feature_id = cef.na_feature_id
-           and cef.na_sequence_id = ens.na_sequence_id
-           and to_binary_double(gls.LOD_SCORE_MANT || 'e' || gls.LOD_SCORE_EXP) >= $$lod_score$$)
-    GROUP BY sequence_id, start_loc, end_loc
-    HAVING '$$any_or_all_DynSeg$$' = 'any' or count(*) = (select count(*) from apidbtuning.GeneId gi,($$ds_gene_ids$$) ds  where  lower(gi.id) = lower(ds.gene_source_id)) 
-          ]]>
+        <![CDATA[
+          SELECT sequence_id, start_loc, end_loc, sequence_id || ':' || start_loc || '-' || end_loc || ':f' as source_id,
+                 '@PROJECT_ID@' as project_id, max(lod_score) as lod_score,
+                 string_agg(gene_id, ', ' order by gene_id) as assoc_genes
+          FROM  (SELECT ga.source_id as gene_id,ens.source_id as sequence_id,
+                        CASE WHEN ($$liberal_conservative$$ = 'liberal') THEN nl.start_min ELSE nl.start_max END as start_loc,
+                        CASE WHEN ($$liberal_conservative$$ = 'liberal') THEN nl.end_max ELSE nl.end_min END as end_loc,
+                        CASE WHEN (gls.LOD_SCORE_EXP = 0) THEN gls.LOD_SCORE_MANT::varchar
+                             ELSE to_char(gls.LOD_SCORE_MANT * power(10::double precision, gls.LOD_SCORE_EXP),'99.99EEEE')
+                        END as lod_score
+                 FROM dots.chromosomeelementfeature  cef, apidb.nafeaturehaploblock gls,
+                      dots.externalnasequence ens, dots.nalocation nl, apidbTuning.geneattributes ga, apidbtuning.GeneId gi, ($$ds_gene_ids$$) ds
+                 WHERE lower(gi.id) = lower(ds.gene_source_id)
+                  AND ga.source_ID = gi.gene
+                  AND gls.na_feature_id = ga.na_feature_id
+                  AND cef.name = gls.HAPLOTYPE_BLOCK_NAME
+                  AND nl.na_feature_id = cef.na_feature_id
+                  AND cef.na_sequence_id = ens.na_sequence_id
+                  AND gls.LOD_SCORE_MANT * power(10::double precision, gls.LOD_SCORE_EXP) >= $$lod_score$$
+          ) t
+          GROUP BY sequence_id, start_loc, end_loc
+          HAVING '$$any_or_all_DynSeg$$' = 'any' or count(*) = (select count(*) from apidbtuning.GeneId gi,($$ds_gene_ids$$) ds  where  lower(gi.id) = lower(ds.gene_source_id))
+        ]]>
       </sql>
 
     </sqlQuery>
 
     <processQuery name="SpansByeQTLtoGenes" includeProjects="EuPathDB"
-        processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
 
-        <paramRef ref="sharedParams.ds_gene_ids" default="PF3D7_1334400, PF3D7_1336300" noTranslation="true"/>
-        <paramRef ref="geneParams.lod_score" default="1.5"/>
-        <paramRef ref="geneParams.liberal_conservative" quote="false"/>
-        <paramRef ref="geneParams.any_or_all_DynSeg" quote="false"/>
-        <wsColumn name="project_id" width="20" wsName="project_id"/>
-        <wsColumn name="source_id" width="80" wsName="source_id"/>
-        <wsColumn name="lod_score" wsName="lod_score"/>
-        <wsColumn name="sequence_id" wsName="sequence_id"/>
-        <wsColumn name="start_loc" wsName="start_loc"/>
-        <wsColumn name="end_loc" wsName="end_loc"/>
-        <wsColumn name="assoc_genes" wsName="assoc_genes"/>
+      <paramRef ref="sharedParams.ds_gene_ids" default="PF3D7_1334400, PF3D7_1336300" noTranslation="true"/>
+      <paramRef ref="geneParams.lod_score" default="1.5"/>
+      <paramRef ref="geneParams.liberal_conservative" quote="false"/>
+      <paramRef ref="geneParams.any_or_all_DynSeg" quote="false"/>
+      <wsColumn name="project_id" width="20" wsName="project_id"/>
+      <wsColumn name="source_id" width="80" wsName="source_id"/>
+      <wsColumn name="lod_score" wsName="lod_score"/>
+      <wsColumn name="sequence_id" wsName="sequence_id"/>
+      <wsColumn name="start_loc" wsName="start_loc"/>
+      <wsColumn name="end_loc" wsName="end_loc"/>
+      <wsColumn name="assoc_genes" wsName="assoc_genes"/>
     </processQuery>
   </querySet>
 

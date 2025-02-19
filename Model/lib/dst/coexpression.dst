@@ -83,7 +83,7 @@ prop=dataSource
              <column name="term"/>
           <sql>
              <![CDATA[
-	   SELECT '${dataSource}' as internal, '${dataSource}' as term FROM DUAL
+	   SELECT '${dataSource}' as internal, '${dataSource}' as term
              ]]>
           </sql>
         </sqlQuery>

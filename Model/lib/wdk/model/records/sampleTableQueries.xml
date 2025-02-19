@@ -1,101 +1,95 @@
 <wdkModel>
-  <querySet name="SampleTables" queryType="table" isCacheable="false" >
+  <querySet name="SampleTables" queryType="table" isCacheable="false">
 
 
     <sqlQuery name="Characteristics">
-            <column name="name"/>
-            <column name="material_type"/>
-            <column name="property"/>
-            <column name="value"  />
-           <sql>
-            <![CDATA[
-SELECT
-  pan_name AS name
-, ancestor_pan_type AS material_type
-, property
-, value
-FROM
-  apidbtuning.InferredChars
-            ]]>
-            </sql>
+      <column name="name"/>
+      <column name="material_type"/>
+      <column name="property"/>
+      <column name="value"/>
+      <sql>
+        <![CDATA[
+          SELECT
+            pan_name AS name
+          , ancestor_pan_type AS material_type
+          , property
+          , value
+          FROM
+            apidbtuning.InferredChars
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="Protocols">
-            <column name="name"/>
-            <column name="protocol_name"  />
-            <column name="protocol_param_name"  />
-            <column name="value"  />
-           <sql>
-            <![CDATA[
-SELECT
-  pan_name as name
-, protocol as protocol_name
-, property AS protocol_param_name
-, value
-FROM
-  apidbtuning.InferredParams
-            ]]>
-            </sql>
+      <column name="name"/>
+      <column name="protocol_name"/>
+      <column name="protocol_param_name"/>
+      <column name="value"/>
+      <sql>
+        <![CDATA[
+          SELECT
+              pan_name as name
+            , protocol as protocol_name
+            , property AS protocol_param_name
+            , value
+          FROM
+            apidbtuning.InferredParams
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="ProcessedSample">
-            <column name="name"/>
-            <column name="input"  />
-            <column name="input_type"  />
-            <column name="protocol"  />
-            <column name="output"  />
-            <column name="output_type"  />
-           <sql>
-            <![CDATA[
-SELECT
-  name
-, input_name as input
-, nvl(input_material_type,  input_isa_type) as input_type
-, protocol
-, output_name as output
-, nvl(nvl(output_material_type, output_isa_type), 'Data') as output_type
-from
- apidbtuning.SampleProcess
-            ]]>
-            </sql>
+      <column name="name"/>
+      <column name="input"/>
+      <column name="input_type"/>
+      <column name="protocol"/>
+      <column name="output"/>
+      <column name="output_type"/>
+      <sql>
+        <![CDATA[
+          SELECT
+              name
+            , input_name as input
+            , coalesce(input_material_type,  input_isa_type) as input_type
+            , protocol
+            , output_name as output
+            , coalesce(output_material_type, output_isa_type, 'Data') as output_type
+          FROM
+           apidbtuning.SampleProcess
+        ]]>
+      </sql>
     </sqlQuery>
 
 
     <sqlQuery name="Datasets">
-            <column name="name"/>
-            <column name="dataset_presenter_id"/>
-            <column name="display_name"/>
-            <column name="category"/>
-            <column name="summary"/>
-           <sql>
-            <![CDATA[
-select
-   q.name
- , q.dataset_presenter_id
- , dsp.display_name
- , dsp.category
- , dsp.summary
-from apidbTuning.DatasetPresenter dsp
-   , (select distinct sd.name
-       , edp.dataset_presenter_id
-      from apidbtuning.SampleProcess sd
-       , apidbTuning.PanResults panr
-       , study.Study s
-       , study.StudyLink sl
-       , apidbTuning.ExternalDbDatasetPresenter edp
-      where sd.output_pan_id = panr.pan_id
-        and panr.pan_id = sl.protocol_app_node_id
-        and sl.study_id = s.study_id
-        and s.external_database_release_id = edp.external_database_release_id) q
-where q.dataset_presenter_id = dsp.dataset_presenter_id
-            ]]>
-            </sql>
+      <column name="name"/>
+      <column name="dataset_presenter_id"/>
+      <column name="display_name"/>
+      <column name="category"/>
+      <column name="summary"/>
+      <sql>
+        <![CDATA[
+          SELECT
+               q.name
+             , q.dataset_presenter_id
+             , dsp.display_name
+             , dsp.category
+             , dsp.summary
+          FROM apidbTuning.DatasetPresenter dsp
+             , (SELECT distinct sd.name
+                 , edp.dataset_presenter_id
+                FROM apidbtuning.SampleProcess sd
+                 , apidbTuning.PanResults panr
+                 , study.Study s
+                 , study.StudyLink sl
+                 , apidbTuning.ExternalDbDatasetPresenter edp
+                WHERE sd.output_pan_id = panr.pan_id
+                  AND panr.pan_id = sl.protocol_app_node_id
+                  AND sl.study_id = s.study_id
+                  AND s.external_database_release_id = edp.external_database_release_id) q
+          WHERE q.dataset_presenter_id = dsp.dataset_presenter_id
+        ]]>
+      </sql>
     </sqlQuery>
-
-
-
-
-
-
-    </querySet>
+  </querySet>
 </wdkModel>

@@ -5,7 +5,8 @@ import org.apidb.apicommon.datasetPresenter.DatasetInjector;
 public class RNASeqHornRNAi extends DatasetInjector {
 
   @Override
-  public void injectTemplates() {
+  public void injectTemplates() { }
+  public void TODO_injectTemplates() {
       setPropValue("datasetClassCategoryIri", "http://edamontology.org/topic_3298");
       setPropValue("includeProjectsExcludeEuPathDB", "TriTrypDB,UniDB");
       setShortAttribution();

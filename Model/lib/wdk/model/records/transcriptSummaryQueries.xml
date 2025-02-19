@@ -1,269 +1,271 @@
 <wdkModel>
-    <querySet name="GeneSummaries" queryType="summary" isCacheable="false">
+  <querySet name="GeneSummaries" queryType="summary" isCacheable="false">
 
-     <!-- HACK: for certain answer filters, get the counts as a bulk query.  this is used by CustomShowResultSizeAction -->
-     <!-- the filter_name column is either the name of the filter, or the value of the filter's first param (eg, organism name) -->
-        <sqlQuery name="bulkAnswerFilterCounts" isCacheable="false">
-            <column name="filter_name"/>
-            <column name="size"/>
-            <sql>
-                <![CDATA[
-WITH geneList -- list of (distinct) genes in the current ID query
-     AS (SELECT DISTINCT 1 AS counter, gene_source_id AS source_id
-         FROM ##WDK_ID_SQL##)
-SELECT filter_name, max(count) AS count
-FROM (  
-        -- count genes in geneList by organism
-        SELECT organism AS filter_name, sum(counter) AS count
-        FROM apidbTuning.GeneAttributes ga, geneList
-        WHERE ga.source_id = geneList.source_id
-        GROUP BY organism
-      UNION
-        -- count genes in geneList by species
-        SELECT species AS filter_name, sum(counter) AS count
-        FROM apidbTuning.GeneAttributes ga, geneList
-        WHERE ga.source_id = geneList.source_id
-        GROUP BY species
-      UNION
-        -- zero-count rows for above filters
-        SELECT filter_name, 0 as count
-        FROM apidbTuning.GeneSummaryFilter
-      UNION
-        -- overall gene count (simply the cardinality of geneList)
-        SELECT 'all_results' AS filter_name,  count(*) AS count
-        FROM geneList
-     )
-GROUP BY filter_name
-                ]]>
-            </sql>
-        </sqlQuery>
+    <!-- HACK: for certain answer filters, get the counts as a bulk query.  this is used by CustomShowResultSizeAction -->
+    <!-- the filter_name column is either the name of the filter, or the value of the filter's first param (eg, organism name) -->
+    <sqlQuery name="bulkAnswerFilterCounts" isCacheable="false">
+      <column name="filter_name"/>
+      <column name="size"/>
+      <sql>
+        <![CDATA[
+          WITH geneList -- list of (distinct) genes in the current ID query
+               AS (SELECT DISTINCT 1 AS counter, gene_source_id AS source_id
+                   FROM ##WDK_ID_SQL##)
+          SELECT filter_name, max(count) AS count
+          FROM (
+                  -- count genes in geneList by organism
+                  SELECT organism AS filter_name, sum(counter) AS count
+                  FROM apidbTuning.GeneAttributes ga, geneList
+                  WHERE ga.source_id = geneList.source_id
+                  GROUP BY organism
+                UNION
+                  -- count genes in geneList by species
+                  SELECT species AS filter_name, sum(counter) AS count
+                  FROM apidbTuning.GeneAttributes ga, geneList
+                  WHERE ga.source_id = geneList.source_id
+                  GROUP BY species
+                UNION
+                  -- zero-count rows for above filters
+                  SELECT filter_name, 0 as count
+                  FROM apidbTuning.GeneSummaryFilter
+                UNION
+                  -- overall gene count (simply the cardinality of geneList)
+                  SELECT 'all_results' AS filter_name,  count(*) AS count
+                  FROM geneList
+               ) t
+          GROUP BY filter_name
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="countOfGenes" isCacheable="false" >
-            <paramRef ref="geneSummaryParams.WDK_ID_SQL"/>
-            <column name="count"/>
-            <sql>
-                <![CDATA[
-                  select count (distinct gene_source_id) as count
-                  from ($$WDK_ID_SQL$$)
-                ]]>
-            </sql>
-        </sqlQuery>
+    <sqlQuery name="countOfGenes" isCacheable="false" >
+      <paramRef ref="geneSummaryParams.WDK_ID_SQL"/>
+      <column name="count"/>
+      <sql>
+        <![CDATA[
+          SELECT count (distinct gene_source_id) as count
+          FROM ($$WDK_ID_SQL$$) t
+        ]]>
+      </sql>
+    </sqlQuery>
 
-     <!-- the parameter used here is hard-coded in the java plugin  .../model/record/SqlQueryResultPropertyPlugin.java -->
-        <sqlQuery name="countOfGenesWithMissingTranscripts" isCacheable="false" >
-            <paramRef ref="geneSummaryParams.WDK_ID_SQL"/>
-            <column name="propertyValue"/>
-            <sql>
-                <![CDATA[
-                WITH WDK_ID_SQL as $$WDK_ID_SQL$$  -- wonder if we dont want to use the prefiltered result
-		select count (distinct m.gene_source_id) as propertyValue
-		from (
-		  select ta.gene_source_id, ta.source_id
-		  from apidbtuning.transcriptattributes ta, 
-		  (WDK_ID_SQL) idsql_1
-		  where idsql_1.gene_source_id = ta.gene_source_id
-		  MINUS
-		  select gene_source_id, source_id
-		  from (WDK_ID_SQL) idsql_2
-      --where idsql_2.matched_result = 'Y' --cannot be used in boolean steps, plus might not be needed
-		) m 
-                ]]>
-            </sql>
-        </sqlQuery>
-    </querySet>
+    <!-- the parameter used here is hard-coded in the java plugin  .../model/record/SqlQueryResultPropertyPlugin.java -->
+    <sqlQuery name="countOfGenesWithMissingTranscripts" isCacheable="false" >
+      <paramRef ref="geneSummaryParams.WDK_ID_SQL"/>
+      <column name="propertyValue"/>
+      <sql>
+        <![CDATA[
+          WITH WDK_ID_SQL as $$WDK_ID_SQL$$  -- wonder if we dont want to use the prefiltered result
+          SELECT count (distinct m.gene_source_id) as propertyValue
+          FROM (
+              SELECT ta.gene_source_id, ta.source_id
+              FROM apidbtuning.transcriptattributes ta
+                , (WDK_ID_SQL) idsql_1
+              WHERE idsql_1.gene_source_id = ta.gene_source_id
+            EXCEPT
+              SELECT gene_source_id, source_id
+              FROM (WDK_ID_SQL) idsql_2
+            --where idsql_2.matched_result = 'Y' --cannot be used in boolean steps, plus might not be needed
+          ) m
+        ]]>
+      </sql>
+    </sqlQuery>
+  </querySet>
 
-
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!-- Gene Answer Filters-->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-
-    <querySet name="GeneAnswerFilters" queryType="summary" isCacheable="false">
-
-        <sqlQuery name="AllResults" isCacheable="false" >
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
-                    SELECT source_id, gene_source_id, project_id, wdk_weight
-                    FROM $$gene_answer$$
-                ]]>
-            </sql>
-        </sqlQuery>
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+  <!-- Gene Answer Filters-->
+  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
 
-        <sqlQuery name="AllOrthologGroups" isCacheable="false" >
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-           <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-               <![CDATA[
-                    SELECT MAX(ta.source_id)
-                              KEEP
-                              (DENSE_RANK FIRST ORDER BY 
-                               DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1, 
-                                                   '%%secondaryOrthoOrganism%%', 0
-                                      )) AS source_id,
-                           MAX(ta.gene_source_id)
-                              KEEP
-                              (DENSE_RANK FIRST ORDER BY
-                               DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1,
-                                                   '%%secondaryOrthoOrganism%%', 0
-                                     )) AS gene_source_id,
-                           MAX(ta.project_id)
-                              KEEP
-                              (DENSE_RANK FIRST ORDER BY 
-                               DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1,
-                                                   '%%secondaryOrthoOrganism%%', 0
-                                     )) AS project_id,
-                           MAX(ca.wdk_weight) AS wdk_weight
-                    FROM $$gene_answer$$ ca, apidbTuning.TranscriptAttributes ta
-                    WHERE ta.source_id = ca.source_id
-                    GROUP BY ta.orthomcl_name
+  <querySet name="GeneAnswerFilters" queryType="summary" isCacheable="false">
+
+    <sqlQuery name="AllResults" isCacheable="false" >
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, gene_source_id, project_id, wdk_weight
+          FROM $$gene_answer$$
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <sqlQuery name="AllOrthologGroups" isCacheable="false" >
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT MAX(ta.source_id)
+                    KEEP
+                    (DENSE_RANK FIRST ORDER BY
+                     DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1,
+                                         '%%secondaryOrthoOrganism%%', 0
+                            )) AS source_id,
+                 MAX(ta.gene_source_id)
+                    KEEP
+                    (DENSE_RANK FIRST ORDER BY
+                     DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1,
+                                         '%%secondaryOrthoOrganism%%', 0
+                           )) AS gene_source_id,
+                 MAX(ta.project_id)
+                    KEEP
+                    (DENSE_RANK FIRST ORDER BY
+                     DECODE(ta.organism, '%%primaryOrthoOrganism%%', -1,
+                                         '%%secondaryOrthoOrganism%%', 0
+                           )) AS project_id,
+                 MAX(ca.wdk_weight) AS wdk_weight
+          FROM $$gene_answer$$ ca, apidbTuning.TranscriptAttributes ta
+          WHERE ta.source_id = ca.source_id
+          GROUP BY ta.orthomcl_name
 		]]>
-            </sql>
-        </sqlQuery>
+      </sql>
+    </sqlQuery>
 
-        <!-- CAUTION: the counts for this filter are provided by the bulk query in the GeneSummaries set -->
-        <sqlQuery name="OrganismGeneInstances" isCacheable="false">
-            <paramRef ref="recordParams.organism"/>
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="wdk_weight"/>
-            <column name="project_id"/>
-            <sql>
-                <![CDATA[
-                    SELECT ta.source_id, ta.gene_source_id, ta.project_id, ca.wdk_weight
-                      FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta
-                      WHERE ta.source_id = ca.source_id
-                      AND ta.organism like $$organism$$
-                ]]>
-            </sql>
-        </sqlQuery>
+    <!-- CAUTION: the counts for this filter are provided by the bulk query in the GeneSummaries set -->
+    <sqlQuery name="OrganismGeneInstances" isCacheable="false">
+      <paramRef ref="recordParams.organism"/>
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="wdk_weight"/>
+      <column name="project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT ta.source_id, ta.gene_source_id, ta.project_id, ca.wdk_weight
+          FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta
+          WHERE ta.source_id = ca.source_id
+            AND ta.organism like $$organism$$
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <!-- CAUTION: the counts for this filter are provided by the bulk query in the GeneSummaries set -->
-        <sqlQuery name="DistinctGenes" isCacheable="false">
-            <paramRef ref="recordParams.species"/>
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
-                SELECT /*+ NO_MERGE(t) */ t.* FROM (
-                      SELECT  MAX(ta.source_id)  AS source_id, 
-                            ta.project_id, ta.gene_source_id, max(ca.wdk_weight) as wdk_weight
-                      FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta
-                      WHERE ta.source_id = ca.source_id
-                      AND ta.species = $$species$$
-                      GROUP BY ta.gene_source_id,ta.project_id
-		) t
-                ]]>
-            </sql>
-        </sqlQuery>
-
-        <sqlQuery name="DeprecatedGenes" isCacheable="false" includeProjects="GiardiaDB,EuPathDB,UniDB">
-            <paramRef ref="recordParams.deprecated_genes"/>
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
-                    SELECT c.source_id, c.gene_source_id, c.project_id, c.wdk_weight
-                    FROM $$gene_answer$$ c, ApidbTuning.TranscriptAttributes ta
-                    where ta.source_id = c.source_id
-                    and ta.organism = 'Giardia Assemblage A isolate WB'
-                    and ta.is_deprecated = $$deprecated_genes$$
-                ]]>
-            </sql>
-        </sqlQuery>
-
-        <sqlQuery name="ApiProjectInstances" isCacheable="false" includeProjects="EuPathDB">
-            <paramRef ref="recordParams.Project"/>
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
-                    SELECT c.source_id, c.gene_source_id, c.project_id, c.wdk_weight
-                    FROM $$gene_answer$$ c 
-                    WHERE c.project_id = $$Project$$
-                ]]>
-            </sql>
-        </sqlQuery>
-
-
-<!-- These are the organism names in ApidbTuning.TranscriptAttributes -->
-<!-- This cannot be used until all component sites have the orthomcl group info in ApidbTuning.TranscriptAttributes -->
-<!-- I think grouping by project_id works for a component site but does not work for the portal -->
-
-        <sqlQuery name="PortalDistinctGenes" isCacheable="false" includeProjects="EuPathDB">
-            <paramRef ref="recordParams.gene_answer"/>
-            <column name="source_id"/>
-            <column name="gene_source_id"/>
-            <column name="project_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
+    <!-- CAUTION: the counts for this filter are provided by the bulk query in the GeneSummaries set -->
+    <sqlQuery name="DistinctGenes" isCacheable="false">
+      <paramRef ref="recordParams.species"/>
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
           SELECT /*+ NO_MERGE(t) */ t.* FROM (
-              SELECT orthoreps.source_id,ta2.project_id, ta2.gene_source_id, , orthoreps.wdk_weight
-              FROM (
-                    SELECT  MAX(ta.source_id) KEEP (DENSE_RANK FIRST ORDER BY 
-                            DECODE(ta.organism, 
-                                                'Plasmodium falciparum 3D7',           1, 
-                                                'Plasmodium berghei strain ANKA',      2, 
-                                                'Plasmodium chabaudi chabaudi',        3,
-                                                'Plasmodium knowlesi strain H',        4,
-                                                'Plasmodium vivax Sal-1',              5,  
-                                                'Plasmodium yoelii yoelii str. 17X', 6, 
+            SELECT MAX(ta.source_id)  AS source_id,
+                  ta.project_id, ta.gene_source_id, max(ca.wdk_weight) as wdk_weight
+            FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta
+            WHERE ta.source_id = ca.source_id
+              AND ta.species = $$species$$
+            GROUP BY ta.gene_source_id,ta.project_id
+		  ) t
+        ]]>
+      </sql>
+    </sqlQuery>
 
-                                                'Trypanosoma brucei TREU927',         11, 
-                                                'Leishmania braziliensis',            12,
-                                                'Leishmania infantum',                13,
-                                                'Leishmania major strain Friedlin',                   14,
-                                                'Trypanosoma cruzi strain CL Brener', 15,
+    <sqlQuery name="DeprecatedGenes" isCacheable="false" includeProjects="GiardiaDB,EuPathDB,UniDB">
+      <paramRef ref="recordParams.deprecated_genes"/>
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT c.source_id, c.gene_source_id, c.project_id, c.wdk_weight
+          FROM $$gene_answer$$ c, ApidbTuning.TranscriptAttributes ta
+          WHERE ta.source_id = c.source_id
+            AND ta.organism = 'Giardia Assemblage A isolate WB'
+            AND ta.is_deprecated = $$deprecated_genes$$
+        ]]>
+      </sql>
+    </sqlQuery>
 
-                                                'Cryptosporidium parvum Iowa II', 21, 
-                                                'Cryptosporidium hominis',        22,
-                                                'Cryptosporidium muris',          23,
-                                                'Cryptosporidium parvum',         24,
+    <sqlQuery name="ApiProjectInstances" isCacheable="false" includeProjects="EuPathDB">
+      <paramRef ref="recordParams.Project"/>
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT c.source_id, c.gene_source_id, c.project_id, c.wdk_weight
+          FROM $$gene_answer$$ c
+          WHERE c.project_id = $$Project$$
+        ]]>
+      </sql>
+    </sqlQuery>
 
-                                                'Toxoplasma gondii GT1',  31, 
-                                                'Toxoplasma gondii RH',   32, 
-                                                'Toxoplasma gondii ME49', 33, 
-                                                'Toxoplasma gondii VEG',  34, 
-                                                'Neospora caninum',       35, 
 
-                                                'Giardia lamblia ATCC 50803', 41, 
+    <!-- These are the organism names in ApidbTuning.TranscriptAttributes -->
+    <!-- This cannot be used until all component sites have the orthomcl group info in ApidbTuning.TranscriptAttributes -->
+    <!-- I think grouping by project_id works for a component site but does not work for the portal -->
 
-                                                'Trichomonas vaginalis G3',   51
-                                  )
-                                                    ) AS source_id, max(ca.wdk_weight) as wdk_weight
-                      FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta 
-                      WHERE ta.source_id = ca.source_id
-                      GROUP BY ta.orthomcl_name  ) orthoreps, ApidbTuning.TranscriptAttributes ta2
+    <sqlQuery name="PortalDistinctGenes" isCacheable="false" includeProjects="EuPathDB">
+      <paramRef ref="recordParams.gene_answer"/>
+      <column name="source_id"/>
+      <column name="gene_source_id"/>
+      <column name="project_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT t.*
+          FROM (
+            SELECT orthoreps.source_id, ta2.project_id, ta2.gene_source_id, , orthoreps.wdk_weight
+            FROM (
+                SELECT MAX(ta.source_id) KEEP (DENSE_RANK FIRST ORDER BY
+                              CASE ta.organism
+                              WHEN 'Plasmodium falciparum 3D7' THEN 1
+                              WHEN 'Plasmodium berghei strain ANKA' THEN 2
+                              WHEN 'Plasmodium chabaudi chabaudi' THEN 3
+                              WHEN 'Plasmodium knowlesi strain H' THEN 4
+                              WHEN 'Plasmodium vivax Sal-1' THEN 5
+                              WHEN 'Plasmodium yoelii yoelii str. 17X' THEN 6
 
-               WHERE orthoreps.source_id = ta2.source_id
+                              WHEN 'Trypanosoma brucei TREU927' THEN 11
+                              WHEN 'Leishmania braziliensis' THEN 12
+                              WHEN 'Leishmania infantum' THEN 13
+                              WHEN 'Leishmania major strain Friedlin' THEN 14
+                              WHEN 'Trypanosoma cruzi strain CL Brener' THEN 15
+
+                              WHEN 'Cryptosporidium parvum Iowa II' THEN 21
+                              WHEN 'Cryptosporidium hominis' THEN 22
+                              WHEN 'Cryptosporidium muris' THEN 23
+                              WHEN 'Cryptosporidium parvum' THEN 24
+
+                              WHEN 'Toxoplasma gondii GT1' THEN 31
+                              WHEN 'Toxoplasma gondii RH' THEN 32
+                              WHEN 'Toxoplasma gondii ME49' THEN 33
+                              WHEN 'Toxoplasma gondii VEG' THEN 34
+                              WHEN 'Neospora caninum' THEN 35
+
+                              WHEN 'Giardia lamblia ATCC 50803' THEN 41
+
+                              WHEN 'Trichomonas vaginalis G3' THEN 5
+                              END
+                  ) AS source_id
+                  , max(ca.wdk_weight) AS wdk_weight
+                FROM $$gene_answer$$ ca, ApidbTuning.TranscriptAttributes ta
+                WHERE ta.source_id = ca.source_id
+                GROUP BY ta.orthomcl_name
+              ) orthoreps
+              , ApidbTuning.TranscriptAttributes ta2
+            WHERE orthoreps.source_id = ta2.source_id
           ) t
-                ]]>
-            </sql>
-        </sqlQuery>
-    </querySet>
+        ]]>
+      </sql>
+    </sqlQuery>
+  </querySet>
 
-    <paramSet name="geneSummaryParams">
-       <stringParam name="WDK_ID_SQL" number="false" isSql="true"> 
-       </stringParam>
-    </paramSet>
+  <paramSet name="geneSummaryParams">
+    <stringParam name="WDK_ID_SQL" number="false" isSql="true">
+    </stringParam>
+  </paramSet>
 
 </wdkModel>

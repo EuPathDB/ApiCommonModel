@@ -1,269 +1,256 @@
 <wdkModel>
 
 
-    <querySet name="DynSpanAttributes" queryType="attribute" isCacheable="false">
+  <querySet name="DynSpanAttributes" queryType="attribute" isCacheable="false">
 
-      <defaultTestParamValues includeProjects="TriTrypDB">
-	<paramValue name="source_id">Tb927_08_v4:175300-176800:r</paramValue>
-	<paramValue name="project_id">TriTrypDB</paramValue>
-      </defaultTestParamValues>
-      <defaultTestParamValues includeProjects="PiroplasmaDB">
-	<paramValue name="source_id">AAXT01000006:1-300:f</paramValue>
-	<paramValue name="project_id">PiroplasmaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="TriTrypDB">
+      <paramValue name="source_id">Tb927_08_v4:175300-176800:r</paramValue>
+      <paramValue name="project_id">TriTrypDB</paramValue>
+    </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PiroplasmaDB">
+      <paramValue name="source_id">AAXT01000006:1-300:f</paramValue>
+      <paramValue name="project_id">PiroplasmaDB</paramValue>
+    </defaultTestParamValues>
 
 
-        <sqlQuery name="AllDynSpanRecords" isCacheable="false" doNotTest="true" excludeProjects="UniDB">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <sql>
+    <sqlQuery name="AllDynSpanRecords" isCacheable="false" doNotTest="true" excludeProjects="UniDB">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, project_id FROM (##WDK_ID_SQL##) t
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="AllDynSpanRecords" isCacheable="false" doNotTest="true" includeProjects="UniDB">
+      <column name="source_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id FROM (##WDK_ID_SQL##) t
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <sqlQuery name="Bfmv" doNotTest="true" excludeProjects="UniDB">
+      <column name="source_id" ignoreCase="true" columnType="string"/>
+      <column name="project_id" ignoreCase="true" columnType="string"/>
+      <column name="project_id_lc" columnType="string"/>
+      <column name="seq_source_id" columnType="string"/>
+      <column name="start_min" columnType="number"/>
+      <column name="end_max" columnType="number"/>
+      <column name="start_text" columnType="string"/>
+      <column name="end_text" columnType="string"/>
+      <column name="length_text" columnType="string"/>
+      <column name="strand" columnType="string"/>
+      <column name="length" columnType="number"/>
+      <column name="organism" columnType="string"/>
+      <column name="organismAbbrev" columnType="string"/>
+      <column name="context_start" columnType="number"/>
+      <column name="context_end" columnType="number"/>
+
+      <!-- the source_id is in such form: MAL14:1271-984493:0 for poditive strand or 1 for negative strand -->
+      <sql>
+        <![CDATA[
+          SELECT ids.source_id, ids.project_id, lower(ids.project_id) as project_id_lc,ids.seq_source_id,
+                 ids.start_min, ids.end_max, ids.strand,
+                 (ids.end_max - ids.start_min + 1) AS length,
+                 trim(to_char(ids.end_max,'999,999,999')) as end_text,
+                 trim(to_char(ids.start_min,'999,999,999')) as start_text,
+                 trim(to_char((ids.end_max - ids.start_min + 1),'999,999,999')) as length_text,
+                 sa.organism, o.public_abbrev as organismAbbrev,
+                 ids.start_min - 1000 AS context_start, ids.end_max + 1000 AS context_end
+          FROM (
+              SELECT source_id, project_id,
+                 regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                 regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                 regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                 case when regexp_substr(source_id, '[^:]+', 1, 3) = 'f' then '+'
+                   when regexp_substr(source_id, '[^:]+', 1, 3) = 'r' then '-'
+                   else 'Unknown' end as strand
+              FROM (##WDK_ID_SQL##) t
+            ) ids
+            LEFT JOIN ApidbTuning.GenomicSeqAttributes sa ON ids.seq_source_id = sa.source_id
+            INNER JOIN apidbtuning.organismattributes o ON o.organism_name = sa.organism
+        ]]>
+      </sql>
+    </sqlQuery>
+
+    <sqlQuery name="Bfmv" doNotTest="true" includeProjects="UniDB">
+      <column name="source_id" ignoreCase="true" columnType="string"/>
+      <column name="seq_source_id" columnType="string"/>
+      <column name="start_min" columnType="number"/>
+      <column name="end_max" columnType="number"/>
+      <column name="start_text" columnType="string"/>
+      <column name="end_text" columnType="string"/>
+      <column name="length_text" columnType="string"/>
+      <column name="strand" columnType="string"/>
+      <column name="length" columnType="number"/>
+      <column name="organism" columnType="string"/>
+      <column name="organismAbbrev" columnType="string"/>
+      <column name="context_start" columnType="number"/>
+      <column name="context_end" columnType="number"/>
+
+      <!-- the source_id is in such form: MAL14:1271-984493:0 for poditive strand or 1 for negative strand -->
+      <sql>
+        <![CDATA[
+          SELECT ids.source_id, ids.seq_source_id,
+                 ids.start_min, ids.end_max, ids.strand,
+                 (ids.end_max - ids.start_min + 1) AS length,
+                 trim(to_char(ids.end_max,'999,999,999')) as end_text,
+                 trim(to_char(ids.start_min,'999,999,999')) as start_text,
+                 trim(to_char((ids.end_max - ids.start_min + 1),'999,999,999')) as length_text,
+                 sa.organism, o.public_abbrev as organismAbbrev,
+                 ids.start_min - 1000 AS context_start, ids.end_max + 1000 AS context_end
+          FROM (
+              SELECT source_id,
+                     regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                     regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                     regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                     case when regexp_substr(source_id, '[^:]+', 1, 3) = 'f' then '+'
+                       when regexp_substr(source_id, '[^:]+', 1, 3) = 'r' then '-'
+                       else 'Unknown' end as strand
+              FROM (##WDK_ID_SQL##) t
+            ) ids
+            LEFT JOIN ApidbTuning.GenomicSeqAttributes sa ON ids.seq_source_id = sa.source_id
+            INNER JOIN apidbtuning.organismattributes o ON o.organism_name = sa.organism
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <!--
+            <sqlQuery name="GeneCount" doNotTest="true">
+                <column name="source_id" ignoreCase="true"/>
+                <column name="project_id" ignoreCase="true"/>
+                <column name="geneCount"/>
+
+                 <sql>
                 <![CDATA[
-                SELECT source_id, project_id FROM (##WDK_ID_SQL##)
-                ]]>
-            </sql>
-        </sqlQuery>
 
-        <sqlQuery name="AllDynSpanRecords" isCacheable="false" doNotTest="true" includeProjects="UniDB">
-            <column name="source_id"/>
-            <sql>
+                  select
+                         ids.source_id, ids.project_id,
+                         nvl(count(distinct GeneLoc.feature_source_id),0) as geneCount
+                  from (select source_id, project_id,
+                               regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                               substr(source_id, -1) as strand
+                             from (##WDK_ID_SQL##)
+                       ) ids,
+                       apidb.FeatureLocation GeneLoc
+                  where GeneLoc.sequence_source_id(+) = ids.seq_source_id and
+                        GeneLoc.start_min(+) <= ids.end_max and
+                        GeneLoc.end_max(+) >= ids.start_min and
+                        GeneLoc.is_reversed(+) >= ids.strand and
+                        GeneLoc.feature_type(+) = 'GeneFeature'
+                  group by ids.source_id, ids.project_id
+
+                 ]]>
+                 </sql>
+            </sqlQuery>
+    -->
+
+
+    <!--
+            <sqlQuery name="SnpCount" doNotTest="true">
+                <column name="source_id" ignoreCase="true"/>
+                <column name="project_id" ignoreCase="true"/>
+                <column name="snpCount"/>
+
+                 <sql>
                 <![CDATA[
-                SELECT source_id FROM (##WDK_ID_SQL##)
-                ]]>
-            </sql>
-        </sqlQuery>
+
+                  select
+                         ids.source_id, ids.project_id,
+                         nvl(count(distinct SnpLoc.feature_source_id),0) as snpCount
+                  from (select source_id, project_id,
+                               regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                               case when regexp_substr(source_id, '[^:]+', 1, 3) = '0' then '+'
+                                    when regexp_substr(source_id, '[^:]+', 1, 3) = '1' then '-'
+                                    else 'Unknown' end as strand
+                        from (##WDK_ID_SQL##)
+                       ) ids,
+                       apidb.FeatureLocation SnpLoc
+                  where SnpLoc.sequence_source_id(+) = ids.seq_source_id and
+                        SnpLoc.start_min(+) >= ids.start_min and
+                        SnpLoc.start_min(+) <= ids.end_max and
+                        SnpLoc.feature_type(+) = 'SnpFeature'
+                  group by ids.source_id, ids.project_id
+
+                 ]]>
+                 </sql>
+            </sqlQuery>
+    -->
 
 
-        <sqlQuery name="Bfmv" doNotTest="true" excludeProjects="UniDB">
-            <column name="source_id" ignoreCase="true" columnType="string"/>
-            <column name="project_id" ignoreCase="true" columnType="string"/>
-            <column name="project_id_lc" columnType="string"/>
-            <column name="seq_source_id" columnType="string"/>
-            <column name="start_min" columnType="number"/>
-            <column name="end_max" columnType="number"/>
-            <column name="start_text" columnType="string"/>
-            <column name="end_text" columnType="string"/>
-            <column name="length_text" columnType="string"/>
-            <column name="strand" columnType="string"/>
-            <column name="length" columnType="number"/>
-            <column name="organism" columnType="string"/>
-            <column name="organismAbbrev" columnType="string"/>
-            <column name="context_start" columnType="number"/>
-            <column name="context_end" columnType="number"/>
+    <!--
+        <sqlQuery name="OrfCount" doNotTest="true">
+                <column name="source_id" ignoreCase="true"/>
+                <column name="project_id" ignoreCase="true"/>
+                <column name="orfCount"/>
 
-            <!-- the source_id is in such form: MAL14:1271-984493:0 for poditive strand or 1 for negative strand -->
-           <sql>
-            <![CDATA[
-                SELECT ids.source_id, ids.project_id, lower(ids.project_id) as project_id_lc,ids.seq_source_id,
-                       ids.start_min, ids.end_max, ids.strand,
-                       (ids.end_max - ids.start_min + 1) AS length,
-                       trim(to_char(ids.end_max,'999,999,999')) as end_text,
-                       trim(to_char(ids.start_min,'999,999,999')) as start_text,
-                       trim(to_char((ids.end_max - ids.start_min + 1),'999,999,999')) as length_text,
-                       sa.organism, o.public_abbrev as organismAbbrev,
-                       ids.start_min - 1000 AS context_start, ids.end_max + 1000 AS context_end
-                FROM (SELECT source_id, project_id,
-                             regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                             regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                             regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                             case when regexp_substr(source_id, '[^:]+', 1, 3) = 'f' then '+'
-   				       when regexp_substr(source_id, '[^:]+', 1, 3) = 'r' then '-'
-   				       else 'Unknown' end as strand
-                      FROM (##WDK_ID_SQL##
-                           )
-                     ) ids
-                     LEFT JOIN ApidbTuning.GenomicSeqAttributes sa
-                       ON ids.seq_source_id = sa.source_id
-                      , apidbtuning.organismattributes o
-                     WHERE o.organism_name = sa.organism  
+                 <sql>
+                <![CDATA[
 
-             ]]>
-           </sql>
-        </sqlQuery>
+                  select
+                         ids.source_id, ids.project_id,
+                         nvl(count(distinct OrfLoc.feature_source_id),0) as orfCount
+                  from (select source_id, project_id,
+                               regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                               substr(source_id, -1) as strand,
+                               (select sequence_ontology_id from sres.SequenceOntology where term_name = 'ORF') as orf_sequence_ontology_id
+                             FROM (##WDK_ID_SQL##)
+                       ) ids,
+                       apidb.FeatureLocation OrfLoc
+                  where OrfLoc.sequence_source_id(+) = ids.seq_source_id AND
+                        OrfLoc.start_min(+) <= ids.end_max   AND
+                        OrfLoc.end_max(+) >= ids.start_min AND
+                        OrfLoc.is_reversed(+) >= ids.strand AND
+                        OrfLoc.feature_type(+) = 'Miscellaneous' AND
+                        OrfLoc.sequence_ontology_id(+) = ids.orf_sequence_ontology_id
+                  GROUP BY ids.source_id, ids.project_id
 
-        <sqlQuery name="Bfmv" doNotTest="true" includeProjects="UniDB">
-            <column name="source_id" ignoreCase="true" columnType="string"/>
-            <column name="seq_source_id" columnType="string"/>
-            <column name="start_min" columnType="number"/>
-            <column name="end_max" columnType="number"/>
-            <column name="start_text" columnType="string"/>
-            <column name="end_text" columnType="string"/>
-            <column name="length_text" columnType="string"/>
-            <column name="strand" columnType="string"/>
-            <column name="length" columnType="number"/>
-            <column name="organism" columnType="string"/>
-            <column name="organismAbbrev" columnType="string"/>
-            <column name="context_start" columnType="number"/>
-            <column name="context_end" columnType="number"/>
-
-            <!-- the source_id is in such form: MAL14:1271-984493:0 for poditive strand or 1 for negative strand -->
-           <sql>
-            <![CDATA[
-                SELECT ids.source_id, ids.seq_source_id,
-                       ids.start_min, ids.end_max, ids.strand,
-                       (ids.end_max - ids.start_min + 1) AS length,
-                       trim(to_char(ids.end_max,'999,999,999')) as end_text,
-                       trim(to_char(ids.start_min,'999,999,999')) as start_text,
-                       trim(to_char((ids.end_max - ids.start_min + 1),'999,999,999')) as length_text,
-                       sa.organism, o.public_abbrev as organismAbbrev,
-                       ids.start_min - 1000 AS context_start, ids.end_max + 1000 AS context_end
-                FROM (SELECT source_id,
-                             regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                             regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                             regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                             case when regexp_substr(source_id, '[^:]+', 1, 3) = 'f' then '+'
-   				       when regexp_substr(source_id, '[^:]+', 1, 3) = 'r' then '-'
-   				       else 'Unknown' end as strand
-                      FROM (##WDK_ID_SQL##
-                           )
-                     ) ids
-                     LEFT JOIN ApidbTuning.GenomicSeqAttributes sa
-                       ON ids.seq_source_id = sa.source_id
-                      , apidbtuning.organismattributes o
-                     WHERE o.organism_name = sa.organism  
-
-             ]]>
-           </sql>
-        </sqlQuery>
+                 ]]>
+                 </sql>
+            </sqlQuery>
+    -->
 
 
+    <!--
+            <sqlQuery name="EstCount" doNotTest="true">
+                <column name="source_id" ignoreCase="true"/>
+                <column name="project_id" ignoreCase="true"/>
+                <column name="estCount"/>
 
-<!--
-        <sqlQuery name="GeneCount" doNotTest="true">
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id" ignoreCase="true"/>
-            <column name="geneCount"/>
+                 <sql>
+                <![CDATA[
 
-             <sql>
-            <![CDATA[
+                  select
+                         ids.source_id, ids.project_id,
+                         nvl(count(distinct EstLoc.blat_alignment_id),0) as estCount
+                  from (select source_id, project_id,
+                               regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
+                               regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
+                               substr(source_id, -1) as strand
+                             from (##WDK_ID_SQL##)
+                       ) ids,
+                       ApidbTuning.EstAlignmentGeneSummary EstLoc
+                  where EstLoc.target_sequence_source_id(+) = ids.seq_source_id and
+                        EstLoc.target_start(+) <= ids.end_max and
+                        EstLoc.target_end(+) >= ids.start_min and
+                        EstLoc.is_reversed(+) >= ids.strand
+                  group by ids.source_id, ids.project_id
 
-              select
-                     ids.source_id, ids.project_id,
-                     nvl(count(distinct GeneLoc.feature_source_id),0) as geneCount
-              from (select source_id, project_id,
-                           regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                           substr(source_id, -1) as strand
-                         from (##WDK_ID_SQL##)
-                   ) ids,
-                   apidb.FeatureLocation GeneLoc
-              where GeneLoc.sequence_source_id(+) = ids.seq_source_id and
-                    GeneLoc.start_min(+) <= ids.end_max and
-                    GeneLoc.end_max(+) >= ids.start_min and
-                    GeneLoc.is_reversed(+) >= ids.strand and
-                    GeneLoc.feature_type(+) = 'GeneFeature'
-              group by ids.source_id, ids.project_id
-
-             ]]>
-             </sql>
-        </sqlQuery>
--->
-
-
-<!--
-        <sqlQuery name="SnpCount" doNotTest="true">
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id" ignoreCase="true"/>
-            <column name="snpCount"/>
-
-             <sql>
-            <![CDATA[
-
-              select
-                     ids.source_id, ids.project_id,
-                     nvl(count(distinct SnpLoc.feature_source_id),0) as snpCount
-              from (select source_id, project_id,
-                           regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                           case when regexp_substr(source_id, '[^:]+', 1, 3) = '0' then '+'
-                                when regexp_substr(source_id, '[^:]+', 1, 3) = '1' then '-'
-                                else 'Unknown' end as strand
-                    from (##WDK_ID_SQL##)
-                   ) ids,
-                   apidb.FeatureLocation SnpLoc
-              where SnpLoc.sequence_source_id(+) = ids.seq_source_id and
-                    SnpLoc.start_min(+) >= ids.start_min and
-                    SnpLoc.start_min(+) <= ids.end_max and
-                    SnpLoc.feature_type(+) = 'SnpFeature'
-              group by ids.source_id, ids.project_id
-
-             ]]>
-             </sql>
-        </sqlQuery>
--->
-
-
-<!--
-	<sqlQuery name="OrfCount" doNotTest="true">
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id" ignoreCase="true"/>
-            <column name="orfCount"/>
-
-             <sql>
-            <![CDATA[
-
-              select
-                     ids.source_id, ids.project_id,
-                     nvl(count(distinct OrfLoc.feature_source_id),0) as orfCount
-              from (select source_id, project_id,
-                           regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                           substr(source_id, -1) as strand,
-                           (select sequence_ontology_id from sres.SequenceOntology where term_name = 'ORF') as orf_sequence_ontology_id
-                         FROM (##WDK_ID_SQL##)
-                   ) ids,
-                   apidb.FeatureLocation OrfLoc
-              where OrfLoc.sequence_source_id(+) = ids.seq_source_id AND
-                    OrfLoc.start_min(+) <= ids.end_max   AND
-                    OrfLoc.end_max(+) >= ids.start_min AND
-                    OrfLoc.is_reversed(+) >= ids.strand AND
-                    OrfLoc.feature_type(+) = 'Miscellaneous' AND
-                    OrfLoc.sequence_ontology_id(+) = ids.orf_sequence_ontology_id
-              GROUP BY ids.source_id, ids.project_id
-
-             ]]>
-             </sql>
-        </sqlQuery>
--->
-
-
-<!--
-        <sqlQuery name="EstCount" doNotTest="true">
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id" ignoreCase="true"/>
-            <column name="estCount"/>
-
-             <sql>
-            <![CDATA[
-
-              select
-                     ids.source_id, ids.project_id,
-                     nvl(count(distinct EstLoc.blat_alignment_id),0) as estCount
-              from (select source_id, project_id,
-                           regexp_substr(source_id, '[^:]+', 1, 1) as seq_source_id,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,1) as start_min,
-                           regexp_substr(regexp_substr(source_id, '[^:]+', 1, 2), '[^\-]+', 1,2) as end_max,
-                           substr(source_id, -1) as strand
-                         from (##WDK_ID_SQL##)
-                   ) ids,
-                   ApidbTuning.EstAlignmentGeneSummary EstLoc
-              where EstLoc.target_sequence_source_id(+) = ids.seq_source_id and
-                    EstLoc.target_start(+) <= ids.end_max and
-                    EstLoc.target_end(+) >= ids.start_min and
-                    EstLoc.is_reversed(+) >= ids.strand
-              group by ids.source_id, ids.project_id
-
-             ]]>
-             </sql>
-        </sqlQuery>
--->
-
-
+                 ]]>
+                 </sql>
+            </sqlQuery>
+    -->
   </querySet>
-
-
 </wdkModel>
-
-

@@ -601,33 +601,30 @@ prop=sense
 prop=antisense
 prop=includeProjectsExcludeEuPathDB
 >templateTextStart<
-      <sqlQuery name="${datasetName}RnaSeqProfiles" includeProjects="${includeProjectsExcludeEuPathDB},Huh">
+      <sqlQuery name="${datasetName}RnaSeqProfiles" includeProjects="${includeProjectsExcludeEuPathDB}">
              <column name="display"/>
              <column name="internal"/>
              <column name="term"/>
           <sql>
            <![CDATA[
-SELECT profile_study_id AS internal, ps_name || '- ' ||  anal || sense AS term,
-    CASE WHEN ps_name like '% - %' THEN 
-        '${datasetDisplayName}' || SUBSTR(ps_name, INSTR(ps_name,'- ', -1, 1) +1)  ||  anal || sense 
-    ELSE  '${datasetDisplayName}'   ||  anal || sense END AS display
+SELECT profile_study_id AS internal, ps_name || '- ' || sense AS term,
+    CASE WHEN ps_name like '% - %' THEN
+        '${datasetDisplayName}' || sense
+    ELSE  '${datasetDisplayName}' || sense END AS display
 FROM (
-SELECT DISTINCT profile_study_id 
-, REGEXP_REPLACE (profile_set_name, '\[(.)+\]', '')  AS ps_name
-, REPLACE (REPLACE ( REPLACE ( REPLACE (  REGEXP_SUBSTR (profile_set_name, ' \[\S+ ') , 'htseq-union', '')  , 'cuff' , 'Cufflinks' ), '[', '') , '-', ' ' )  AS anal 
-, CASE  WHEN REGEXP_LIKE  (profile_set_name, 'cuff')  THEN  '' 
-      WHEN REGEXP_LIKE  (profile_set_name, '${sense}')  THEN  '- Sense' 
-      WHEN REGEXP_LIKE  (profile_set_name, ' ${antisense}')  THEN  '- Antisense' 
+SELECT DISTINCT profile_study_id
+, profile_set_name AS ps_name
+, CASE WHEN node_type like '%${sense}%'  THEN  '- Sense'
+       WHEN node_type like '%${antisense%' THEN  '- Antisense'
        ELSE 'unstranded' END AS sense
 FROM apidbtuning.profiletype
 WHERE dataset_type = 'transcript_expression'
 AND dataset_subtype = 'rnaseq'
 AND dataset_name = '${datasetName}'
 AND profile_type like '%values%'
-  -- allow ONLY 'HTSeq union'
-AND REGEXP_LIKE  (profile_set_name, 'htseq-union')
-AND profile_set_name NOT LIKE '%nonunique%'
-)
+AND node_type like '%htseq-union%'  -- only 'HTSeq union'
+AND node_type NOT LIKE '%nonunique%'
+) t
 ORDER BY term desc
             ]]>
           </sql>
@@ -682,26 +679,23 @@ prop=antisense
              <column name="term"/>
           <sql>
            <![CDATA[
-SELECT profile_study_id AS internal, ps_name || '- ' ||  anal || sense AS term,
-    CASE WHEN ps_name like '% - %' THEN 
-        '${datasetDisplayName}' || SUBSTR(ps_name, INSTR(ps_name,'- ', -1, 1) +1)  ||  anal || sense 
-    ELSE  '${datasetDisplayName}'   ||  anal || sense END AS display
+SELECT profile_study_id AS internal, ps_name || '- ' || sense AS term,
+    CASE WHEN ps_name like '% - %' THEN
+        '${datasetDisplayName}' || sense
+    ELSE  '${datasetDisplayName}' || sense END AS display
 FROM (
-SELECT DISTINCT profile_study_id 
-, REGEXP_REPLACE (profile_set_name, '\[(.)+\]', '')  AS ps_name
-, REPLACE (REPLACE ( REPLACE ( REPLACE (  REGEXP_SUBSTR (profile_set_name, ' \[\S+ ') , 'htseq-union', '')  , 'cuff' , 'Cufflinks' ), '[', '') , '-', ' ' )  AS anal 
-, CASE  WHEN REGEXP_LIKE  (profile_set_name, 'cuff')  THEN  '' 
-      WHEN REGEXP_LIKE  (profile_set_name, '${sense}')  THEN  '- Sense' 
-      WHEN REGEXP_LIKE  (profile_set_name, ' ${antisense}')  THEN  '- Antisense' 
+SELECT DISTINCT profile_study_id
+, profile_set_name AS ps_name
+, CASE WHEN node_type like '%${sense}%'  THEN  '- Sense'
+       WHEN node_type like '%${antisense%' THEN  '- Antisense'
        ELSE 'unstranded' END AS sense
 FROM apidbtuning.profiletype
 WHERE dataset_type = 'transcript_expression'
 AND dataset_subtype = 'rnaseq'
 AND dataset_name = '${datasetName}'
 AND profile_type like '%percentile%'
-  -- allow ONLY 'HTSeq union'
-AND REGEXP_LIKE (profile_set_name, 'htseq-union')
-)
+AND node_type like '%htseq-union%'  -- only 'HTSeq union'
+) t
 ORDER BY term desc
             ]]>
           </sql>
@@ -812,12 +806,12 @@ prop=includeProjectsExcludeEuPathDB
            <![CDATA[
 	    SELECT num AS internal, num ||' hours' AS term, num ||' hours' AS display
 	    FROM
-	    (SELECT Rownum num FROM dual
+	    (SELECT Rownum num
  	     CONNECT BY Rownum <= '${profileTimeShift}'
 	     UNION
-	     SELECT 0 num FROM dual
+	     SELECT 0 num
 	     UNION
-	     SELECT Rownum * (-1) num FROM dual
+	     SELECT Rownum * (-1) num
 	     CONNECT BY Rownum <= '${profileTimeShift}'
 	    ) t
 	    ORDER BY t.num ASC

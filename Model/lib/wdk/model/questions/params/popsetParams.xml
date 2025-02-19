@@ -11,305 +11,319 @@
     <!--++++++++++++++++++++++++++++++++++++++++++++++++-->
     <!-- ID -->
     <!--++++++++++++++++++++++++++++++++++++++++++++++++-->
-        <datasetParam name="popset_id" prompt="Popset ID" 
-                      recordClassRef="PopsetRecordClasses.PopsetRecordClass" >
-            <help>Input a comma delimited set of  Popset IDs, or upload a file. Wildcards (*) are allowed.</help>
-            <suggest includeProjects="AmoebaDB"
-                     default="GQ423750"/>
-            <suggest includeProjects="CryptoDB"
-                     default="AF527841"/>
-            <suggest includeProjects="GiardiaDB"
-                     default="EU815931, AF176672"/>
-             <suggest includeProjects="FungiDB"
-                     default="GQ247676,SRX053432,SRX093407"/>
-            <suggest includeProjects="MicrosporidiaDB"
-                     default="AB472273,EU123526"/>
-            <suggest includeProjects="PiroplasmaDB"
-                     default="EU362993,EU711062"/>
-            <suggest includeProjects="PlasmoDB"
-                     default="FJ490884, AB430787"/>
-            <suggest includeProjects="ToxoDB"
-                     default="AB703307,AF378312"/>
-           <suggest includeProjects="EuPathDB"
-                     default="AF527841"/>
-         </datasetParam>
+    <datasetParam name="popset_id" prompt="Popset ID"
+                  recordClassRef="PopsetRecordClasses.PopsetRecordClass">
+      <help>Input a comma delimited set of Popset IDs, or upload a file. Wildcards (*) are allowed.</help>
+      <suggest includeProjects="AmoebaDB"
+               default="GQ423750"/>
+      <suggest includeProjects="CryptoDB"
+               default="AF527841"/>
+      <suggest includeProjects="GiardiaDB"
+               default="EU815931, AF176672"/>
+      <suggest includeProjects="FungiDB"
+               default="GQ247676,SRX053432,SRX093407"/>
+      <suggest includeProjects="MicrosporidiaDB"
+               default="AB472273,EU123526"/>
+      <suggest includeProjects="PiroplasmaDB"
+               default="EU362993,EU711062"/>
+      <suggest includeProjects="PlasmoDB"
+               default="FJ490884, AB430787"/>
+      <suggest includeProjects="ToxoDB"
+               default="AB703307,AF378312"/>
+      <suggest includeProjects="EuPathDB"
+               default="AF527841"/>
+    </datasetParam>
 
-        <stringParam name="gene_id" prompt="Gene Name" number="false">
-            <help>Enter an Gene Name.  Wildcards (*) are allowed.</help>
-            <suggest includeProjects="CryptoDB,PlasmoDB,EuPathDB,ToxoDB"
-                     default="cgd5_3160"/>
-        </stringParam>
+    <stringParam name="gene_id" prompt="Gene Name" number="false">
+      <help>Enter an Gene Name. Wildcards (*) are allowed.</help>
+      <suggest includeProjects="CryptoDB,PlasmoDB,EuPathDB,ToxoDB"
+               default="cgd5_3160"/>
+    </stringParam>
 
-        <stringParam name="author" prompt="Author/Submitter" number="false">
-            <help>Enter an Author name.  Wildcards (*) are allowed.</help> 
-            <suggest default="Xiao"/> 
-        </stringParam>
+    <stringParam name="author" prompt="Author/Submitter" number="false">
+      <help>Enter an Author name. Wildcards (*) are allowed.</help>
+      <suggest default="Xiao"/>
+    </stringParam>
 
-        <stringParam name="product_wildcard"
-		     prompt="Locus Sequence  wildcard search" number="false">
-	  <suggest default="N/A"/>
-	  <help>Asterisks can be used as wildcard characters in a Locus Sequence Name (e.g. "dna*" or "*kinase*")</help>
-        </stringParam>
+    <stringParam name="product_wildcard"
+                 prompt="Locus Sequence  wildcard search" number="false">
+      <suggest default="N/A"/>
+      <help>Asterisks can be used as wildcard characters in a Locus Sequence Name (e.g. "dna*" or "*kinase*")</help>
+    </stringParam>
 
 
+    <flatVocabParam name="specific_host"
+                    queryRef="hostVQ.withPopsets"
+                    default="9606"
+                    prompt="Host"
+                    multiPick="true"
+                    quote="true"
+                    suppressNode="true"
+                    displayType="treeBox">
+      <propertyList name="organismProperties">
+        <value>pruneNodesWithSingleExtendingChild</value>
+        <value>highlightReferenceOrganisms</value>
+      </propertyList>
+    </flatVocabParam>
 
-        <flatVocabParam name="specific_host"
-             queryRef="hostVQ.withPopsets"
-             default="9606"
-             prompt="Host"
-             multiPick="true"
-             quote="true"
-             suppressNode="true"  
-             displayType="treeBox">
-           <propertyList name="organismProperties">
-              <value>pruneNodesWithSingleExtendingChild</value>
-              <value>highlightReferenceOrganisms</value>
-           </propertyList>
-        </flatVocabParam>
+    <flatVocabParam name="isolation_source"
+                    queryRef="isolationSourceVQ.withPopsets"
+                    prompt="Isolation Source"
+                    multiPick="true"
+                    quote="true">
+    </flatVocabParam>
 
-        <flatVocabParam name="isolation_source"
-             queryRef="isolationSourceVQ.withPopsets"
-             prompt="Isolation Source"
-             multiPick="true"
-             quote="true">
-        </flatVocabParam>
+    <flatVocabParam name="product"
+                    queryRef="productVQ.withPopsets"
+                    prompt="Locus Sequence Name"
+                    quote="false"
+                    displayType="typeAhead">
+      <suggest default="methyltransferase" includeProjects="UniDB"/>
+    </flatVocabParam>
 
-        <flatVocabParam name="product"
-            queryRef="productVQ.withPopsets"
-            prompt="Locus Sequence Name"
-            quote="false"
-            displayType="typeAhead">
-            <suggest default="methyltransferase" includeProjects="UniDB"/> 
-        </flatVocabParam>
+    <flatVocabParam name="genotype" includeProjects="ToxoDB,EuPathDB"
+                    queryRef="genotypeVQ.withPopsets"
+                    prompt="Genotype #"
+                    multiPick="true"
+                    quote="false">
+    </flatVocabParam>
 
-        <flatVocabParam name="genotype" includeProjects="ToxoDB,EuPathDB"
-            queryRef="genotypeVQ.withPopsets"
-            prompt="Genotype #"
-            multiPick="true"
-            quote="false">
-        </flatVocabParam>
+    <flatVocabParam name="study"
+                    queryRef="studyVQ.withPopsets"
+                    prompt="Study Name"
+                    displayType="typeAhead">
+      <help>Begin typing a name of Study.</help>
+      <suggest selectMode="none"/>
+      <noTranslation value="true" includeProjects="EuPathDB"/>
+    </flatVocabParam>
 
-        <flatVocabParam name="study" 
-            queryRef="studyVQ.withPopsets"
-            prompt="Study Name"
-            displayType="typeAhead">
-            <help>Begin typing a name of Study.</help>
-	    <suggest selectMode="none" />
-	    <noTranslation value="true" includeProjects="EuPathDB" />
-        </flatVocabParam>
+    <flatVocabParam name="country"
+                    queryRef="countryVQ.withPopsets"
+                    prompt="Geographic Locations"
+                    default="Unknown"
+                    multiPick="true"
+                    quote="true"
+                    displayType="treeBox">
+      <suggest selectMode="all"/>
+    </flatVocabParam>
 
-        <flatVocabParam name="country" 
-            queryRef="countryVQ.withPopsets"
-            prompt="Geographic Locations"
-            default="Unknown"
-            multiPick="true"
-            quote="true"
-            displayType="treeBox">
-            <suggest selectMode="all" />
-        </flatVocabParam>
+    <flatVocabParam name="continent" includeProjects="CryptoDB,PlasmoDB,EuPathDB"
+                    queryRef="continentVQ.withPopsets"
+                    prompt="Continent Name"
+                    default="--None--"
+                    multiPick="true"
+                    quote="false">
+    </flatVocabParam>
 
-        <flatVocabParam name="continent" includeProjects="CryptoDB,PlasmoDB,EuPathDB"
-            queryRef="continentVQ.withPopsets"
-            prompt="Continent Name"
-            default="--None--"
-            multiPick="true"
-            quote="false">
-        </flatVocabParam> 
+    <flatVocabParam name="strain"
+                    queryRef="strainVQ.withPopsets"
+                    prompt="Species/Strain Name"
+                    multiPick="true"
+                    quote="true"
+                    suppressNode="true"
+                    displayType="treeBox">
+      <help>
+        Names from the NCBI Taxonomy
+      </help>
+      <suggest selectMode="first"/>
+    </flatVocabParam>
 
-        <flatVocabParam name="strain" 
-            queryRef="strainVQ.withPopsets"
-            prompt="Species/Strain Name"
-            multiPick="true"
-            quote="true"
-            suppressNode="true"
-            displayType="treeBox">
-                  <help>
-                        Names from the NCBI Taxonomy 
-                        </help>
-            <suggest selectMode="first" />
-       </flatVocabParam>
-
-       <enumParam name="text_fields"
-                  prompt="Fields"
-                  multiPick="true">
-        <noTranslation value="true" includeProjects="EuPathDB" />
-	 <noTranslation value="false" excludeProjects="EuPathDB" />
-         <help>
-             Choose which text fields to search.
-         </help>
-         <suggest selectMode="all" />
-         <enumList>
-           <enumValue>
-             <term>Organism</term>
-             <internal>organismTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Description</term>
-             <internal>descriptionTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Strain</term>
-             <internal>strainTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Host</term>
-             <internal>hostTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Note</term>
-             <internal>noteTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Isolation Source</term>
-             <internal>isolation_sourceTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Geographic Location</term>
-             <internal>geographic_locationTable</internal>
-           </enumValue>
-           <enumValue>
-             <term>Reference</term>
-             <internal>Reference</internal>
-           </enumValue>
-           <enumValue>
-             <term>Overlapping gene (ID or product)</term>
-             <internal>GeneOverlap</internal>
-           </enumValue>
-         </enumList>
-       </enumParam>
+    <enumParam name="text_fields"
+               prompt="Fields"
+               multiPick="true">
+      <noTranslation value="true" includeProjects="EuPathDB"/>
+      <noTranslation value="false" excludeProjects="EuPathDB"/>
+      <help>
+        Choose which text fields to search.
+      </help>
+      <suggest selectMode="all"/>
+      <enumList>
+        <enumValue>
+          <term>Organism</term>
+          <internal>organismTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Description</term>
+          <internal>descriptionTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Strain</term>
+          <internal>strainTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Host</term>
+          <internal>hostTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Note</term>
+          <internal>noteTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Isolation Source</term>
+          <internal>isolation_sourceTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Geographic Location</term>
+          <internal>geographic_locationTable</internal>
+        </enumValue>
+        <enumValue>
+          <term>Reference</term>
+          <internal>Reference</internal>
+        </enumValue>
+        <enumValue>
+          <term>Overlapping gene (ID or product)</term>
+          <internal>GeneOverlap</internal>
+        </enumValue>
+      </enumList>
+    </enumParam>
 
     <answerParam name="popset_result"
-                  prompt="Input Result Set"
-                  readonly="true"
-                  visible="false">
-        <recordClass ref="PopsetRecordClasses.PopsetRecordClass" />
+                 prompt="Input Result Set"
+                 readonly="true"
+                 visible="false">
+      <recordClass ref="PopsetRecordClasses.PopsetRecordClass"/>
     </answerParam>
 
-     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-     <!-- hts popset answer param -->
-     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-     <answerParam name="htsPopsetList" includeProjects="PlasmoDB"
-                    prompt="HTS Popset Set"
-                  readonly="true"
-                visible="false">
-        <recordClass ref="PopsetRecordClasses.PopsetRecordClass" />
-     </answerParam>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- hts popset answer param -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <answerParam name="htsPopsetList" includeProjects="PlasmoDB"
+                 prompt="HTS Popset Set"
+                 readonly="true"
+                 visible="false">
+      <recordClass ref="PopsetRecordClasses.PopsetRecordClass"/>
+    </answerParam>
 
-    </paramSet>
+  </paramSet>
 
 
   <querySet name="hostVQ" queryType="vocab" isCacheable="true">
     <sqlQuery name="withPopsets" excludeProjects="EuPathDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <column name="parentTerm"/>
-    <column name="display"/>
-    <sql>
-      <![CDATA[
-        with relationship -- parent-child pairings for host taxa and all ancestors
-             as (select distinct taxon_id, ncbi_tax_id, parent_id
-                 from sres.taxon
-                 start with ncbi_tax_id in (select host_ncbi_tax_id from apidbTuning.PopsetAttributes)
-                 connect by prior parent_id = taxon_id)
-        select r.ncbi_tax_id as term, r.ncbi_tax_id as internal,
-               pt.ncbi_tax_id as parentterm,
-               sci.name || case
-                             when commons.name is null then ''
-                             else ' (' || commons.name || ')'
-                           end
-                 as display
-        from relationship r, sres.taxon pt, sres.taxonName sci,
-             (select taxon_id, 
-                     listagg (name, ' / ') within group (order by name) as name
-              from sres.taxonName
-              where name_class = 'common name'
-              group by taxon_id) commons
-        where r.parent_id = pt.taxon_id(+)
-          and r.taxon_id = sci.taxon_id
-          and sci.name_class = 'scientific name'
-          and r.taxon_id = commons.taxon_id(+)
-        order by r.ncbi_tax_id, pt.ncbi_tax_id
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <column name="parentTerm"/>
+      <column name="display"/>
+      <sql>
+        <![CDATA[
+          WITH relationship AS ( -- parent-child pairings for host taxa and all ancestors
+            WITH RECURSIVE CTE AS (
+              SELECT taxon_id, ncbi_tax_id, parent_id
+              FROM sres.taxon
+              WHERE ncbi_tax_id IN (SELECT host_ncbi_tax_id FROM apidbTuning.PopsetAttributes)
+              UNION
+              SELECT sub.taxon_id, sub.ncbi_tax_id, sub.parent_id
+              FROM sres.taxon sub, CTE
+              WHERE cte.parent_id = sub.taxon_id
+            )
+            SELECT DISTINCT taxon_id, ncbi_tax_id, parent_id
+            FROM cte
+            ORDER BY taxon_id, ncbi_tax_id, parent_id
+          )
+          SELECT r.ncbi_tax_id AS term
+            , r.ncbi_tax_id AS internal
+            , pt.ncbi_tax_id AS parentterm
+            , sci.name || CASE
+            WHEN commons.name IS NULL THEN ''
+            ELSE ' (' || commons.name || ')'
+                          END
+            AS display
+          FROM relationship r
+             INNER JOIN sres.taxonName sci ON r.taxon_id = sci.taxon_id
+             LEFT JOIN sres.taxon pt ON r.parent_id = pt.taxon_id
+             LEFT JOIN (
+                 SELECT taxon_id
+                   , string_agg(name, ' / ' ORDER BY name) AS name
+                 FROM sres.taxonName
+                 WHERE name_class = 'common name'
+                 GROUP BY taxon_id
+               ) commons ON r.taxon_id = commons.taxon_id
+          WHERE sci.name_class = 'scientific name'
+          ORDER BY r.ncbi_tax_id, pt.ncbi_tax_id
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
       <wsColumn name="parentTerm" width="200" wsName="parentTerm"/>
       <wsColumn name="display" width="200" wsName="display"/>
     </processQuery>
 
-    </querySet>
+  </querySet>
 
   <querySet name="isolationSourceVQ" queryType="vocab" isCacheable="true">
     <sqlQuery name="withPopsets" excludeProjects="EuPathDB">
-    <column name="term"/>
-    <column name="internal"/>
-    <sql>
-      <![CDATA[
-        SELECT distinct curated_isolation_source AS term, curated_isolation_source AS internal
-        FROM apidbTuning.popsetAttributes
-	WHERE curated_isolation_source is NOT NULL
-        ORDER BY lower(curated_isolation_source)
-       ]]>
-    </sql>
+      <column name="term"/>
+      <column name="internal"/>
+      <sql>
+        <![CDATA[
+          SELECT distinct curated_isolation_source AS term, curated_isolation_source AS internal
+          FROM apidbTuning.popsetAttributes
+          WHERE curated_isolation_source is NOT NULL
+          ORDER BY lower(curated_isolation_source)
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="200" wsName="internal"/>
       <wsColumn name="term" width="200" wsName="term"/>
     </processQuery>
 
-    </querySet>
+  </querySet>
 
   <querySet name="productVQ" queryType="vocab" isCacheable="true">
     <sqlQuery name="withPopsets" excludeProjects="EuPathDB">
-    <column name="display"/>
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-       SELECT product AS display, replace(product, ',', '') as term, product as internal
-       FROM (SELECT distinct ga.product 
-             FROM apidbtuning.GenePopsetOverlap gio, apidbtuning.GeneAttributes ga
-             WHERE gio.gene_source_id = ga.source_id
-               AND min_pvalue_exp<-5
-               AND ga.product IS NOT NULL
-               AND NOT ga.product = ' ')
-     UNION
-       SELECT 'N/A' AS display, 'N/A' AS term, 'N/A' AS internal
-       FROM dual
-    ]]>
-    </sql>
+      <column name="display"/>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+         SELECT product AS display, replace(product, ',', '') as term, product as internal
+         FROM (SELECT distinct ga.product
+               FROM apidbtuning.GenePopsetOverlap gio, apidbtuning.GeneAttributes ga
+               WHERE gio.gene_source_id = ga.source_id
+                 AND min_pvalue_exp<-5
+                 AND ga.product IS NOT NULL
+                 AND NOT ga.product = ' '
+               ) t
+         UNION
+         SELECT 'N/A' AS display, 'N/A' AS term, 'N/A' AS internal
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="2000" wsName="internal"/>
       <wsColumn name="term" width="2000" wsName="term"/>
       <wsColumn name="display" width="2000" wsName="display"/>
     </processQuery>
 
-     </querySet>
+  </querySet>
 
   <querySet name="genotypeVQ" queryType="vocab" isCacheable="true">
     <sqlQuery name="withPopsets" includeProjects="ToxoDB">
-    <column name="display"/>
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select distinct 'Genotype #' || v.prediction_number as display, 
-      v.prediction_number as term, v.prediction_number as internal
-from dots.popsetfeature v 
-where name = 'RFLP'
- and v.prediction_number is not null
-order by v.prediction_number
-    ]]>
-    </sql>
+      <column name="display"/>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT distinct 'Genotype #' || v.prediction_number as display,
+                v.prediction_number as term, v.prediction_number as internal
+          FROM dots.popsetfeature v
+          WHERE name = 'RFLP'
+           AND v.prediction_number is not null
+          ORDER BY v.prediction_number
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
@@ -319,199 +333,199 @@ order by v.prediction_number
   <querySet name="notRflpGenotypeVQ" queryType="vocab" isCacheable="true">
 
     <sqlQuery name="I-II-III" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'BTUB'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'BTUB'
+       ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="I-u-1" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'CS3'
-    ]]>
-    </sql>
-    </sqlQuery> 
-		
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'CS3'
+        ]]>
+      </sql>
+    </sqlQuery>
+
     <sqlQuery name="I-II-III-nd" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'Apico'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'Apico'
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="c29-2" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'c29-2'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT DISTINCT v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'c29-2'
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="c22-8" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'c22-8'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'c22-8'
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="PK1" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'PK1'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'PK1'
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="SAG1" includeProjects="ToxoDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <sql>
-    <![CDATA[
-select 'Don''t Care' as term, 'all' as internal
-from dual 
-union
-select distinct v.gene_type as term, v.gene_type as internal
-from dots.popsetfeature v 
-where v.name = 'RFLP'
-and v.product = 'SAG1'
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
+        <![CDATA[
+          SELECT 'Don''t Care' as term, 'all' as internal
+          UNION
+          SELECT distinct v.gene_type as term, v.gene_type as internal
+          FROM dots.popsetfeature v
+          WHERE v.name = 'RFLP'
+            AND v.product = 'SAG1'
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="I-II-III" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="I-II-III" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
-    <processQuery name="I-II-III-nd" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="I-II-III-nd" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
-    <processQuery name="I-u-1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="I-u-1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
-    <processQuery name="c29-2" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
-      <wsColumn name="internal" width="100" wsName="internal"/>
-      <wsColumn name="term" width="100" wsName="term"/>
-    </processQuery>
-		
-    <processQuery name="c22-8" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="c29-2" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
-    <processQuery name="PK1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="c22-8" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
-    <processQuery name="SAG1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="PK1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
+      <wsColumn name="internal" width="100" wsName="internal"/>
+      <wsColumn name="term" width="100" wsName="term"/>
+    </processQuery>
+
+    <processQuery name="SAG1" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="100" wsName="internal"/>
       <wsColumn name="term" width="100" wsName="term"/>
     </processQuery>
 
 
-  </querySet> 
+  </querySet>
 
   <querySet name="studyVQ" queryType="vocab" isCacheable="true">
     <sqlQuery name="withPopsets" excludeProjects="EuPathDB,TriTrypDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <column name="display"/>
-    <sql>
-    <![CDATA[
-    select distinct apidb.alphanumeric_str(r.title) as term,
+      <column name="internal"/>
+      <column name="term"/>
+      <column name="display"/>
+      <sql>
+        <![CDATA[
+          SELECT DISTINCT apidb.alphanumeric_str(r.title) as term,
                     apidb.alphanumeric_str(r.title) as display,
                     r.title as internal
-     from SRES.BIBLIOGRAPHICREFERENCE r
-    ]]>
-    </sql>
+          FROM SRES.BIBLIOGRAPHICREFERENCE r
+        ]]>
+      </sql>
     </sqlQuery>
 
     <sqlQuery name="withPopsets" includeProjects="TriTrypDB">
-    <column name="internal"/>
-    <column name="term"/>
-    <column name="display"/>
-    <sql>
-    <![CDATA[
-    select distinct apidb.alphanumeric_str(r.title) as term,
-                    apidb.alphanumeric_str(r.title) as display,
-                    r.title as internal
-     from SRES.BIBLIOGRAPHICREFERENCE r
-     , study.studybibref sbr
-     , study.studylink sl
-     , apidbtuning.popsetattributes pa
-     where r.title is not null
-     and r.bibliographic_reference_id = sbr.bibliographic_reference_id
-     and sbr.study_id = sl.study_id
-     and sl.protocol_app_node_id = pa.protocol_app_node_id
-     order by r.title
-    ]]>
-    </sql>
+      <column name="internal"/>
+      <column name="term"/>
+      <column name="display"/>
+      <sql>
+        <![CDATA[
+          SELECT distinct apidb.alphanumeric_str(r.title) as term,
+                          apidb.alphanumeric_str(r.title) as display,
+                          r.title as internal
+           FROM SRES.BIBLIOGRAPHICREFERENCE r
+             , study.studybibref sbr
+             , study.studylink sl
+             , apidbtuning.popsetattributes pa
+           WHERE r.title is not null
+             AND r.bibliographic_reference_id = sbr.bibliographic_reference_id
+             AND sbr.study_id = sl.study_id
+             AND sl.protocol_app_node_id = pa.protocol_app_node_id
+           ORDER BY r.title
+        ]]>
+      </sql>
     </sqlQuery>
 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
       <wsColumn name="internal" width="200" wsName="internal"/>
       <wsColumn name="term" width="200" wsName="term"/>
     </processQuery>
 
   </querySet>
-
 
 
   <querySet name="countryVQ" queryType="vocab" isCacheable="true">
@@ -555,13 +569,14 @@ and v.product = 'SAG1'
               from sres.OntologyTerm
               where ontology_term_id in (select continent_id from continentalization)
         union 
-         select 'unknown' as term, 'Unknown' as display, 'unknown' as internal, null as parentTerm from dual 
-	]]>
+         select 'unknown' as term, 'Unknown' as display, 'unknown' as internal, null as parentTerm
+	  ]]>
       </sql>
     </sqlQuery>
 
- 
-    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB"  sorting="term ASC">
+
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB" sorting="term ASC">
       <wsColumn name="internal" width="200" wsName="internal"/>
       <wsColumn name="term" width="200" wsName="term"/>
       <wsColumn name="display" width="200" wsName="display"/>
@@ -572,27 +587,27 @@ and v.product = 'SAG1'
 
   <querySet name="continentVQ" queryType="vocab" isCacheable="true">
 
-     <sqlQuery name="withPopsets" includeProjects="CryptoDB, PlasmoDB">
-        <column name="internal"/>
-        <column name="term"/>
-        <sql>
+    <sqlQuery name="withPopsets" includeProjects="CryptoDB, PlasmoDB">
+      <column name="internal"/>
+      <column name="term"/>
+      <sql>
         <![CDATA[
-        SELECT distinct initcap(src.continent) AS term,
-               src.continent AS internal
-        FROM   ApiDB.Continents src
-        WHERE  src.continent is not null
-        UNION
-        SELECT '--None--' AS term,
-               '0' AS internal
-        FROM   dual
-        ]]> 
-     </sql> 
-  </sqlQuery>
+          SELECT distinct initcap(src.continent) AS term,
+                 src.continent AS internal
+          FROM   ApiDB.Continents src
+          WHERE  src.continent is not null
+          UNION
+          SELECT '--None--' AS term,
+                 '0' AS internal
+        ]]>
+      </sql>
+    </sqlQuery>
 
-  <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB"> 
-      <wsColumn name="internal" width="200" wsName="internal"/> 
-      <wsColumn name="term" width="200" wsName="term"/> 
-  </processQuery> 
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB">
+      <wsColumn name="internal" width="200" wsName="internal"/>
+      <wsColumn name="term" width="200" wsName="term"/>
+    </processQuery>
   </querySet>
 
 
@@ -603,53 +618,67 @@ and v.product = 'SAG1'
       <column name="term"/>
       <column name="parentTerm"/>
 
-
-<sql>
-      <![CDATA[
-select distinct regexp_replace(organism, '['']', '') as term,
-                organism as internal,
-                case when organism = 'environmental samples'
-                     then ''
-                     else regexp_replace(parent, '['']', '')
-                end as parentTerm
-from (select tn.name as organism, 
-             pn.name as parent
-      from (select t.taxon_id, t.parent_id
-            from sres.taxon t
-            start with taxon_id in (select distinct tn.taxon_id 
-                                    from apidb.organism o, sres.taxonname tn
-                                    where family_name_for_files is not null 
-                                    and tn.name = o.family_name_for_files
-
-                                    -- TODO: these can be removed when the workflow populates apidb.organism.family_name_for_files
-                                    union
-                                    select taxon_id from sres.taxonname 
-                                    where name = case when '@PROJECT_ID@' = 'PlasmoDB'
-                                                      then 'Plasmodium'
-                                                 else '' end
-                                    )
-            connect by prior taxon_id = parent_id
-           ) tree, sres.taxonname tn, sres.taxonname pn
-     where tree.taxon_id = tn.taxon_id and tn.name_class = 'scientific name'
-     and tree.parent_id = pn.taxon_id and pn.name_class = 'scientific name'
-     and not tn.name = pn.name
-     )
-start with organism in (select distinct organism from apidbtuning.popsetattributes)
-CONNECT BY NOCYCLE prior parent = organism
-order by organism
-     ]]>
+      <sql>
+        <![CDATA[
+          WITH innerT AS (
+            WITH RECURSIVE cte AS (
+              SELECT t.taxon_id, t.parent_id
+              FROM sres.taxon t
+              WHERE taxon_id IN (
+                SELECT DISTINCT tn.taxon_id
+                FROM apidb.organism o, sres.taxonname tn
+                WHERE family_name_for_files IS NOT NULL
+                  AND tn.name = o.family_name_for_files
+                  -- TODO: these can be removed when the workflow populates apidb.organism.family_name_for_files
+                UNION
+                SELECT taxon_id
+                FROM sres.taxonname
+                WHERE name = CASE WHEN '@PROJECT_ID@' = 'PlasmoDB' THEN 'Plasmodium' ELSE '' END
+              )
+              UNION
+              SELECT sub.taxon_id, sub.parent_id
+              FROM sres.taxon sub, cte
+              WHERE cte.taxon_id = sub.parent_id
+            )
+            SELECT tn.name AS organism
+              , pn.name AS parent
+            FROM cte tree, sres.taxonname tn, sres.taxonname pn
+            WHERE tree.taxon_id = tn.taxon_id
+              AND tn.name_class = 'scientific name'
+              AND tree.parent_id = pn.taxon_id
+              AND pn.name_class = 'scientific name'
+              AND NOT tn.name = pn.name
+          )
+          SELECT DISTINCT regexp_replace(organism, '['']', '') as term,
+            organism as internal,
+            case when organism = 'environmental samples'
+                   then ''
+                 else regexp_replace(parent, '['']', '')
+            end as parentTerm
+          FROM (
+            WITH RECURSIVE cte AS (
+              SELECT organism, parent
+              FROM innerT
+              WHERE organism in (SELECT DISTINCT organism FROM apidbtuning.popsetattributes)
+              UNION
+              SELECT sub.organism, sub.parent
+              FROM innerT sub, cte
+              WHERE cte.parent = sub.organism
+            )
+            SELECT * FROM cte
+          ) t
+          ORDER BY term
+        ]]>
       </sql>
-
     </sqlQuery>
 
-
- <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin" includeProjects="EuPathDB" sorting="term ASC">
+    <processQuery name="withPopsets" processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"
+                  includeProjects="EuPathDB" sorting="term ASC">
       <wsColumn name="internal" width="200" wsName="internal"/>
       <wsColumn name="term" width="200" wsName="term"/>
       <wsColumn name="parentTerm" width="200" wsName="parentTerm"/>
     </processQuery>
 
   </querySet>
-
 
 </wdkModel>

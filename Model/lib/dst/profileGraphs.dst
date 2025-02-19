@@ -7,7 +7,6 @@ prop=graphPriorityOrderGrouping
 	 UNION
 	 select '${datasetName}' as dataset_name,
 	       ${graphPriorityOrderGrouping} as order_num
-	 from dual
 >templateTextEnd<
 
 [templateStart] 
@@ -28,7 +27,6 @@ prop=isGraphCustom
        '${graphYAxisDescription}' as y_axis,
        '${isGraphCustom}' as is_graph_custom,
        ${graphPriorityOrderGrouping} as order_num
-       from dual
 >templateTextEnd<
 
 
@@ -55,7 +53,6 @@ prop=defaultGraphCategory
        '${graphYAxisDescription}' as y_axis,
        '${isGraphCustom}' as is_graph_custom,
        ${graphPriorityOrderGrouping} as order_num
-       from dual
 >templateTextEnd<
 
 [templateStart] 
@@ -74,7 +71,6 @@ prop=graphXAxisSamplesDescription
                   '${isGraphCustom}' as is_graph_custom,
                   '${graphXAxisSamplesDescription}' as xaxis_description,
                   '${projectName}' as project_id
-       from dual
 >templateTextEnd<
 
 [templateStart] 
@@ -95,7 +91,6 @@ prop=isGraphCustom
        '${graphYAxisDescription}' as y_axis,
        '${isGraphCustom}' as is_graph_custom,
        ${graphPriorityOrderGrouping} as order_num
-       from dual
 >templateTextEnd<
 
 
@@ -117,7 +112,6 @@ prop=isGraphCustom
        '${graphYAxisDescription}' as y_axis,
        '${isGraphCustom}' as is_graph_custom,
        ${graphPriorityOrderGrouping} as order_num
-       from dual
 >templateTextEnd<
 
 
@@ -141,7 +135,6 @@ select '${datasetName}'as dataset,
        '${graphYAxisDescription}' as y_axis,
        '${isGraphCustom}' as is_graph_custom,
        ${graphPriorityOrderGrouping} as order_num
-       from dual
 >templateTextEnd<
 
 
@@ -163,7 +156,6 @@ prop=isGraphCustom
       , '${graphYAxisDescription}' as y_axis
       , '${isGraphCustom}' as is_graph_custom
       , ${graphPriorityOrderGrouping} as order_num
-      from dual
 >templateTextEnd<
 
 [templateStart] 
@@ -179,10 +171,21 @@ prop=includeProjectsExcludeEuPathDB
             <column name="project_id"/>
             <sql>
               <![CDATA[
-                       select ta.source_id, ta.project_id, ta.gene_source_id, p.*
-                       from apidbtuning.transcriptattributes ta
-                       , (select * from table (apidb.pivot('SELect * from (SELECT ga.source_id as profile_source_id, ''pan_'' || to_char(nfe.protocol_app_node_id) as protocol_app_node, to_number(round(nfe.value, 2)) as value FROM results.nafeatureexpression nfe, apidbtuning.profilesamples ps, apidbtuning.geneattributes ga WHERE nfe.PROTOCOL_APP_NODE_ID = ps.PROTOCOL_APP_NODE_ID and ps.DATASET_NAME = ''${datasetName}'' and ps.profile_type = ''values'' and nfe.NA_FEATURE_ID = ga.NA_FEATURE_ID)'))) p
-                       where ta.gene_source_id = p.profile_source_id (+)
+  SELECT ta.source_id, ta.project_id, ta.gene_source_id, p.*
+  FROM apidbtuning.transcriptattributes ta,
+    (SELect *
+     FROM  crosstab ('SELECT  ga.source_id as profile_source_id,
+                          ''pan_'' || nfe.protocol_app_node_id as protocol_app_node,
+                          round(cast(nfe.value as numeric), 2) as value
+                      FROM results.nafeatureexpression nfe, apidbtuning.profilesamples ps, apidbtuning.geneattributes ga
+                      WHERE nfe.protocol_app_node_id = ps.protocol_app_node_id
+                      AND ps.DATASET_NAME = ''${datasetName}''
+                      AND ps.profile_type = ''values''
+                      AND nfe.NA_FEATURE_ID = ga.NA_FEATURE_ID
+                      ORDER BY protocol_app_node,value')
+            as profileStr (profile_source_id varchar(20), pan1 numeric, pan2 numeric, pan3 numeric, pan4 numeric, pan5 numeric, pan6 numeric, pan7 numeric, pan8 numeric, pan9 numeric, pan11 numeric, pan12 numeric, pan13 numeric, pan14 numeric, pan15 numeric, pan16 numeric, pan17 numeric, pan18 numeric, pan19 numeric)
+    ) p
+    WHERE ta.gene_source_id = p.profile_source_id
               ]]>
             </sql>
         </sqlQuery>
@@ -201,7 +204,7 @@ prop=includeProjectsExcludeEuPathDB
             <![CDATA[
            select 'pan_' || ps.PROTOCOL_APP_NODE_ID as name
                 , CASE WHEN ct.ct > 1
-                        THEN nvl(ps.profile_set_suffix, REGEXP_REPLACE(ps.study_name, ' \[.+\]', '') ) || ' - ' || ps.protocol_app_node_name 
+                        THEN COALESCE(ps.profile_set_suffix, REGEXP_REPLACE(ps.study_name, ' \[.+\]', '') ) || ' - ' || ps.protocol_app_node_name 
                        WHEN ct.ct = 1 and ps.profile_set_suffix is not null
                         THEN ps.profile_set_suffix || ' - ' || ps.protocol_app_node_name 
                        ELSE ps.protocol_app_node_name 
@@ -237,7 +240,7 @@ prop=includeProjectsExcludeEuPathDB
           </sql>  
           <sql includeProjects="EuPathDB">
             <![CDATA[
-            select '${datasetName}' as name, '${datasetName}' from dual
+            select '${datasetName}' as name, '${datasetName}' 
             ]]>
           </sql>  
 
@@ -261,10 +264,21 @@ prop=includeProjectsExcludeEuPathDB
             <column name="project_id"/>
             <sql>
               <![CDATA[
-                       select ta.source_id, ta.project_id, ta.gene_source_id, p.*
-                       from apidbtuning.transcriptattributes ta
-                       , (select * from table (apidb.pivot('SELect * from (SELECT ga.source_id as profile_source_id, ''pan_'' || to_char(nfe.protocol_app_node_id) as protocol_app_node, to_number(round(nfe.value, 2)) as value FROM results.nafeatureexpression nfe, apidbtuning.profilesamples ps, apidbtuning.geneattributes ga WHERE nfe.PROTOCOL_APP_NODE_ID = ps.PROTOCOL_APP_NODE_ID and ps.DATASET_NAME = ''${datasetName}'' and ps.profile_type = ''values'' and nfe.NA_FEATURE_ID = ga.NA_FEATURE_ID)'))) p
-                       where ta.gene_source_id = p.profile_source_id (+)
+  SELECT ta.source_id, ta.project_id, ta.gene_source_id, p.*
+  FROM apidbtuning.transcriptattributes ta,
+    (SELECT *
+     FROM  crosstab ('SELECT  ga.source_id as profile_source_id,
+                          ''pan_'' || nfe.protocol_app_node_id as protocol_app_node,
+                          round(cast(nfe.value as numeric), 2) as value
+                      FROM results.nafeatureexpression nfe, apidbtuning.profilesamples ps, apidbtuning.geneattributes ga
+                      WHERE nfe.protocol_app_node_id = ps.protocol_app_node_id
+                      AND ps.DATASET_NAME = ''${datasetName}'' 
+                      AND ps.profile_type = ''values''
+                      AND nfe.NA_FEATURE_ID = ga.NA_FEATURE_ID
+                      ORDER BY protocol_app_node,value')
+            as profileStr (profile_source_id varchar(20), pan1 numeric, pan2 numeric, pan3 numeric, pan4 numeric, pan5 numeric, pan6 numeric, pan7 numeric, pan8 numeric, pan9 numeric, pan11 numeric, pan12 numeric, pan13 numeric, pan14 numeric, pan15 numeric, pan16 numeric, pan17 numeric, pan18 numeric, pan19 numeric)
+    ) p
+    WHERE ta.gene_source_id = p.profile_source_id
               ]]>
             </sql>
         </sqlQuery>
@@ -288,14 +302,14 @@ SELECT 'pan_' || ps.PROTOCOL_APP_NODE_ID AS name,
     ELSE ps.profile_set_suffix || ' '
   END ||
   CASE
-    WHEN regexp_like(ps.study_name, '${sense}')
+    WHEN lower(ps.study_name) like '%${sense}%'
     THEN 'sense'
-    WHEN regexp_like(ps.study_name, '${antisense}')
+    WHEN lower(ps.study_name) like '%${antisense}%'
     THEN 'antisense'
     ELSE 'unstranded'
   END  || ' - ' || ps.protocol_app_node_name  ||
   CASE
-    WHEN regexp_like(ps.study_name, ' unique')
+    WHEN lower(ps.study_name) like '%unique%'
     THEN ' - unique only'
     ELSE ''
   END AS display_name,
@@ -325,7 +339,7 @@ ORDER BY ps.study_id, ps.NODE_ORDER_NUM
           </sql>  
           <sql includeProjects="EuPathDB">
             <![CDATA[
-            select '${datasetName}' as name, '${datasetName}' from dual
+            select '${datasetName}' as name, '${datasetName}' 
             ]]>
           </sql>  
        </sqlQuery>

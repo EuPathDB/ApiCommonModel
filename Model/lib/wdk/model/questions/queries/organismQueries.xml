@@ -1,18 +1,19 @@
 <wdkModel>
   <querySet name="OrganismIds" queryType="id" isCacheable="true">
 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- Query for AllEsts Question (NEEDED for SiteSearch tests) -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Query for AllEsts Question (NEEDED for SiteSearch tests) -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
     <sqlQuery name="AllOrganisms">
-        <column name="source_id"/>
-        <column name="project_id"/>
-       <sql>
-         <![CDATA[
-select s.source_id, s.project_id
-from apidbtuning.OrganismAttributes s
-         ]]>
-       </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT s.source_id, s.project_id
+          FROM apidbtuning.OrganismAttributes s
+          WHERE (s.project_id = '@PROJECT_ID@' OR 'UniDB' = '@PROJECT_ID@')
+        ]]>
+      </sql>
     </sqlQuery>
 
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -20,43 +21,45 @@ from apidbtuning.OrganismAttributes s
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="GenomeDataTypes">
-        <column name="source_id"/>
-        <column name="project_id"/>
-        <sql>
-          <![CDATA[
-SELECT source_id, oa.project_id
-FROM apidbtuning.organismattributes oa
-            ]]>
-         </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, oa.project_id
+          FROM apidbtuning.organismattributes oa
+          WHERE (oa.project_id = '@PROJECT_ID@' OR 'UniDB' = '@PROJECT_ID@')
+        ]]>
+      </sql>
     </sqlQuery>
 
 
     <sqlQuery name="GeneMetrics">
-        <column name="source_id"/>
-        <column name="project_id"/>
-        <column name="species"/>
-        <column name="strain"/>
-        <sql>
-          <![CDATA[
-SELECT source_id, oa.project_id,
-       species, strain
-FROM apidbtuning.organismattributes oa
-WHERE is_annotated_genome = 1
-            ]]>
-         </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="species"/>
+      <column name="strain"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, oa.project_id,
+                 species, strain
+          FROM apidbtuning.organismattributes oa
+          WHERE is_annotated_genome = 1
+          AND (oa.project_id = '@PROJECT_ID@' OR 'UniDB' = '@PROJECT_ID@')
+        ]]>
+      </sql>
     </sqlQuery>
 
     <processQuery name="OrganismsByText"
-          processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
-       <paramRef ref="organismParams.text_search_organism"/>
-       <paramRef ref="sharedParams.text_expression"/>
-       <paramRef ref="sharedParams.document_type" default="organism"/>
-       <paramRef ref="sharedParams.text_fields"/>
-       <!-- the parameter below caches the results for 30 minutes -->
-       <paramRef ref="sharedParams.timestamp" interval="1800" />
-       <wsColumn name="source_id" width="50"/>
-       <wsColumn name="project_id" width="20" excludeProjects="UniDB"/>
-       <wsColumn name="max_score" width="10" columnType="float"/>
+                  processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
+      <paramRef ref="organismParams.text_search_organism"/>
+      <paramRef ref="sharedParams.text_expression"/>
+      <paramRef ref="sharedParams.document_type" default="organism"/>
+      <paramRef ref="sharedParams.text_fields"/>
+      <!-- the parameter below caches the results for 30 minutes -->
+      <paramRef ref="sharedParams.timestamp" interval="1800" />
+      <wsColumn name="source_id" width="50"/>
+      <wsColumn name="project_id" width="20" excludeProjects="UniDB"/>
+      <wsColumn name="max_score" width="10" columnType="float"/>
     </processQuery>
 
   </querySet>

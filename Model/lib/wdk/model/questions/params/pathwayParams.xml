@@ -135,7 +135,6 @@
            and edr.EXTERNAL_DATABASE_ID = ed.EXTERNAL_DATABASE_ID
            UNION
            select 'Any' as display, 'Any' as term, 1 as internal
-           from dual
             </sql>
         </sqlQuery>
 
@@ -156,7 +155,6 @@
             AND (edr.external_database_release_id = $$pathways_source$$ OR $$pathways_source$$=1)
 	        UNION
 	        SELECT 'N/A' AS display, 'N/A' AS term, 0 AS internal
-	        FROM dual
             </sql>
         </sqlQuery>
 
@@ -170,9 +168,8 @@
                             name ||' ('|| source_id ||')' as term,
                             pathway_id as internal
             FROM sres.pathway
-	    UNION
-	    SELECT 'N/A' AS display, 'N/A' AS term, 0 AS internal
-	    FROM dual
+            UNION
+            SELECT 'N/A' AS display, 'N/A' AS term, 0 AS internal
             </sql>
         </sqlQuery>
 
@@ -196,12 +193,8 @@
             AND (edr.external_database_release_id = $$pathways_source$$ OR $$pathways_source$$=1)
             UNION
             SELECT 'N/A' as display, 'N/A' as term, 0 as internal
-            FROM dual
             </sql>
         </sqlQuery>
-
      </querySet>
-
-
 </wdkModel>
 

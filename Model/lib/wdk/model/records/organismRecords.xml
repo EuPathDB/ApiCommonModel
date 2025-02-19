@@ -445,7 +445,7 @@
                        help ="VectorBase genomes initial annotation source (version 1.0) is either from NCBI RefSeq or from the genome authors own pipeline. Subsequent annotations are provided by VectorBase, either by the community (currently via Apollo) or by the EBI pipeline (via predictions and alignments to external databases)." />
      </attributeQueryRef>
 
-
+<!-- TOBE FIXED LATER - BUSCO data not loaded yet 
      <attributeQueryRef ref="OrganismAttributes.BuscoProteinCounts" excludeProjects="HostDB,EuPathDB">
        <columnAttribute name="busco_protein"  displayName="BUSCO Protein"
           help="Benchmarking Universal Single-Copy Orthologs completeness score of the annotated genome." />
@@ -457,7 +457,7 @@
        <columnAttribute name="busco_lineage_dataset"  displayName="BUSCO Lineage Dataset"
           help="Clade-specific BUSCO set of conserved single copy orthologs used as reference" />
      </attributeQueryRef>
-
+-->
 
      <attributeQueryRef ref="OrganismAttributes.IsPublished">
        <columnAttribute name="is_published"  displayName="Is Published"   />

@@ -155,7 +155,7 @@
                 (
                    SELECT protocol_app_node_id
                    FROM apidb.RflpGenotype
-                 MINUS
+                 EXCEPT
                    SELECT protocol_app_node_id
                    FROM apidb.RflpGenotype
                    WHERE locus_tag = 'Apico'
@@ -171,7 +171,7 @@
                 (
                    SELECT protocol_app_node_id
                    FROM apidb.RflpGenotype
-                 MINUS
+                 EXCEPT
                    SELECT protocol_app_node_id
                    FROM apidb.RflpGenotype
                    WHERE locus_tag = 'CS3'

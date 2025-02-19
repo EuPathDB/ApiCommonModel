@@ -113,7 +113,7 @@ Click <a href="@LEGACY_WEBAPP_BASE_URL@/showXmlDataContent.do?name=XmlQuestions.
          searchCategory="Putative Function"
          queryRef="GeneId.GenesByUserDatasetGeneList"
          recordClassRef="TranscriptRecordClasses.TranscriptRecordClass">
-       
+
          <propertyList name="userDatasetType">
            <value>genelist</value>
          </propertyList>
@@ -474,7 +474,7 @@ In the analysis carried out by Alsford et al., pseudogenes, genes annotated as "
         <description>
            <![CDATA[
                     Find genes based on gene model characteristics such as number of transcripts or number of exons
-                    that encode a specific type of gene product such as protein, tRNA 
+                    that encode a specific type of gene product such as protein, tRNA
            or snoRNA encoding genes. You can also restrict your results based on whether the gene is a pseudogene.
           ]]>
         </description>
@@ -512,7 +512,8 @@ In the analysis carried out by Alsford et al., pseudogenes, genes annotated as "
   <!-- LOPIT -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-    <question name="GenesByLOPIT" includeProjects="ToxoDB,TriTrypDB"
+    <!-- TO BE FIXED for TriTrypDB -->
+    <question name="GenesByLOPIT" includeProjects="ToxoDB"
          searchCategory="Protein Localization"
          displayName="Localization by LOPIT Mass Spec"
          shortDisplayName="LOPIT"
@@ -868,7 +869,7 @@ IMPORTANT:
 
 
         <!-- TEMPLATE_ANCHOR phenotypeScoreQuestion -->
-        
+
 
 
         <!-- TEMPLATE_ANCHOR phenotypeEdaQuestion -->
@@ -878,7 +879,7 @@ IMPORTANT:
 
 	<!-- TEMPLATE_ANCHOR LongReadGeneModelQuestion -->
 
-  
+
 
 
 
@@ -1362,6 +1363,8 @@ IMPORTANT:
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!-- SNPs  -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+<!-- THIS is snp chip (i think)
     <question name="GenesBySnps" includeProjects="PlasmoDB,UniDB"  newBuild="21" 
               searchCategory="Population Biology"
               displayName="Pfal 3D7 SNP Characteristics (from Chips)"
@@ -1454,7 +1457,7 @@ IMPORTANT:
           <columnAttribute name="matched_result" displayName="Met Search Criteria"/>
         </dynamicAttributes>
     </question>
-
+-->
     <question name="GenesByNgsSnps" includeProjects="AmoebaDB,CryptoDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,TriTrypDB,ToxoDB,UniDB"  newBuild="21" 
               searchCategory="Population Biology"
               displayName="SNP Characteristics"
@@ -1721,9 +1724,9 @@ IMPORTANT:
               recordClassRef="TranscriptRecordClasses.TranscriptRecordClass">
 
         <attributesList
-           summary="gene_product,organism,gene_location_text,count,confidence"
-           sorting="organism asc,gene_location_text desc, count desc, confidence asc"
-        /> 
+           summary="source_id,project_id,peptide_count"
+           sorting="source_id asc"
+	/> 
 
         <summary>
            Find genes whose protein products are predicted to contain epitopes 
@@ -1733,18 +1736,23 @@ IMPORTANT:
         <description>
               <![CDATA[
                 Find genes whose protein products show similarity to an epitope identified 
-                by the <a href="http://www.immuneepitope.org">Immune 
-                Epitope Database and Analysis Resource</a> (IEDB). <p> Epitopes are antigenic
-                determinants recognized by the immune system's antibodies, B-cells or T-cells. 
-                The epitopes from the original Epitope Source Accession Number 
-                provided by IEDB are mapped to the corresponding gene identifiers in @PROJECT_ID@.
+                by the Immune Epitope Database and Analysis Resource <a href="http://www.immuneepitope.org">IEDB</a>. <p> 
+		Epitopes are antigenic determinants that are part of antigens recognized by the immune system's antibodies, B-cells or T-cells. 
+                The Epitopes from the IEDB were mapped to all reference strains foud @PROJECT_ID@ to determine the identity of a specific peptide to a refrence protein.
                 <br><br>
                 
-                Epitope sequences are mapped to genes in VEuPathDB using exact string matching or 
-                high quality BLAST similarity 
-                (percent identity >= 97%) between the GenBank proteins listed on IEDB and the proteins 
-                found in @PROJECT_ID@. Confidence levels are assigned to each 
-                set of epitopes based on the quality of this mapping. <br><br>]]>
+                Epitope sequences are mapped to genes (Proteins) in VEuPathDB using exact string matching or 
+                high quality BLAST similarity  between the GenBank proteins listed on IEDB and the proteins 
+                of the reference strains found in @PROJECT_ID@.<br><br>
+ 		For each Epitope it is determined:<br>
+		 <li> If IEDB peptide source protein is the same as the reference protein it is being compared to.
+                 <li> Weather peptide source protein and reference is compared to is from the same taxon.
+		 <li> Are there any mismatches between the peptide and region it matches to on the reference protein.
+				 
+                <br>
+		<br>
+		A filter can be set to determine exact pepitide protein match, taxon match and if protein and peptide source protein are the same. 
+		<br>]]>
                 
                 <!-- 
                 A high confidence is assigned 
@@ -1759,23 +1767,31 @@ IMPORTANT:
         </description>
 
         <dynamicAttributes>
-           <columnAttribute name="count" displayName="Epitope Count" align="center">
+           <columnAttribute name="peptide_count" displayName="Number of Peptides" align="center">
 	        <reporter name="histogram" displayName="Histogram" scopes=""                                                                     
                   implementation="org.gusdb.wdk.model.report.reporter.HistogramAttributeReporter">                                               
                   <description>Display the histogram of the values of this attribute</description>                                               
                   <property name="type">int</property>
                 </reporter>
           </columnAttribute>
-           <columnAttribute name="confidence" displayName="Confidence" align="center">
-	        <reporter name="histogram" displayName="Histogram" scopes=""                                                                     
-                  implementation="org.gusdb.wdk.model.report.reporter.HistogramAttributeReporter">                                               
-                  <description>Display the histogram of the values of this attribute</description>                                               
-                  <property name="type">float</property>
+<!--
+	 <columnAttribute name="mismatches" displayName="Epitope Mismatch" align="center">
+                <reporter name="histogram" displayName="Histogram" scopes=""                                                                     
+                  implementation="org.gusdb.wdk.model.report.reporter.HistogramAttributeReporter">
+                  <description>Display the histogram of the values of this attribute</description>
+                  <property name="type">int</property>
                 </reporter>
           </columnAttribute>
-          <columnAttribute name="matched_result" displayName="Met Search Criteria"/>
-        </dynamicAttributes>
 
+         <columnAttribute name="taxon_match" displayName="Taxon matches" align="center">
+                <reporter name="histogram" displayName="Histogram" scopes=""                                                                     
+                  implementation="org.gusdb.wdk.model.report.reporter.HistogramAttributeReporter">
+                  <description>Display the histogram of the values of this attribute</description>
+                  <property name="type">int</property>
+                </reporter>
+          </columnAttribute>
+--> 
+        </dynamicAttributes>
     </question>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -3154,65 +3170,6 @@ The P value is the probability that the binding site with that score would match
    <!-- TEMPLATE_ANCHOR rnaSeqWGCNAModulesQuestion -->
 
 
-		 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- EST overlap  -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-    <question name="GenesByESTOverlap" excludeProjects="HostDB"
-              searchCategory="Transcript Expression"
-              displayName="EST Evidence"
-              shortDisplayName="EST Evidence"
-              queryRef="GeneId.GenesByESTOverlap"
-              recordClassRef="TranscriptRecordClasses.TranscriptRecordClass">
-        <attributesList
-              summary="organism,gene_location_text,gene_product,number_of_ests"
-              sorting="organism asc,number_of_ests desc"
-        /> 
-        <summary>
-            Find genes with evidence of expression based on overlap with Expressed Sequence Tags (ESTs).
-        </summary>
-        <description includeProjects="GiardiaDB,TrichDB,TriTrypDB,AmoebaDB,MicrosporidiaDB,FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB,PiroplasmaDB,PlasmoDB,ToxoDB,EuPathDB,UniDB">
-            <![CDATA[
-             Find genes with evidence of expression based on expressed sequence tags (ESTs). Genes returned by this search overlap 
-             with EST sequences from organism-specific EST libraries. <br><br>
-             
-             Select the EST Library(ies) that you want to query. Use the Advanced Parameters to specify more or less stringent EST overlap 
-             and alignment characteristics of genes returned by this search. Individual parameter help is available by hovering over the 
-             help icon that appears after the parameter name. <br><br>
-             
-             Visualize EST alignments for any gene by clicking on the "View in Genome Browser" link from a gene page and 
-             turning on the EST Alignments track from the Genome Browser's Select Tracks page.
-            ]]>
-        </description>
-        <description includeProjects="CryptoDB">
-              <![CDATA[
-              Find <i>C. muris</i> and <i>C. parvum</i> genes that overlaps with an Expressed Sequence Tag (EST).<p>
-              EST overlap with an annotated gene is a useful way to verify gene predictions.  
-              Ideally we would have EST sequences for each gene prediction, but this is not 
-              the case in <i> Cryptosporidium </i> . Useful lengths of sequence overlap between an 
-              EST sequence and a predicted gene sequence are usually 50nt or greater. 
-              <i>C. muris</i> and <i>C. parvum</i> ESTs were clustered against their respective genomes. 
-              The cluster consensus sequences are available via the graphical genome
-              browser on the gene record pages.
-              Genes from the MRC-LMB sequencing of chromosome 6 are not included at 
-              this time.
-              ]]>
-              </description>
-        <dynamicAttributes>
-             <columnAttribute name="number_of_ests" displayName="Number of ESTs"
-                              inReportMaker="true">
-	        <reporter name="histogram" displayName="Histogram" scopes=""                                                                     
-                  implementation="org.gusdb.wdk.model.report.reporter.HistogramAttributeReporter">                                               
-                  <description>Display the histogram of the values of this attribute</description>                                               
-                  <property name="type">int</property>
-                </reporter>
-          </columnAttribute>
-        </dynamicAttributes>
-       <propertyList name="specificAttribution">
-           <value includeProjects="TrichDB">dbEST</value>
-       </propertyList>
-    </question>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!-- Non-nuclear location -->
@@ -4500,7 +4457,7 @@ For further experiment details, refer the data sources listed below.          ]]
     </question>
 
 
- <!-- NOT USED ? -->   
+ <!-- NOT USED ? -->
  <question name="GenesByFungiNcrassProfileSimilarity" includeProjects="FungiDB,EuPathDB,UniDB"
          displayName="N.crassa  Cell Cycle Transcript Profiling (similarity)"
          shortDisplayName="Nc Expr Sim"
@@ -5071,10 +5028,10 @@ In this study, genome-wide expression level polymorphisms (ELPs) were examined i
 
         <!-- TEMPLATE_ANCHOR rnaSeqFoldChangeQuestion -->
 
-        <!-- TEMPLATE_ANCHOR metaCycleQuestion -->
+        <!-- COMMENT AND FIX: template_anchor metaCycleQuestion -->
 
-
-    <question name="GenesByRNASeqmmulAG07107_Galinski_Mmulatta_Infected_with_Pcynomolgi_ebi_rnaSeq_RSRC" includeProjects="HostDB,UniDB,EuPathDB" newBuild="37"
+<!-- exclude from UniDB for now - CHECK AND FIX-->
+    <question name="GenesByRNASeqmmulAG07107_Galinski_Mmulatta_Infected_with_Pcynomolgi_ebi_rnaSeq_RSRC" includeProjects="HostDB,EuPathDB" newBuild="37"
          displayName="M. mulatta isolate 17573 M mulatta infected with P cynomolgi over 100 days RNA-Seq (fold change)"
          shortDisplayName="Mmul infect Pcyn RNA-Seq (fc)"
          searchCategory="Transcript Expression"
@@ -5395,8 +5352,8 @@ Each point shows the sense fold-change and the antisense fold-change between a p
 -->
 
         <!-- TEMPLATE_ANCHOR rnaSeqPercentileQuestion -->
-
-    <question name="GenesByRNASeqmmulAG07107_Galinski_Mmulatta_Infected_with_Pcynomolgi_ebi_rnaSeq_RSRCPercentile" includeProjects="HostDB,UniDB,EuPathDB" newBuild="37"
+<!-- exclude from UniDB for now - CHECK AND FIX-->
+    <question name="GenesByRNASeqmmulAG07107_Galinski_Mmulatta_Infected_with_Pcynomolgi_ebi_rnaSeq_RSRCPercentile" includeProjects="HostDB,EuPathDB" newBuild="37"
          displayName="M. mulatta isolate 17573 M mulatta infected with P cynomolgi over 100 days RNA-Seq (percentile)"
          shortDisplayName="Mmul infect Pcyn RNA-Seq (%ile)"
          searchCategory="Transcript Expression"
@@ -5854,14 +5811,14 @@ After selecting samples you have the option to take the average, minimum, or max
          <value>samples_ud_ref</value>
          <value>samples_ud_comp</value>
        </propertyList> 
-         
+
        <propertyList name="userDatasetType">
            <value>rnaseq</value>
        </propertyList>
 
     </question>
 
-<!-- Nov 6 2023: commenting out because it is not being shown in the UI based on bug described in https://redmine.apidb.org/issues/46367   
+<!-- Nov 6 2023: commenting out because it is not being shown in the UI based on bug described in https://redmine.apidb.org/issues/46367
     <question name="GenesByUserDatasetAntisense" excludeProjects="EuPathDB" newBuild="40"
          displayName="RNA-Seq user dataset (sense/antisense)"
          shortDisplayName="RNA-Seq (antisense)"
@@ -6287,7 +6244,7 @@ Each point shows the sense fold-change and the antisense fold-change between a p
 
 
 
-   <question name="GenesByLongReadEvidence" 
+   <question name="GenesByLongReadEvidence"
               displayName="Long Read Evidence"
               shortDisplayName="Long Read Evidence"
               includeProjects="PlasmoDB,ToxoDB"

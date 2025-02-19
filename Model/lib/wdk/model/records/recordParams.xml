@@ -88,25 +88,25 @@
                  readonly="true">
        <recordClass ref="SequenceRecordClasses.SequenceRecordClass" />
     </answerParam>
-
+<!--
    <answerParam name="popset_answer"
                  prompt="Popset Answer"
                  readonly="true" includeProjects="EuPathDB,PlasmoDB,ToxoDB,CryptoDB">
        <recordClass ref="PopsetRecordClasses.PopsetRecordClass" />
     </answerParam>
-
+-->
     <answerParam name="snps_answer"
                  prompt="SNP Answer"
                  readonly="true" includeProjects="PlasmoDB,ToxoDB,CryptoDB">
        <recordClass ref="SnpRecordClasses.SnpRecordClass" />
     </answerParam>
-
+<!--
     <answerParam name="est_answer"
                  prompt="EST Answer" excludeProjects="HostDB"
                  readonly="true">
        <recordClass ref="EstRecordClasses.EstRecordClass" />
     </answerParam>
-
+-->
     <!--answerParam name="orf_answer"
                  prompt="ORF Answer" excludeProjects="HostDB"
                  readonly="true">

@@ -31,12 +31,12 @@ my $dbh = EbrcModelCommon::Model::tmUtils::getDbHandle($instance, $schema, $prop
 # create table
 $dbh->do(<<SQL) or die "creating table";
    create table Stringdb$suffix (
-      ncbi_tax_id         number(10),
-      string_type         varchar2(20),
-      string_name_compact varchar2(80),
-      official_name_ncbi  varchar2(120),
-      is_eupath_organism  number(1)
-   ) nologging
+      ncbi_tax_id         numeric(10),
+      string_type         varchar(20),
+      string_name_compact varchar(80),
+      official_name_ncbi  varchar(120),
+      is_eupath_organism  numeric(1)
+   )
 SQL
 
 # fetch data file from STRING
@@ -77,7 +77,6 @@ SQL
 $dbh->do(<<SQL) or die "creating index";
   create index stringix$suffix
     on Stringdb$suffix (is_eupath_organism, official_name_ncbi, ncbi_tax_id)
-    tablespace indx
 SQL
 
 $dbh->commit();

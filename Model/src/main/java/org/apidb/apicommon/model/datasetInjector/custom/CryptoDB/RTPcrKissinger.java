@@ -13,7 +13,8 @@ public class RTPcrKissinger extends CusomGenePageExpressionGraphs {
 
 
   @Override
-  public void injectTemplates() {
+  public void injectTemplates() { }
+  public void TODO_injectTemplates() {
       super.injectTemplates();
 
       setPropValue("includeProjectsExcludeEuPathDB", "CryptoDB,UniDB");

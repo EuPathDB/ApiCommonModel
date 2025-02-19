@@ -3,7 +3,7 @@
 <wdkModel>
   <questionSet name="FileQuestions" displayName="Search Files">
 
-    <question name="GetAllFileRecords" 
+    <question name="GetAllFileRecords"
               displayName="All File Records"
               queryRef="FileId.AllFileRecords"
               recordClassRef="FileRecordClasses.FileRecordClass">

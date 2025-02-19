@@ -25,9 +25,9 @@
   <constant name="releaseDate" includeProjects="VectorBase">1 January 1900 00:00</constant>
   <constant name="releaseDate" includeProjects="InitDB">1 January 1900 00:00</constant>
 
-  <constant name="buildNumber" includeProjects="AmoebaDB,CryptoDB,GiardiaDB,HostDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,SchistoDB,ToxoDB,TrichDB,TriTrypDB,VectorBase">69</constant>
+  <constant name="buildNumber" includeProjects="AmoebaDB,CryptoDB,GiardiaDB,HostDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,SchistoDB,ToxoDB,TrichDB">69</constant>
   <constant name="buildNumber" includeProjects="EuPathDB">69</constant>
-  <constant name="buildNumber" includeProjects="UniDB">54</constant>
+  <constant name="buildNumber" includeProjects="PlasmoDB,TriTrypDB,VectorBase,UniDB">70.2</constant>
   <constant name="buildNumber" includeProjects="InitDB">0</constant> 
 <!--
   <constant name="releaseVersion" includeProjects="AmoebaDB">27</constant>
@@ -362,27 +362,31 @@
   <import file="model/questions/queries/organismQueries.xml"/>
   <import file="model/questions/organismQuestions.xml"/>
 
+
   <!-- Popsets -->
+<!--
   <import file="model/records/popsetAttributeQueries.xml"/>
   <import file="model/records/popsetRecords.xml"/>
   <import file="model/questions/params/popsetParams.xml"/>
   <import file="model/questions/queries/popsetQueries.xml"/>
   <import file="model/questions/popsetQuestions.xml"/>
   <import file="model/records/popsetTableQueries.xml"/>
-
+-->
   <!-- Samples -->
+<!--
   <import file="model/records/sampleAttributeQueries.xml"/>
   <import file="model/records/sampleTableQueries.xml"/>
   <import file="model/records/sampleRecord.xml"/>
-
+-->
   <!-- RFLP Genotype Isolates -->
+<!--
   <import file="model/records/rflpIsolateAttributeQueries.xml"/>
   <import file="model/records/rflpIsolateTableQueries.xml"/>
   <import file="model/records/rflpIsolateRecord.xml"/>
   <import file="model/questions/rflpIsolateQuestions.xml"/>
   <import file="model/questions/queries/rflpIsolateQueries.xml"/>
   <import file="model/questions/params/rflpIsolateParams.xml"/>
-
+-->
   <!-- Genomic Sequences -->
   <import file="model/records/genomicAttributeQueries.xml"/>
   <import file="model/records/genomicTableQueries.xml"/>
@@ -409,20 +413,21 @@
   <import file="model/questions/snpQuestions.xml"/>
 
   <!-- SNP from Array -->
+<!--
   <import file="model/questions/snpChipQuestions.xml"/>
   <import file="model/questions/queries/snpChipQueries.xml"/>
   <import file="model/questions/params/snpChipParams.xml"/>
   <import file="model/records/snpChipRecords.xml"/>
   <import file="model/records/snpChipAttributeQueries.xml"/>
   <import file="model/records/snpChipTableQueries.xml"/>
-
+-->
   <!-- ESTs -->
   <import file="model/records/estAttributeQueries.xml"/>
   <import file="model/records/estTableQueries.xml"/>
   <import file="model/records/estRecords.xml"/>
-  <import file="model/questions/params/estParams.xml"/>
   <import file="model/questions/queries/estQueries.xml"/>
   <import file="model/questions/estQuestions.xml"/>
+  <!-- import file="model/questions/params/estParams.xml" -->
 
  <!-- ORFs
   <import file="model/records/orfAttributeQueries.xml"/>
@@ -464,9 +469,10 @@
   <import file="model/records/ajaxTableQueries.xml"/>
 
   <!-- User Files -->
+  <!-- TODO add userfile records back
   <import file="model/records/userfileRecords.xml"/>
   <import file="model/questions/userFileQuestions.xml"/>
-
+-->
   <!-- Categories -->
   <import file="model/questions/categories.xml"/>
 
@@ -484,26 +490,33 @@
   <import file="model/questions/queries/BuildQueries.xml"/>
 
   <!-- Intron Junctions -->
+  <!-- TODO add intron junctions back
   <import file="model/records/junctionAttributeQueries.xml"/>
   <import file="model/records/junctionTableQueries.xml"/>
   <import file="model/records/junctionRecords.xml"/>
-
+-->
   <!-- Long Read Transcripts -->
+  <!-- TODO add long transcripts back
   <import file="model/records/longReadTranscriptAttributeQueries.xml"/>
   <import file="model/records/longReadTranscriptTableQueries.xml"/>
   <import file="model/records/longReadTranscriptRecords.xml"/>
-
+-->
   <!-- Files -->
+
+<!-- TODO Add back
   <import file="model/records/fileRecord.xml"/>
   <import file="model/questions/fileQuestions.xml"/>
   <import file="model/questions/queries/fileQueries.xml"/>
   <import file="model/questions/params/fileParams.xml"/>
-
+-->
   <!-- metrics -->
   <import file="model/records/metricsRecord.xml"/>
   <import file="model/questions/metricsQuestions.xml"/>
   <import file="model/questions/queries/metricsQueries.xml"/>
   <import file="model/questions/params/metricsParams.xml"/>
+
+  <!-- jbrowse -->
+  <import file="model/records/jbrowseRecords.xml"/>
 
   <defaultColumnToolBundle ref="default" />
 

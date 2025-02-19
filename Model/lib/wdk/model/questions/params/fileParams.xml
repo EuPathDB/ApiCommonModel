@@ -51,41 +51,41 @@
       <column name="string_value"/>
       <sql>
         <![CDATA[
-SELECT file_id as internal
-     , 'category' as ontology_term_name
-     , cast(null as number(10)) as number_value
-     , category as string_value
-     , cast(null as number(10)) as date_value
-FROM APIDB.fileAttributes fa, sres.taxonName tn
-WHERE tn.name = fa.organism
-AND  tn.taxon_id in ($$organism_select_all_sequences$$)
-UNION
-SELECT file_id as internal
-     , 'file_type' as ontology_term_name
-     , cast(null as number(10)) as number_value
-     , file_type as string_value
-     , cast(null as number(10)) as date_value
-FROM APIDB.fileAttributes fa, sres.taxonName tn
-WHERE tn.name = fa.organism
-AND  tn.taxon_id in ($$organism_select_all_sequences$$)
-UNION
-SELECT file_id as internal
-     , 'file_format' as ontology_term_name
-     , cast(null as number(10)) as number_value
-     , file_format as string_value
-     , cast(null as number(10)) as date_value
-FROM APIDB.fileAttributes fa, sres.taxonName tn
-WHERE tn.name = fa.organism
-AND  tn.taxon_id in ($$organism_select_all_sequences$$)
-UNION
-SELECT file_id as internal
-     , 'build_num' as ontology_term_name
-     , build_num as number_value
-     , '' as string_value
-     , cast(null as number(10)) as date_value
-FROM APIDB.fileAttributes fa, sres.taxonName tn
-WHERE tn.name = fa.organism
-AND  tn.taxon_id in ($$organism_select_all_sequences$$)
+          SELECT file_id as internal
+               , 'category' as ontology_term_name
+               , null::NUMERIC as number_value
+               , category as string_value
+               , null::NUMERIC as date_value
+          FROM APIDB.fileAttributes fa, sres.taxonName tn
+          WHERE tn.name = fa.organism
+          AND  tn.taxon_id in ($$organism_select_all_sequences$$)
+          UNION
+          SELECT file_id as internal
+               , 'file_type' as ontology_term_name
+               , null::NUMERIC as number_value
+               , file_type as string_value
+               , null::NUMERIC as date_value
+          FROM APIDB.fileAttributes fa, sres.taxonName tn
+          WHERE tn.name = fa.organism
+          AND  tn.taxon_id in ($$organism_select_all_sequences$$)
+          UNION
+          SELECT file_id as internal
+               , 'file_format' as ontology_term_name
+               , null::NUMERIC as number_value
+               , file_format as string_value
+               , null::NUMERIC as date_value
+          FROM APIDB.fileAttributes fa, sres.taxonName tn
+          WHERE tn.name = fa.organism
+          AND  tn.taxon_id in ($$organism_select_all_sequences$$)
+          UNION
+          SELECT file_id as internal
+               , 'build_num' as ontology_term_name
+               , build_num as number_value
+               , '' as string_value
+               , null::NUMERIC as date_value
+          FROM APIDB.fileAttributes fa, sres.taxonName tn
+          WHERE tn.name = fa.organism
+          AND  tn.taxon_id in ($$organism_select_all_sequences$$)
         ]]>
       </sql>
     </sqlQuery>
@@ -101,48 +101,45 @@ AND  tn.taxon_id in ($$organism_select_all_sequences$$)
       <column name="precision"/>
       <column name="is_range"/>
       <sql>
-      <![CDATA[
-SELECT * from (
- SELECT 'build_num' as ontology_term_name
-     , 'Release' as display_name
-     , 'number' as type
-     , 0 as is_range
-     , 2 as display_order
-     , 'Sort and choose the highest number for the current release.' as description
- FROM DUAL
- UNION
- SELECT 'file_type' as ontology_term_name
-     , 'Contents' as display_name
-     , 'string' as type
-     , 0 as is_range
-     , 3 as display_order
-     , cast(null as varchar(10)) as description
- FROM DUAL
- UNION
- SELECT 'category' as ontology_term_name
-     , 'Category' as display_name
-     , 'string' as type
-     , 0 as is_range
-     , 4 as display_order
-     , cast(null as varchar(10)) as description
- FROM DUAL
- UNION
- SELECT 'file_format' as ontology_term_name
-     , 'File Format' as display_name
-     , 'string' as type
-     , 0 as is_range
-     , 5 as display_order
-     , cast(null as varchar(10)) as description
- FROM DUAL
-), 
-(SELECT cast(null as varchar(10)) as parent_ontology_term_name
-     , cast(null as varchar(10)) as units
-     , 1 as precision from dual
-     )
-     order by display_order
-           ]]>
-            </sql>
-        </sqlQuery>
+        <![CDATA[
+        SELECT * from (
+         SELECT 'build_num' as ontology_term_name
+             , 'Release' as display_name
+             , 'number' as type
+             , 0 as is_range
+             , 2 as display_order
+             , 'Sort and choose the highest number for the current release.' as description
+         UNION
+         SELECT 'file_type' as ontology_term_name
+             , 'Contents' as display_name
+             , 'string' as type
+             , 0 as is_range
+             , 3 as display_order
+             , null::varchar as description
+         UNION
+         SELECT 'category' as ontology_term_name
+             , 'Category' as display_name
+             , 'string' as type
+             , 0 as is_range
+             , 4 as display_order
+             , null::varchar as description
+         UNION
+         SELECT 'file_format' as ontology_term_name
+             , 'File Format' as display_name
+             , 'string' as type
+             , 0 as is_range
+             , 5 as display_order
+             , null::varchar as description
+        ) t,
+        (
+          SELECT null::varchar as parent_ontology_term_name
+             , null::varchar as units
+             , 1 as precision
+        ) t2
+        ORDER BY display_order
+        ]]>
+      </sql>
+    </sqlQuery>
 
      </querySet>
 

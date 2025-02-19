@@ -5,18 +5,18 @@ GenomicSequenceLocationCategory					GenomicSequenceLocationCategory	Genomic Loca
 TextCategory					TextCategory	Text				1			
 AlignmentsCategory	http://edamontology.org/topic_0080	Sequence Analysis			AlignmentsCategory	BLAT and Blast Alignments							
 CodingPotentialCategory	http://edamontology.org/topic_0080	Sequence Analysis			CodingPotentialCategory	Coding Potential							
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.Awstats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.Awstats						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.LoginStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.LoginStats						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.PageViewStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.PageViewStats						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.RecordPageViewStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.RecordPageViewStats						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.UserDatasets	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.UserDatasets						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgPageViewMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgPageViewMetrics						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgParamCountMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgParamCountMetrics						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgParamNameMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgParamNameMetrics						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.GenePageTableMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.GenePageTableMetrics						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.ToolMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.ToolMetrics						menu		
-MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.SearchMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.SearchMetrics						menu		
-CompoundRecordClasses.CompoundRecordClass.CompoundQuestions.CompoundsByCompoundID	http://edamontology.org/topic_3172	Metabolomics	CompoundRecordClasses.CompoundRecordClass	search	CompoundQuestions.CompoundsByCompoundID						menu	webservice	
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.Awstats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.Awstats						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.LoginStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.LoginStats						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.PageViewStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.PageViewStats						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.RecordPageViewStats	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.RecordPageViewStats						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.UserDatasets	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.UserDatasets						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgPageViewMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgPageViewMetrics						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgParamCountMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgParamCountMetrics						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.OrgParamNameMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.OrgParamNameMetrics						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.GenePageTableMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.GenePageTableMetrics						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.ToolMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.ToolMetrics						menu
+MetricsRecordClasses.MetricsRecordClass.MetricsQuestions.SearchMetrics	http://edamontology.org/topic_3172	Metrics	MetricsRecordClasses.MetricsRecordClass	search	MetricsQuestions.SearchMetrics						menu
+CompoundRecordClasses.CompoundRecordClass.CompoundQuestions.CompoundsByCompoundID	http://edamontology.org/topic_3172	Metabolomics	CompoundRecordClasses.CompoundRecordClass	search	CompoundQuestions.CompoundsByCompoundID						menu	webservice
 													
 CompoundRecordClasses.CompoundRecordClass.CompoundQuestions.CompoundsByEcReaction	http://edamontology.org/topic_3172	Metabolomics	CompoundRecordClasses.CompoundRecordClass	search	CompoundQuestions.CompoundsByEcReaction						menu	webservice	
 CompoundRecordClasses.CompoundRecordClass.CompoundQuestions.CompoundsByFoldChange	http://edamontology.org/topic_3172	Metabolomics	CompoundRecordClasses.CompoundRecordClass	search	CompoundQuestions.CompoundsByFoldChange						menu	webservice	
@@ -117,7 +117,7 @@ TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesWithAlphafold	h
 TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesBySingleCell	http://edamontology.org/topic_3308	Transcriptomics	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesBySingleCell						menu	webservice	
 TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesByFungiProteinProteinInteraction	searchCategory-interactions		TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesByFungiProteinProteinInteraction						internal	webservice	
 TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesByPlasmoProteinProteinInteraction	searchCategory-interactions		TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesByPlasmoProteinProteinInteraction						internal	webservice	
-##TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesByPhenotype_tgonGT1_crisprPhenotype_CrisprScreen_RSRC	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesByPhenotype_tgonGT1_crisprPhenotype_CrisprScreen_RSRC						menu	webservice	
+##TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesByPhenotype_tgonGT1_crisprPhenotype_CrisprScreen_RSRC	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesByPhenotype_tgonGT1_crisprPhenotype_CrisprScreen_RSRC						menu	webservice
 ##TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesByRodentMalariaPhenotype	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesByRodentMalariaPhenotype								
 TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesBySecondaryStructure	http://edamontology.org/topic_0081	Structure Analysis	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesBySecondaryStructure						menu	webservice	
 TranscriptRecordClasses.TranscriptRecordClass.GeneQuestions.GenesBySimilarity	http://edamontology.org/topic_0080	Sequence Analysis	TranscriptRecordClasses.TranscriptRecordClass	search	GeneQuestions.GenesBySimilarity							webservice	
@@ -323,8 +323,8 @@ GeneRecordClasses.GeneRecordClass.Product	http://edamontology.org/topic_0123	Pro
 GeneRecordClasses.GeneRecordClass.GeneName	http://edamontology.org/data_2299	Gene name	GeneRecordClasses.GeneRecordClass	table	GeneName				transcript				
 GeneRecordClasses.GeneRecordClass.ProteinExpressionPBrowse	http://edamontology.org/topic_0121	Proteomics	GeneRecordClasses.GeneRecordClass	table	ProteinExpressionPBrowse				transcript			record	
 GeneRecordClasses.GeneRecordClass.ProteinProperties	http://edamontology.org/topic_0123	Protein properties	GeneRecordClasses.GeneRecordClass	table	ProteinProperties				transcript		download	record	download
-GeneRecordClasses.GeneRecordClass.AllProducts	http://edamontology.org/topic_0219	Curation and Annotation	GeneRecordClasses.GeneRecordClass	table	AllProducts				transcript	2	results	record	
-GeneRecordClasses.GeneRecordClass.ApolloProducts	http://edamontology.org/topic_0219	Curation and Annotation	GeneRecordClasses.GeneRecordClass	table	ApolloProducts				transcript	3	results	record	
+GeneRecordClasses.GeneRecordClass.AllProducts	http://edamontology.org/topic_0219	Curation and Annotation	GeneRecordClasses.GeneRecordClass	table	AllProducts				transcript	2	results	record
+GeneRecordClasses.GeneRecordClass.ApolloProducts	http://edamontology.org/topic_0219	Curation and Annotation	GeneRecordClasses.GeneRecordClass	table	ApolloProducts				transcript	3	results	record
 GeneRecordClasses.GeneRecordClass.GeneId	http://edamontology.org/topic_3345	Data identity and mapping	GeneRecordClasses.GeneRecordClass	table	GeneId				gene			Record-internal	
 GeneRecordClasses.GeneRecordClass.GeneGffAliases	http://edamontology.org/topic_3345	Data identity and mapping	GeneRecordClasses.GeneRecordClass	table	GeneGffAliases				gene				
 GeneRecordClasses.GeneRecordClass.GeneGffGoTerms	http://edamontology.org/topic_1775	Function analysis	GeneRecordClasses.GeneRecordClass	table	GeneGffGoTerms				gene				
@@ -335,14 +335,14 @@ GeneRecordClasses.GeneRecordClass.MobileElements	http://edamontology.org/topic_0
 GeneRecordClasses.GeneRecordClass.MetaTable	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	table	MetaTable				gene		record-internal		
 TranscriptRecordClasses.TranscriptRecordClass.pfal3D7PiggyBacMutMis	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pfal3D7PiggyBacMutMis				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pfal3D7PiggyBacMutMfs	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pfal3D7PiggyBacMutMfs				gene		results	download	
-													
+
 TranscriptRecordClasses.TranscriptRecordClass.pknoHPiggyBacMutHMS	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoHPiggyBacMutHMS				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pknoHPiggyBacMutOIS	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoHPiggyBacMutOIS				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pknoA1H1PiggyBacMutMIS	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoA1H1PiggyBacMutMIS				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pknoA1H1PiggyBacMutMISplus	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoA1H1PiggyBacMutMISplus				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pknoA1H1PiggyBacMutMFS	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoA1H1PiggyBacMutMFS				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.pknoA1H1PiggyBacMutMutability	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	pknoA1H1PiggyBacMutMutability				gene		results	download	
-													
+
 TranscriptRecordClasses.TranscriptRecordClass.tgonGt1CrisprMeanPhenotype	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	tgonGt1CrisprMeanPhenotype				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.tgonGt1CrisprStandardError	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	tgonGt1CrisprStandardError				gene		results	download	
 TranscriptRecordClasses.TranscriptRecordClass.tgonGt1CrisprGeneFdr	http://edamontology.org/topic_3298	Phenomics	TranscriptRecordClasses.TranscriptRecordClass	attribute	tgonGt1CrisprGeneFdr				gene		results	download	
@@ -374,7 +374,7 @@ GeneRecordClasses.GeneRecordClass.GeneModelGbrowseUrl	http://edamontology.org/to
 GeneRecordClasses.GeneRecordClass.GeneApolloGbrowseUrl	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	GeneModelApolloUrl				gene			record	
 GeneRecordClasses.GeneRecordClass.BlatAlignmentsGbrowseUrl	http://edamontology.org/topic_0080	Sequence Analysis	GeneRecordClasses.GeneRecordClass	attribute	BlatAlignmentsGbrowseUrl				gene			record	
 GeneRecordClasses.GeneRecordClass.SyntenyGbrowseUrl	http://edamontology.org/topic_3299	orthologs and synteny	GeneRecordClasses.GeneRecordClass	attribute	SyntenyGbrowseUrl				gene			record	
-GeneRecordClasses.GeneRecordClass.SnpsGbrowseUrl	http://edamontology.org/topic_2885	DNAPolymorhph	GeneRecordClasses.GeneRecordClass	attribute	SnpsGbrowseUrl				gene			record	
+GeneRecordClasses.GeneRecordClass.SnpsGbrowseUrl	http://edamontology.org/topic_2885	DNAPolymorhph	GeneRecordClasses.GeneRecordClass	attribute	SnpsGbrowseUrl				gene			record
 GeneRecordClasses.GeneRecordClass.protein_expression_gtracks	http://www.w3.org/2002/07/owl#Thing	thing	GeneRecordClasses.GeneRecordClass	attribute	protein_expression_gtracks				gene			record-internal	
 GeneRecordClasses.GeneRecordClass.ProteomicsPbrowseUrl	http://www.w3.org/2002/07/owl#Thing	thing	GeneRecordClasses.GeneRecordClass	attribute	ProteomicsPbrowseUrl				gene			record-internal	
 GeneRecordClasses.GeneRecordClass.FeaturesPbrowseUrl	http://www.w3.org/2002/07/owl#Thing	thing	GeneRecordClasses.GeneRecordClass	attribute	FeaturesPbrowseUrl				gene			record-internal	
@@ -399,7 +399,7 @@ TranscriptRecordClasses.TranscriptRecordClass.chromosome	GenomicSequenceLocation
 TranscriptRecordClasses.TranscriptRecordClass.organism	http://edamontology.org/topic_0637	Taxonomy	TranscriptRecordClasses.TranscriptRecordClass	attribute	organism				gene		results		download
 GeneRecordClasses.GeneRecordClass.organism	http://edamontology.org/topic_0637	Taxonomy	GeneRecordClasses.GeneRecordClass	attribute	organism				gene		results		
 GeneRecordClasses.GeneRecordClass.Taxonomy	http://edamontology.org/topic_0637	Taxonomy	GeneRecordClasses.GeneRecordClass	table	Taxonomy				gene			record	
-GeneRecordClasses.GeneRecordClass.ds_annotation_version	http://edamontology.org/topic_0219	annotation	GeneRecordClasses.GeneRecordClass	attribute	ds_annotation_version					1		record	
+GeneRecordClasses.GeneRecordClass.ds_annotation_version	http://edamontology.org/topic_0219	annotation	GeneRecordClasses.GeneRecordClass	attribute	ds_annotation_version					1		record
 GeneRecordClasses.GeneRecordClass.attribution_partial	http://edamontology.org/topic_3068	Literature and Reference	GeneRecordClasses.GeneRecordClass	attribute	attribution_partial							record-internal	
 GeneRecordClasses.GeneRecordClass.dataset_id	http://edamontology.org/topic_3068	Literature and Reference	GeneRecordClasses.GeneRecordClass	attribute	dataset_id							record-internal	
 GeneRecordClasses.GeneRecordClass.attribution	http://edamontology.org/topic_3068	Literature and Reference	GeneRecordClasses.GeneRecordClass	attribute	attribution							record-internal	
@@ -428,8 +428,8 @@ GeneRecordClasses.GeneRecordClass.apolloHelp	http://edamontology.org/topic_0114	
 TranscriptRecordClasses.TranscriptRecordClass.is_pseudo	http://edamontology.org/topic_0114	Gene Structure	TranscriptRecordClasses.TranscriptRecordClass	attribute	is_pseudo				transcript		results	record	download
 GeneRecordClasses.GeneRecordClass.is_pseudo	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	is_pseudo				gene		results	record-internal	download
 TranscriptRecordClasses.TranscriptRecordClass.gene_transcript_count	http://edamontology.org/topic_0114	Gene Structure	TranscriptRecordClasses.TranscriptRecordClass	attribute	gene_transcript_count				gene		results	record	download
-GeneRecordClasses.GeneRecordClass.transcript_count	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	transcript_count				gene	1	results	record	
-GeneRecordClasses.GeneRecordClass.gene_gff_link	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	gene_gff_link				gene	1	record		
+GeneRecordClasses.GeneRecordClass.transcript_count	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	transcript_count				gene	1	results	record
+GeneRecordClasses.GeneRecordClass.gene_gff_link	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	gene_gff_link				gene	1	record
 GeneRecordClasses.GeneRecordClass.representative_transcript	http://edamontology.org/topic_0114	Gene Structure	GeneRecordClasses.GeneRecordClass	attribute	representative_transcript				gene			record-internal	
 TranscriptRecordClasses.TranscriptRecordClass.representative_transcript	http://edamontology.org/topic_0114	Gene Structure	TranscriptRecordClasses.TranscriptRecordClass	attribute	representative_transcript				gene			record-internal	
 TranscriptRecordClasses.TranscriptRecordClass.is_deprecated	http://edamontology.org/topic_0219	Curation and Annotation	TranscriptRecordClasses.TranscriptRecordClass	attribute	is_deprecated				gene			results	download
@@ -828,9 +828,9 @@ OrganismRecordClasses.OrganismRecordClass.URLGenomeFasta	http://edamontology.org
 OrganismRecordClasses.OrganismRecordClass.URLtranscriptFasta	http://edamontology.org/data_2044	sequences	OrganismRecordClasses.OrganismRecordClass	attribute	URLtranscriptFasta								download 
 OrganismRecordClasses.OrganismRecordClass.URLcdsFasta	http://edamontology.org/data_2044	sequences	OrganismRecordClasses.OrganismRecordClass	attribute	URLcdsFasta								download 
 OrganismRecordClasses.OrganismRecordClass.URLproteinFasta	http://edamontology.org/data_2044	sequences	OrganismRecordClasses.OrganismRecordClass	attribute	URLproteinFasta								download 
-													
+
 OrganismRecordClasses.OrganismRecordClass.URLgff	http://edamontology.org/topic_0219	Curation and Annotation	OrganismRecordClasses.OrganismRecordClass	attribute	URLgff								download
-													
+
 OrganismRecordClasses.OrganismRecordClass.strain	http://edamontology.org/topic_0637	Taxonomy	OrganismRecordClasses.OrganismRecordClass	attribute	strain						results	record	download
 OrganismRecordClasses.OrganismRecordClass.contigCount	GenomicSequencePropertiesCategory	GenomicSequencePropertiesCategory	OrganismRecordClasses.OrganismRecordClass	attribute	contigCount					3	results	record	download
 OrganismRecordClasses.OrganismRecordClass.supercontigCount	GenomicSequencePropertiesCategory	GenomicSequencePropertiesCategory	OrganismRecordClasses.OrganismRecordClass	attribute	supercontigCount					2	results	record	download
@@ -1063,4 +1063,17 @@ DynSpanRecordClasses.DynSpanRecordClass.SpanQuestions.GenomicSpanByLongReadEvide
 DynSpanRecordClasses.DynSpanRecordClass.SpanQuestions.IntronJunctionDynamicSearch			DynSpanRecordClasses.DynSpanRecordClass	search	SpanQuestions.IntronJunctionDynamicSearch						menu		
 													
 TranscriptRecordClasses.TranscriptRecordClass.InternalGeneDatasetQuestions.GenesByLongReadEvidence	http://edamontology.org/topic_0114	Gene Structure	TranscriptRecordClasses.TranscriptRecordClass	search	InternalGeneDatasetQuestions.GenesByLongReadEvidence						menu		
+
+
+JbrowseRecordClasses.JbrowseGeneRecordClass.link	http://edamontology.org/topic_3345	Data identity and mapping	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	link				gene			record
+JbrowseRecordClasses.JbrowseGeneRecordClass.product	http://edamontology.org/topic_0219	Curation and Annotation	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	product				gene		record
+JbrowseRecordClasses.JbrowseGeneRecordClass.organism	http://edamontology.org/topic_0637	Taxonomy	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	organism				gene		record
+JbrowseRecordClasses.JbrowseGeneRecordClass.name	http://edamontology.org/topic_0219	Curation and Annotation	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	name				gene		record
+JbrowseRecordClasses.JbrowseGeneRecordClass.orthomcl_link	http://edamontology.org/topic_3299	Evolutionary Biology	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	orthomcl_link				gene		record
+JbrowseRecordClasses.JbrowseGeneRecordClass.so_term_name	http://edamontology.org/topic_1775	GenomicSequenceLocationCategory	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	so_term_name				gene		record
+JbrowseRecordClasses.JbrowseGeneRecordClass.location_text	GenomicSequenceLocationCategory	Function analysis	JbrowseRecordClasses.JbrowseGeneRecordClass	attribute	location_text				gene		record
+
+
+JbrowseRecordClasses.JbrowseGeneRecordClass.GOTerms	http://edamontology.org/topic_1775	Function analysis	JbrowseRecordClasses.JbrowseGeneRecordClass	table	GOTerms				transcript		record
+JbrowseRecordClasses.Jbrowse.GeneRecordClass.GeneTranscripts	http://edamontology.org/topic_0114	Gene Structure	JbrowseRecordClasses.JbrowseGeneRecordClass	table	GeneTranscripts				gene		record
 

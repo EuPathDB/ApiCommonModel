@@ -179,9 +179,6 @@
     <sql>
       <![CDATA[
 create unique index EstAttr_source_id&1 ON ApidbTuning.EstAttributes&1 (source_id, project_id)
-tablespace indx
-
-
       ]]>
     </sql>
 
@@ -221,7 +218,7 @@ tablespace indx
       <![CDATA[
 create unique index TranscriptAttr_srcPrj&1
        ON ApidbTuning.TranscriptAttributes&1 (source_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -229,7 +226,7 @@ tablespace indx
       <![CDATA[
 CREATE INDEX TransAttr_lwrsrc_ix&1
           ON &prefixTranscriptAttributes&1 (lower(source_id), gene_source_id, project_id, source_id)
-TABLESPACE INDX
+
       ]]>
     </sql>
 
@@ -237,7 +234,7 @@ TABLESPACE INDX
       <![CDATA[
 create index TranscriptAttr_orgsrcprj&1
        ON ApidbTuning.TranscriptAttributes&1 (organism, source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -245,7 +242,7 @@ tablespace indx
       <![CDATA[
 create index TranscriptAttr_srcOrth&1
        ON ApidbTuning.TranscriptAttributes&1 (source_id, gene_source_id, project_id, organism, orthomcl_name, species, gene_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -253,7 +250,7 @@ tablespace indx
       <![CDATA[
 create index TranscriptAttr_gSrcOrth&1
        ON ApidbTuning.TranscriptAttributes&1 (gene_source_id, source_id, project_id, organism, orthomcl_name, species, gene_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -293,7 +290,7 @@ tablespace indx
       <![CDATA[
 create unique index GeneAttr_srcPrj&1
        ON ApidbTuning.GeneAttributes&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -301,7 +298,7 @@ tablespace indx
       <![CDATA[
 create index GeneAttr_orthoname&1
        ON ApidbTuning.GeneAttributes&1 (orthomcl_name, source_id, project_id, taxon_id, gene_type)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -309,7 +306,7 @@ tablespace indx
       <![CDATA[
 create index GeneAttr_orgsrcprj&1
        ON ApidbTuning.GeneAttributes&1 (organism, source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -317,7 +314,7 @@ tablespace indx
       <![CDATA[
 create index GeneAttr_srcOrth&1
        ON ApidbTuning.GeneAttributes&1 (source_id, project_id, organism, orthomcl_name)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -359,19 +356,19 @@ tablespace indx
     <sql>
       <![CDATA[
 CREATE INDEX ApidbTuning.GeneId_gene_idx&1 ON ApidbTuning.GeneId&1 (gene)
-tablespace indx
+
       ]]>
     </sql>
     <sql>
       <![CDATA[
 CREATE INDEX ApidbTuning.GeneId_id_idx&1 ON ApidbTuning.GeneId&1 (id)
-tablespace indx
+
       ]]>
     </sql>
     <sql>
       <![CDATA[
 CREATE INDEX ApidbTuning.GeneId_lowid_idx&1 ON ApidbTuning.GeneId&1 (lower(id), gene)
-tablespace indx
+
       ]]>
     </sql>
   </tuningTable>
@@ -409,7 +406,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create unique index OrganismAttr_sourceId_idx&1 ON ApidbTuning.OrganismAttributes&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
     <sql>
@@ -453,7 +450,7 @@ GRANT select ON ApidbTuning.organismAttributes&1 TO apidb
     <sql>
       <![CDATA[
 create unique index PopsetAttr_sourceId_idx&1 ON ApidbTuning.PopsetAttributes&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
   </tuningTable>
@@ -536,13 +533,13 @@ grant select ON ApidbTuning.GenomicSeqAttributes&1 TO public
     <sql>
       <![CDATA[
 CREATE INDEX ApidbTuning.GSI_sequence_idx&1 ON ApidbTuning.GenomicSequenceId&1 (sequence, id)
-tablespace indx
+
       ]]>
     </sql>
     <sql>
       <![CDATA[
 CREATE INDEX ApidbTuning.GSI_id_idx&1 ON ApidbTuning.GenomicSequenceId&1 (id, sequence)
-tablespace indx
+
       ]]>
     </sql>
   </tuningTable>
@@ -732,7 +729,7 @@ create unique index SnpAttr_source_id&1 ON ApidbTuning.SnpAttributesDoTS&1 (sour
     <sql>
       <![CDATA[
 create index XScriptSeq_ix&1 on ApidbTuning.TranscriptSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -875,7 +872,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create unique index cds_ix&1 on ApidbTuning.CodingSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -1019,7 +1016,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create index ProtSeq_ix&1 on ApidbTuning.ProteinSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -1162,7 +1159,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create index NaSeq_ix&1 on ApidbTuning.GenomicSequenceSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
   </tuningTable>
@@ -1304,7 +1301,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create index EstSeq_ix&1 on ApidbTuning.EstSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -1447,7 +1444,7 @@ tablespace indx
     <sql>
       <![CDATA[
 create index PopsetSeq_ix&1 on ApidbTuning.PopsetSequence&1 (source_id, project_id)
-tablespace indx
+
       ]]>
     </sql>
 
@@ -1604,13 +1601,11 @@ order by project_id, genus
   </tuningTable>
 
 
-<!--
   <tuningTable name="ApidbTuning.AssociatedDataset" alwaysUpdate="true">
     <comment>datasets shared with other projects</comment>
     <internalDependency name="ApidbTuning.DatasetPresenter"/>
     <program commandLine="buildAssociatedDatasetTT"/>
   </tuningTable>
--->
 
 
   <tuningTable name="EupathBuildDates" alwaysUpdate="true">
@@ -1682,7 +1677,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index GeneWord_idx&1 ON GeneWord&1 (source_id)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1721,7 +1716,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index GoTermSummary_idx&1 ON GoTermSummary&1 (gene_source_id,transcript_source_id)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1756,7 +1751,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index SampleAttributes_idx&1 ON SampleAttributes&1 (name)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1795,7 +1790,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index SampleProcess_idx&1 ON SampleProcess&1 (name)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1813,7 +1808,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index RflpGenotypes_idx&1 ON RflpGenotypes&1 (name)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1835,7 +1830,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
         create index RflpGenotypes_idx&1 ON RflpGenotypes&1 (protocol_app_node_id, project_id)
-        tablespace indx
+
       ]]>
     </sql>
 
@@ -1875,7 +1870,7 @@ order by project_id, genus
     <sql>
       <![CDATA[
 create unique index ProtAttr_source_id&1 ON ApidbTuning.ProteinAttributes&1 (source_id, project_id, transcript_source_id)
-tablespace indx
+
       ]]>
     </sql>
   </tuningTable>
@@ -1945,14 +1940,14 @@ tablespace indx
     <sql>
       <![CDATA[
 create index DsGl_source_id_idx&1 ON DatasetGeneList&1 (source_id,organism)
-tablespace indx
+
       ]]>
     </sql>
 
     <sql>
       <![CDATA[
 create index DsGl_omcl_nme_idx&1 ON DatasetGeneList&1 (orthomcl_name,organism)
-tablespace indx
+
       ]]>
     </sql>
     
@@ -1990,14 +1985,14 @@ tablespace indx
     <sql>
       <![CDATA[
 create unique index GeneModChMD_ix&1 ON ApidbTuning.GeneModelCharOrgMD&1 (ontology_term_name,gene_source_id,source_id,string_value,number_value)
-tablespace indx
+
       ]]>
     </sql>
 
     <sql>
       <![CDATA[
 create index GeneModChMD_2ix&1 ON ApidbTuning.GeneModelCharOrgMD&1 (taxon_name, ontology_term_name,gene_source_id,source_id,string_value,number_value)
-tablespace indx
+
       ]]>
     </sql>
 

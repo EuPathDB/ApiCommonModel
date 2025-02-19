@@ -1,188 +1,193 @@
 <wdkModel>
 
-    <querySet name="EstAttributes" queryType="attribute" isCacheable="false" excludeProjects="HostDB">
+  <querySet name="EstAttributes" queryType="attribute" isCacheable="false" excludeProjects="HostDB">
 
-      <defaultTestParamValues includeProjects="PlasmoDB">
-         <paramValue name="source_id">AU087658</paramValue>
-         <paramValue name="project_id">PlasmoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PlasmoDB">
+      <paramValue name="source_id">AU087658</paramValue>
+      <paramValue name="project_id">PlasmoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="ToxoDB">
-         <paramValue name="source_id">AA011889</paramValue>
-         <paramValue name="project_id">ToxoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="ToxoDB">
+      <paramValue name="source_id">AA011889</paramValue>
+      <paramValue name="project_id">ToxoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="CryptoDB,EuPathDB">
-         <paramValue name="source_id">AA555430</paramValue>
-         <paramValue name="project_id">CryptoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="CryptoDB,EuPathDB">
+      <paramValue name="source_id">AA555430</paramValue>
+      <paramValue name="project_id">CryptoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="GiardiaDB">
-         <paramValue name="source_id">AT002319</paramValue>
-         <paramValue name="project_id">GiardiaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="GiardiaDB">
+      <paramValue name="source_id">AT002319</paramValue>
+      <paramValue name="project_id">GiardiaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="TrichDB">
-         <paramValue name="source_id">CV202110</paramValue>
-         <paramValue name="project_id">TrichDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="TrichDB">
+      <paramValue name="source_id">CV202110</paramValue>
+      <paramValue name="project_id">TrichDB</paramValue>
+    </defaultTestParamValues>
 
-      <!--TODO revisit the source_id, its correct but is a random source_id-->
-      <defaultTestParamValues includeProjects="TriTrypDB">
-         <paramValue name="source_id">CF890597</paramValue>
-         <paramValue name="project_id">TriTrypDB</paramValue>
-      </defaultTestParamValues>
+    <!--TODO revisit the source_id, its correct but is a random source_id-->
+    <defaultTestParamValues includeProjects="TriTrypDB">
+      <paramValue name="source_id">CF890597</paramValue>
+      <paramValue name="project_id">TriTrypDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="AmoebaDB">
-         <paramValue name="source_id">CX080252</paramValue>
-         <paramValue name="project_id">AmoebaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="AmoebaDB">
+      <paramValue name="source_id">CX080252</paramValue>
+      <paramValue name="project_id">AmoebaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="MicrosporidiaDB">
-         <paramValue name="source_id">ES880893</paramValue>
-         <paramValue name="project_id">MicrosporidiaDB</paramValue>
-      </defaultTestParamValues>
-    
-      <defaultTestParamValues includeProjects="PiroplasmaDB">
-         <paramValue name="source_id">AJ922568</paramValue>
-         <paramValue name="project_id">PiroplasmaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="MicrosporidiaDB">
+      <paramValue name="source_id">ES880893</paramValue>
+      <paramValue name="project_id">MicrosporidiaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="FungiDB">
-         <paramValue name="source_id">FS238575</paramValue>
-         <paramValue name="project_id">FungiDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PiroplasmaDB">
+      <paramValue name="source_id">AJ922568</paramValue>
+      <paramValue name="project_id">PiroplasmaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
-         <paramValue name="source_id"></paramValue>
-         <paramValue name="project_id"></paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="FungiDB">
+      <paramValue name="source_id">FS238575</paramValue>
+      <paramValue name="project_id">FungiDB</paramValue>
+    </defaultTestParamValues>
 
-      <testRowCountSql excludeProjects="EuPathDB">
-               select count(*)
-               from dots.nasequence s, sres.ontologyTerm ot
-               where ot.ontology_term_id = s.sequence_ontology_id
-               and ot.name = 'EST'
-       </testRowCountSql>
+    <defaultTestParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
+      <paramValue name="source_id"></paramValue>
+      <paramValue name="project_id"></paramValue>
+    </defaultTestParamValues>
 
-       <testRowCountSql includeProjects="EuPathDB">
-	 SELECT count(*) FROM ApidbTuning.EstAttributes
-       </testRowCountSql>
-       
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!--EST alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <testRowCountSql excludeProjects="EuPathDB">
+      SELECT count(*)
+      FROM dots.nasequence s, sres.ontologyTerm ot
+      WHERE ot.ontology_term_id = s.sequence_ontology_id
+        AND ot.name = 'EST'
+    </testRowCountSql>
 
-        <sqlQuery name="EstAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="old_source_id"/>
-            <column name="old_project_id"/>
-            <sql>
-              <![CDATA[
-                SELECT source_id, 
-                       project_id,
-                       source_id as old_source_id,
-                       project_id AS old_project_id
-                FROM ApidbTuning.EstAttributes
-              ]]>
-            </sql>
-        </sqlQuery>
+    <testRowCountSql includeProjects="EuPathDB">
+      SELECT count(*) FROM ApidbTuning.EstAttributes
+    </testRowCountSql>
 
-       <sqlQuery name="Bfmv">
-            <column name="source_id" ignoreCase="true"/>
-            <column name="project_id"/>
-            <column name="project_id_lc"/>
-            <column name="a_count" />
-            <column name="c_count" />
-            <column name="g_count" />
-            <column name="t_count" />
-            <column name="other_count" />
-            <column name="length" />
-            <column name="primer"  ignoreCase="true"/>
-            <column name="dbest_name"  ignoreCase="true"/>
-            <column name="vector"  ignoreCase="true"/>
-            <column name="stage"  ignoreCase="true"/>
-            <column name="organism_text"  ignoreCase="true"/>
-            <column name="formatted_organism"  sortingColumn="organism_text" ignoreCase="true"/>
-            <column name="ncbi_tax_id"  ignoreCase="true"/>
-            <column name="external_db_name"  ignoreCase="true"/>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--EST alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-            <sql>
-            <![CDATA[
-           SELECT bfmv.source_id, bfmv.project_id, lower(bfmv.project_id) as project_id_lc, bfmv.primer, bfmv.a_count,  bfmv.c_count, 
-                  bfmv.g_count, bfmv.t_count, bfmv.other_count, bfmv.length, 
-                  bfmv.dbest_name, bfmv.vector, bfmv.stage,
-                  CASE bfmv.organism when 'Giardia intestinalis' THEN 'Giardia lamblia' else bfmv.organism END as organism_text,
-                  bfmv.ncbi_tax_id,
-                  '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
-                  REGEXP_REPLACE(SUBSTR(CASE bfmv.organism when 'Giardia intestinalis' THEN 'Giardia lamblia' else bfmv.organism END, INSTR(bfmv.organism, ' ')), '[[:space:]]+',
-                                 chr(38) || 'nbsp;') || '</i>'
-                    AS formatted_organism,
-                  bfmv.external_db_name
-            FROM  ApidbTuning.EstAttributes bfmv
-            ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="EstAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="old_source_id"/>
+      <column name="old_project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id,
+                 project_id,
+                 source_id as old_source_id,
+                 project_id AS old_project_id
+          FROM ApidbTuning.EstAttributes
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="Sequence" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="sequence" />
-	    <column name="sequence_length"/>
-            <sql>
-                <![CDATA[
-                  SELECT source_id, project_id, sequence, length(sequence) AS sequence_length
-                  FROM   ApidbTuning.EstSequence
-                ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="Bfmv">
+      <column name="source_id" ignoreCase="true"/>
+      <column name="project_id"/>
+      <column name="project_id_lc"/>
+      <column name="a_count" />
+      <column name="c_count" />
+      <column name="g_count" />
+      <column name="t_count" />
+      <column name="other_count" />
+      <column name="length" />
+      <column name="primer"  ignoreCase="true"/>
+      <column name="dbest_name"  ignoreCase="true"/>
+      <column name="vector"  ignoreCase="true"/>
+      <column name="stage"  ignoreCase="true"/>
+      <column name="organism_text"  ignoreCase="true"/>
+      <column name="formatted_organism"  sortingColumn="organism_text" ignoreCase="true"/>
+      <column name="ncbi_tax_id"  ignoreCase="true"/>
+      <column name="external_db_name"  ignoreCase="true"/>
 
-        <sqlQuery name="LinkOut" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="linkout" />
-            <sql>
-            <![CDATA[
-            SELECT source_id, project_id,
-                CASE 
-                  WHEN bfmv.external_db_name = 'C. parvum ESTs' then 
-                      '<a href="http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=' || bfmv.source_id || '">NCBI</a>'
-                  WHEN bfmv.external_db_name like '%dbEST%' THEN 
-                      '<a href="http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=' || bfmv.source_id || '">NCBI</a>'
-                  ELSE 'none'
-                END
-                as linkout
-            FROM  ApidbTuning.EstAttributes bfmv
-            ]]>
-            </sql>
-        </sqlQuery>
+      <sql>
+        <![CDATA[
+          SELECT bfmv.source_id, bfmv.project_id
+            , lower(bfmv.project_id) as project_id_lc
+            , bfmv.primer, bfmv.a_count, bfmv.c_count
+            , bfmv.g_count, bfmv.t_count, bfmv.other_count
+            , bfmv.length, bfmv.dbest_name, bfmv.vector, bfmv.stage
+            , CASE bfmv.organism
+                WHEN 'Giardia intestinalis' THEN 'Giardia lamblia'
+                ELSE bfmv.organism
+              END as organism_text
+            , bfmv.ncbi_tax_id
+            , '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.'
+                || REGEXP_REPLACE(
+                    SUBSTR(
+                      CASE bfmv.organism when 'Giardia intestinalis' THEN 'Giardia lamblia' else bfmv.organism END
+                      , strpos(bfmv.organism, ' ')
+                    )
+                    , '[[:space:]]+'
+                    , chr(38) || 'nbsp;'
+                ) || '</i>' AS formatted_organism
+            , bfmv.external_db_name
+          FROM  ApidbTuning.EstAttributes bfmv
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="Reference" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="author" />
-            <column name="affiliation" />
-            <column name="address" />
-            <sql>
-            <![CDATA[
-            SELECT e.accession as source_id, ea.project_id,
-                   CASE WHEN (c.name IS NOT NULL) THEN c.name ELSE c.last END AS author,
-                   c.address1 as affiliation,
-                   c.address2 as address
-            FROM dots.est e, sres.contact c, 
-                 dots.externalnasequence ens, sres.ontologyTerm ot, apidbtuning.estattributes ea
-            WHERE e.contact_id = c.contact_id
-            and  e.accession = ea.source_id
-            and ens.na_sequence_id = e.na_sequence_id
-            and ens.sequence_ontology_id = ot.ontology_term_id
-            and ot.name = 'EST'
-            ]]>
-            </sql>
-        </sqlQuery>
+    <sqlQuery name="Sequence" excludeProjects="EuPathDB">
+      <column name="source_id" />
+      <column name="project_id" />
+      <column name="sequence" />
+      <column name="sequence_length"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id, project_id, sequence, length(sequence) AS sequence_length
+          FROM   ApidbTuning.EstSequence
+        ]]>
+      </sql>
+    </sqlQuery>
 
+    <sqlQuery name="LinkOut" excludeProjects="EuPathDB">
+      <column name="source_id" />
+      <column name="project_id" />
+      <column name="linkout" />
+      <sql>
+        <![CDATA[
+          SELECT source_id, project_id,
+              CASE
+                WHEN bfmv.external_db_name = 'C. parvum ESTs' then
+                    '<a href="http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=' || bfmv.source_id || '">NCBI</a>'
+                WHEN bfmv.external_db_name like '%dbEST%' THEN
+                    '<a href="http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=' || bfmv.source_id || '">NCBI</a>'
+                ELSE 'none'
+              END as linkout
+          FROM  ApidbTuning.EstAttributes bfmv
+        ]]>
+      </sql>
+    </sqlQuery>
 
-    </querySet>
-
-
+    <sqlQuery name="Reference" excludeProjects="EuPathDB">
+      <column name="source_id" />
+      <column name="project_id" />
+      <column name="author" />
+      <column name="affiliation" />
+      <column name="address" />
+      <sql>
+        <![CDATA[
+          SELECT e.accession as source_id, ea.project_id,
+                 CASE WHEN (c.name IS NOT NULL) THEN c.name ELSE c.last END AS author,
+                 c.address1 as affiliation,
+                 c.address2 as address
+          FROM dots.est e, sres.contact c,
+               dots.externalnasequence ens, sres.ontologyTerm ot, apidbtuning.estattributes ea
+          WHERE e.contact_id = c.contact_id
+            AND e.accession = ea.source_id
+            AND ens.na_sequence_id = e.na_sequence_id
+            AND ens.sequence_ontology_id = ot.ontology_term_id
+            AND ot.name = 'EST'
+        ]]>
+      </sql>
+    </sqlQuery>
+  </querySet>
 </wdkModel>

@@ -54,7 +54,7 @@ from transcriptattributes ta
    union
    select source_id from apidb.splicesitegenes) ss
 where ss.source_id = ta.gene_source_id
- and  ta.coding_start is not null
+ and ta.coding_start is not null
 -- TODO remove
 --and ta.gene_source_id in ( 'Tb11.v5.0365')
 ";
@@ -97,7 +97,7 @@ where ssg.splice_site_feature_id = ssf.splice_site_feature_id
 --TODO Remove
 --and ssg.source_id in ( 'Tb11.v5.0365')
 group by ssg.source_id, ssf.segment_start, ssf.is_unique, ssf.type, ssf.na_sequence_id, ssf.strand
-) 
+)  t
 order by source_id";
 
   my $prevGene;
@@ -301,18 +301,18 @@ sub createEmptyTable {
 
     $dbh->do(<<SQL) or die "creating table";
      create table SpliceSiteTranscripts$suffix (
-	location    number(10),
-        type         varchar2(20),
-       na_sequence_id number(10),
-       is_unique number(1),
-       sum_cpm float(126),
-       dist_to_first_atg number(10),
-       gene_source_id varchar2(80),
-       transcript_source_id varchar2(80),
-       dist_to_cds number(10),
-       is_dominant number(1),
-       strand char(1)
-  ) nologging
+	     location               numeric(10),
+       type                   varchar(20),
+       na_sequence_id         numeric(10),
+       is_unique              numeric(1),
+       sum_cpm                float8,
+       dist_to_first_atg      numeric(10),
+       gene_source_id         varchar(80),
+       transcript_source_id   varchar(80),
+       dist_to_cds            numeric(10),
+       is_dominant            numeric(1),
+       strand                 char(1)
+  )
 SQL
 $dbh->{PrintError} = 0;
 

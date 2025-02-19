@@ -1481,6 +1481,7 @@ name" internal="true"/>
             <columnAttribute displayName="Start Min" name="spf_start_min"/>
             <columnAttribute displayName="End Max" name="spf_end_max"/>
             <columnAttribute displayName="Transcript ID" name="transcript_id"/>
+            <columnAttribute displayName="SignalP Version" name="spf_version"/>
           </table>
 
 
@@ -2830,8 +2831,8 @@ name" internal="true"/>
             <columnAttribute displayName="Transcript ID" name="transcript_id"/>
             <columnAttribute name="pdb_chain" internal="true" displayName="PDB Structure"/>
             <columnAttribute name="pdb_id" internal="true"/>
-            <columnAttribute name="pvalue_mant" internal="true"/>
-            <columnAttribute name="pvalue_exp" internal="true"/>
+            <columnAttribute name="evalue_mant" internal="true"/>
+            <columnAttribute name="evalue_exp" internal="true"/>
 
             <columnAttribute name="pdb_url" internal="true" />
             <linkAttribute name="pdb_link"  displayName="PDB Structure" >
@@ -2855,10 +2856,10 @@ name" internal="true"/>
             </textAttribute>
             <columnAttribute name="percent_plasmo_coverage" displayName="% of VEuPathDB protein Covered" align="center"/>
             <columnAttribute name="percent_identity" displayName="% Identity" align="center"/>
-            <textAttribute name="Pvalue" displayName="P-value" align="center">
+            <textAttribute name="Evalue" displayName="E-value" align="center">
                 <text>
                     <![CDATA[
-                    $$pvalue_mant$$ x 10<sup>$$pvalue_exp$$</sup>
+                    $$evalue_mant$$ x 10<sup>$$evalue_exp$$</sup>
                     ]]>
                 </text>
             </textAttribute>
@@ -2887,10 +2888,26 @@ name" internal="true"/>
                     ]]>
                 </url>
             </linkAttribute>
-            <columnAttribute name="sequence" displayName="Sequence"/>
+            <columnAttribute name="sequence" displayName="Epitope Sequence"/>
             <columnAttribute name="location" displayName="Location on Protein"/>
-             <columnAttribute name="name" displayName="Strain"/>
-            <columnAttribute name="confidence" displayName="Confidence"/>
+            <columnAttribute name="name" displayName="Strain"/>
+	    <columnAttribute name="IEDB_Description" displayName="IEDB Peptide Description"/>
+            <columnAttribute name="peptide_source_protein" internal="true" displayName="IEDB peptide source protein"/>
+            <linkAttribute name="iedb_protein_link" displayName="IEDB peptide source protein" >
+                 <displayText>
+                    <![CDATA[
+                    $$peptide_source_protein$$
+                    ]]>
+                 </displayText>
+                <url>
+                    <![CDATA[
+                    https://www.ncbi.nlm.nih.gov/protein/$$peptide_source_protein$$
+                    ]]>
+                </url>
+            </linkAttribute>
+            <columnAttribute name="mismatches" displayName="Peptide mismatch"/>
+            <columnAttribute name="protein_match" displayName="Match Protein"/>
+            <columnAttribute name="taxon_match" displayName="Match taxon"/>
           </table>
 
 

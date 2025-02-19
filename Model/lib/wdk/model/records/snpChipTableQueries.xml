@@ -15,37 +15,34 @@
        <!-- Strains for sequencing SNPs -->  
        <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-        <sqlQuery name="StrainsWithMetaData" includeProjects="PlasmoDB,UniDB" 
-              isCacheable="false">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="strain"/>
-            <column name="allele"/>
-            <column name="country"/>
-            <column name="allele_gene_strand"/>
-            <column name="product"/>
-            <sql>
-            <![CDATA[
- SELECT sa.source_id, 
-       sa.project_id,
-       var.strain,
-       nvl(loc.value,'unknown') as country,
-       CASE WHEN sa.gene_strand = 'reverse' THEN apidb.reverse_complement(var.allele) 
-            WHEN sa.gene_source_id is null THEN ''
-       ELSE var.allele 
-       END as allele_gene_strand,
-       var.allele,
-       var.product, 
-       so.name as sampleId
-FROM  results.seqvariation var,
-      ApidbTuning.SnpChipAttributes sa,
-      (select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location') loc,
-      (select name, output_pan_id from apidbtuning.SampleProcess sd ) so 
-WHERE var.snp_na_feature_id = sa.na_feature_id
-  AND var.allele in ('A','C','G','T')
-  AND loc.PAN_Id(+) = var.Protocol_App_Node_Id
-  and so.output_pan_id = var.protocol_app_node_id
-             ]]>
+      <sqlQuery name="StrainsWithMetaData" includeProjects="PlasmoDB,UniDB"
+                isCacheable="false">
+        <column name="source_id"/>
+        <column name="project_id"/>
+        <column name="strain"/>
+        <column name="allele"/>
+        <column name="country"/>
+        <column name="allele_gene_strand"/>
+        <column name="product"/>
+        <sql>
+          <![CDATA[
+            SELECT sa.source_id,
+                   sa.project_id,
+                   var.strain,
+                   coalesce(loc.value,'unknown') as country,
+                   CASE WHEN sa.gene_strand = 'reverse' THEN apidb.reverse_complement(var.allele)
+                        WHEN sa.gene_source_id is null THEN ''
+                   ELSE var.allele
+                   END as allele_gene_strand,
+                   var.allele,
+                   var.product,
+                   so.name as sampleId
+            FROM  ApidbTuning.SnpChipAttributes sa
+                  INNER JOIN results.seqvariation var ON var.snp_na_feature_id = sa.na_feature_id
+                  LEFT JOIN (select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location') loc ON loc.PAN_Id = var.Protocol_App_Node_Id
+                  INNER JOIN (select name, output_pan_id from apidbtuning.SampleProcess sd ) so ON so.output_pan_id = var.protocol_app_node_id
+            WHERE var.allele in ('A','C','G','T')
+          ]]>
         </sql>
       </sqlQuery>
 
@@ -68,58 +65,64 @@ WHERE var.snp_na_feature_id = sa.na_feature_id
 
             <sql>
             <![CDATA[
-select source_id,snp_source_id as other_snp_id,'PlasmoDB' AS project_id,geographic_location, platform,type,total_strains as num_strains,
-major_allele || ' ('||maj_freq||')' as major_allele,
-CASE WHEN minor_allele is not null THEN 
-   CASE WHEN other_allele is not null THEN minor_allele || ' ('||other_freq||')' ELSE minor_allele || ' ('||min_freq||')' END 
-ELSE null END as minor_allele,
-CASE WHEN other_allele is not null THEN other_allele || ' ('||min_freq||')' ELSE null END as other_allele
-from (
-select source_id,snp_source_id,geographic_location,platform,type,
-substr(listagg(allele, ', ') within group (order by count_strains desc),1,1) as major_allele,
-substr(listagg(allele, ', ') within group (order by count_strains desc),4,1) as minor_allele,
-substr(listagg(allele, ', ') within group (order by count_strains desc),7,1) as other_allele,
-sum(count_strains) as total_strains,
-round((max(count_strains) / sum(count_strains)),2) as maj_freq,
-round((min(count_strains) / sum(count_strains)),2) as min_freq,
-round((median(count_strains) / sum(count_strains)),2) as other_freq
-from (
-select source_id,snp_source_id,platform,'snp-chip' as type,geographic_location,allele,product,count(*) as count_strains
-from (
-SELECT sa.source_id, sb.source_id as snp_source_id, sb.platform,'PlasmoDB' AS project_id,
-       var.strain,
-       var.allele, var.product, var.coverage,
-        nvl(loc.value,'unknown') as geographic_location
-FROM   results.SeqVariation var, apidbtuning.snpChipAttributes sa, apidbtuning.snpChipAttributes sb,
-       (select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location') loc
-WHERE sa.na_sequence_id = sb.na_sequence_id
-  and sa.start_min = sb.start_min
-  and sb.source_id != sa.source_id
-and sb.na_feature_id = var.snp_na_feature_id
-and var.allele in ('A','C','G','T')
-and var.protocol_app_node_id = loc.pan_id(+) )
-group by source_id,snp_source_id,geographic_location,platform,allele,product 
-UNION
-select source_id,snp_source_id,platform,'snp' as type,geographic_location,allele,product,count(*) as count_strains
-from (
-SELECT sa.source_id, sb.source_id as snp_source_id, 'HTS_SNP' as platform, 'PlasmoDB' AS project_id,
-       var.strain,
-       var.allele, var.product, var.coverage,
-        nvl(loc.value,'unknown') as geographic_location
-FROM   apidb.SequenceVariation var, apidbtuning.snpChipAttributes sa, apidbtuning.snpAttributes sb,
-       (select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location') loc
-WHERE sa.na_sequence_id = sb.na_sequence_id
-  and sa.start_min = sb.location
-  and sb.source_id != sa.source_id
-and sb.na_sequence_id = var.ref_na_sequence_id
-and var.location = sb.location
-and var.protocol_app_node_id = loc.pan_id(+) )
-group by source_id,snp_source_id,geographic_location,platform,allele,product )
-group by source_id,snp_source_id,type,geographic_location,platform)
+              SELECT source_id,snp_source_id as other_snp_id,'PlasmoDB' AS project_id,
+                geographic_location, platform,type,total_strains as num_strains,
+                major_allele || ' ('||maj_freq||')' as major_allele,
+                CASE WHEN minor_allele is not null THEN
+                       CASE WHEN other_allele is not null THEN minor_allele || ' ('||other_freq||')' ELSE minor_allele || ' ('||min_freq||')' END
+                     ELSE null END as minor_allele,
+                CASE WHEN other_allele is not null THEN other_allele || ' ('||min_freq||')' ELSE null END as other_allele
+              FROM (
+                SELECT source_id,snp_source_id,geographic_location,platform,type,
+                  substr(string_agg(allele, ', ' order by count_strains desc),1,1) as major_allele,
+                  substr(string_agg(allele, ', ' order by count_strains desc),4,1) as minor_allele,
+                  substr(string_agg(allele, ', ' order by count_strains desc),7,1) as other_allele,
+                  sum(count_strains) as total_strains,
+                  round((max(count_strains) / sum(count_strains)),2) as maj_freq,
+                  round((min(count_strains) / sum(count_strains)),2) as min_freq,
+                  round((percentile_cont(0.5) WITHIN GROUP (ORDER BY count_strains) / sum(count_strains))::numeric,2) as other_freq
+                FROM (
+                    SELECT source_id,snp_source_id,platform,'snp-chip' as type,geographic_location,allele,product,count(*) as count_strains
+                    FROM (
+                           SELECT sa.source_id, sb.source_id as snp_source_id, sb.platform,'PlasmoDB' AS project_id,
+                             var.strain,
+                             var.allele, var.product, var.coverage,
+                             coalesce(loc.value,'unknown') as geographic_location
+                           FROM apidbtuning.snpChipAttributes sa, apidbtuning.snpChipAttributes sb, results.SeqVariation var
+                             LEFT JOIN (
+                                SELECT PAN_Id,value FROM apidbtuning.InferredChars WHERE property = 'geographic location'
+                             ) loc ON var.protocol_app_node_id = loc.pan_id
+                           WHERE sa.na_sequence_id = sb.na_sequence_id
+                             AND sa.start_min = sb.start_min
+                             AND sb.source_id != sa.source_id
+                             AND sb.na_feature_id = var.snp_na_feature_id
+                             AND var.allele in ('A','C','G','T')
+                    ) t
+                    GROUP BY source_id,snp_source_id,geographic_location,platform,allele,product
+                  UNION
+                    SELECT source_id,snp_source_id,platform,'snp' as type,geographic_location,allele,product,count(*) as count_strains
+                    FROM (
+                      SELECT sa.source_id, sb.source_id as snp_source_id, 'HTS_SNP' as platform, 'PlasmoDB' AS project_id,
+                        var.strain,
+                        var.allele, var.product, var.coverage,
+                        coalesce(loc.value,'unknown') as geographic_location
+                      FROM apidbtuning.snpChipAttributes sa, apidbtuning.snpAttributes sb, apidb.SequenceVariation var
+                        LEFT JOIN (
+                          SELECT PAN_Id,value FROM apidbtuning.InferredChars where property = 'geographic location'
+                        ) loc ON var.protocol_app_node_id = loc.pan_id
+                      WHERE sa.na_sequence_id = sb.na_sequence_id
+                        AND sa.start_min = sb.location
+                        AND sb.source_id != sa.source_id
+                        AND sb.na_sequence_id = var.ref_na_sequence_id
+                        AND var.location = sb.location
+                    ) t
+                    GROUP BY source_id,snp_source_id,geographic_location,platform,allele,product
+                ) t
+                GROUP BY source_id,snp_source_id,type,geographic_location,platform
+              ) t
              ]]>
            </sql>
-
-        </sqlQuery> 
+        </sqlQuery>
 
                <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
        <!-- country summary -->  
@@ -134,37 +137,41 @@ group by source_id,snp_source_id,type,geographic_location,platform)
             <column name="minor_allele"/>
             <column name="other_allele"/>
             <sql>
-                <![CDATA[
-select source_id,'PlasmoDB' AS project_id,geographic_location, total_strains,
-major_allele || ' ('||maj_freq||')' as major_allele,
-CASE WHEN minor_allele is not null THEN 
-   CASE WHEN other_allele is not null THEN minor_allele || ' ('||other_freq||')' ELSE minor_allele || ' ('||min_freq||')' END 
-ELSE null END as minor_allele,
-CASE WHEN other_allele is not null THEN other_allele || ' ('||min_freq||')' ELSE null END as other_allele
-from (
-select source_id,geographic_location,
-substr(listagg(allele, ', ') within group (order by count_strains desc),1,1) as major_allele,
-substr(listagg(allele, ', ') within group (order by count_strains desc),4,1) as minor_allele,
-substr(listagg(allele, ', ') within group (order by count_strains desc),7,1) as other_allele,
-sum(count_strains) as total_strains,
-round((max(count_strains) / sum(count_strains)),2) as maj_freq,
-round((min(count_strains) / sum(count_strains)),2) as min_freq,
-round((median(count_strains) / sum(count_strains)),2) as other_freq
-from (
-select source_id,geographic_location,allele,product,count(*) as count_strains
-from (
-SELECT sa.source_id, 'PlasmoDB' AS project_id,
-       CASE WHEN var.strain = sa.reference_strain THEN var.strain||' (reference)' ELSE var.strain END as strain,
-       var.allele, var.product, var.coverage,
-        nvl(loc.value,'unknown') as geographic_location
-FROM   results.SeqVariation var, apidbtuning.snpChipAttributes sa,
-       (select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location') loc
-WHERE sa.na_feature_id = var.snp_na_feature_id
-and var.allele in ('A','C','G','T')
-and var.protocol_app_node_id = loc.pan_id(+) )
-group by source_id,geographic_location,allele,product )
-group by source_id,geographic_location)
-                ]]>
+              <![CDATA[
+                SELECT source_id,'PlasmoDB' AS project_id,geographic_location, total_strains,
+                        major_allele || ' ('||maj_freq||')' as major_allele,
+                        CASE WHEN minor_allele is not null THEN
+                          CASE WHEN other_allele is not null THEN minor_allele || ' ('||other_freq||')' ELSE minor_allele || ' ('||min_freq||')' END
+                          ELSE null END as minor_allele,
+                        CASE WHEN other_allele is not null THEN other_allele || ' ('||min_freq||')' ELSE null END as other_allele
+                FROM (
+                  SELECT source_id,geographic_location,
+                    substr(string_agg(allele, ', ' order by count_strains desc),1,1) as major_allele,
+                    substr(string_agg(allele, ', ' order by count_strains desc),4,1) as minor_allele,
+                    substr(string_agg(allele, ', ' order by count_strains desc),7,1) as other_allele,
+                    sum(count_strains) as total_strains,
+                    round((max(count_strains) / sum(count_strains)),2) as maj_freq,
+                    round((min(count_strains) / sum(count_strains)),2) as min_freq,
+                    round((percentile_cont(0.5) WITHIN GROUP (ORDER BY count_strains) / sum(count_strains))::numeric,2) as other_freq
+                  FROM (
+                    SELECT source_id,geographic_location,allele,product,count(*) as count_strains
+                    FROM (
+                      SELECT sa.source_id, 'PlasmoDB' AS project_id,
+                        CASE WHEN var.strain = sa.reference_strain THEN var.strain||' (reference)' ELSE var.strain END as strain,
+                        var.allele, var.product, var.coverage,
+                        coalesce(loc.value,'unknown') as geographic_location
+                      FROM results.SeqVariation var
+                        INNER JOIN apidbtuning.snpChipAttributes sa ON sa.na_feature_id = var.snp_na_feature_id
+                        LEFT JOIN (
+                          select PAN_Id,value from apidbtuning.InferredChars where property = 'geographic location'
+                        ) loc ON var.protocol_app_node_id = loc.pan_id
+                      WHERE var.allele in ('A','C','G','T')
+                    ) t
+                    GROUP BY source_id,geographic_location,allele,product
+                  ) t
+                  GROUP BY source_id,geographic_location
+                ) t
+              ]]>
             </sql>
        </sqlQuery>       
 

@@ -1,187 +1,193 @@
 
 <wdkModel>
-    <querySet name="SnpAttributes" queryType="attribute" isCacheable="false" includeProjects="AmoebaDB,CryptoDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,TriTrypDB,ToxoDB,UniDB">
+  <querySet name="SnpAttributes" queryType="attribute" isCacheable="false" includeProjects="AmoebaDB,CryptoDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,TriTrypDB,ToxoDB,UniDB">
 
-      <defaultTestParamValues includeProjects="PlasmoDB">
-         <paramValue name="source_id">NGS_SNP.Pf3D7_11_v3.1293957</paramValue>
-         <paramValue name="project_id">PlasmoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="PlasmoDB">
+      <paramValue name="source_id">NGS_SNP.Pf3D7_11_v3.1293957</paramValue>
+      <paramValue name="project_id">PlasmoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="ToxoDB,EuPathDB,UniDB">
-         <paramValue name="source_id">NGS_SNP.tgme49_asmbl.1154.490</paramValue>
-         <paramValue name="project_id">ToxoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="ToxoDB,EuPathDB,UniDB">
+      <paramValue name="source_id">NGS_SNP.tgme49_asmbl.1154.490</paramValue>
+      <paramValue name="project_id">ToxoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="CryptoDB">
-         <paramValue name="source_id">chr3-2_66329</paramValue>
-         <paramValue name="project_id">CryptoDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="CryptoDB">
+      <paramValue name="source_id">chr3-2_66329</paramValue>
+      <paramValue name="project_id">CryptoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="TriTrypDB">
-         <paramValue name="source_id">NGS_SNP.Tb927_01_v4.36382</paramValue>
-         <paramValue name="project_id">TriTrypDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="TriTrypDB">
+      <paramValue name="source_id">NGS_SNP.Tb927_01_v4.36382</paramValue>
+      <paramValue name="project_id">TriTrypDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="AmoebaDB">
-         <paramValue name="source_id">NGS_SNP.DS571145.208</paramValue>
-         <paramValue name="project_id">AmoebaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="AmoebaDB">
+      <paramValue name="source_id">NGS_SNP.DS571145.208</paramValue>
+      <paramValue name="project_id">AmoebaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="FungiDB">
-         <paramValue name="source_id">NGS_SNP.AfumAf293_Chr1.120</paramValue>
-         <paramValue name="project_id">FungiDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="FungiDB">
+      <paramValue name="source_id">NGS_SNP.AfumAf293_Chr1.120</paramValue>
+      <paramValue name="project_id">FungiDB</paramValue>
+    </defaultTestParamValues>
 
-       <testRowCountSql>
-	 SELECT count(*) FROM ApidbTuning.SnpAttributes
-       </testRowCountSql>
-       
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!--SNP alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <testRowCountSql>
+      SELECT count(*) FROM ApidbTuning.SnpAttributes
+    </testRowCountSql>
 
-        <sqlQuery name="SnpAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="old_source_id"/>
-            <column name="old_project_id"/>
-            <sql>
-              <![CDATA[
-                SELECT source_id, 
-                       project_id,
-                       source_id as old_source_id,
-                       project_id AS old_project_id
-                FROM ApidbTuning.SnpAttributes 
-              ]]>
-            </sql>
-        </sqlQuery>
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--SNP alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
-        <sqlQuery name="Bfmv">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="dataset" ignoreCase="true"/>
-            <column name="seq_source_id"  sortingColumn="chromosome_order_num"/>
-            <column name="location"  sortingColumn="location" />
-            <column name="location_text"  sortingColumn="location" />
-            <column name="chromosome_order_num"  sortingColumn="chromosome_order_num" />
-            <column name="is_coding"  />
-            <column name="position_in_CDS"  />
-            <column name="position_in_protein"  />
-            <column name="has_nonsynonymous_allele"  />
-            <column name="gene_source_id"  ignoreCase="true"/>
-            <column name="gene_strand"  />
-            <column name="lflank"  ignoreCase="true"/>
-            <column name="allele"  sortingColumn="reference_na" ignoreCase="true"/>
-            <column name="rflank"  ignoreCase="true"/>
-            <column name="lflank_gene_strand"  sortingColumn="lflank" ignoreCase="true"/>
-            <column name="allele_gene_strand"  sortingColumn="allele" ignoreCase="true"/>
-            <column name="rflank_gene_strand"  sortingColumn="rflank" ignoreCase="true"/>
-            <column name="organism_text"  ignoreCase="true"/>
-            <column name="formatted_organism"  sortingColumn="organism_text" />
-            <column name="ncbi_tax_id"  />
-            <column name="minor_allele_frequency"  />
-            <column name="major_allele_frequency"  />
-            <column name="distinct_strain_count"  />
-            <column name="distinct_allele_count"/>
-            <column name="minor_product"  />
-            <column name="major_product"  />
-            <column name="minor_allele"  />
-            <column name="major_allele"  />
-            <column name="minor_allele_count"  />
-            <column name="major_allele_count"  />
-            <column name="reference_na"  />
-            <column name="snp_context"  />
-            <column name="snp_context_gene_strand"  />
-            <column name="reference_aa"  />
-            <column name="reference_strain"  />
-            <column name="lc_project_id"  />
-            <column name="context_start"  />
-            <column name="context_end"  />
-            <column name="align_context_start"  />
-            <column name="align_context_end"  />
-            <sqlParamValue  name="dataset_display_names">
-                'InsertSnps.pm NGS SNPs INTERNAL', 'HTS SNPs'
-            </sqlParamValue>
-            <sql>
-            <![CDATA[
-           SELECT bfmv.source_id, bfmv.project_id, bfmv.chromosome_order_num, lower(bfmv.project_id) as lc_project_id,
-                  nvl(dsa.display_name, DECODE(bfmv.dataset, &&dataset_display_names&&, bfmv.dataset)) as dataset,
-                  bfmv.seq_source_id, bfmv.location, 
-                  bfmv.location - 5000 as context_start,
-                  bfmv.location + 5000 as context_end,
-                  greatest(bfmv.location - 29) as align_context_start,
-                  bfmv.location + 30 as align_context_end,
-                  CASE
-                  WHEN bfmv.reference_strain = 'iowa_II' THEN 'IOWA II'
-                  WHEN bfmv.reference_strain = 'md' THEN 'MD'
-                  WHEN bfmv.reference_strain = 'tu114' THEN 'TU114'
-                  ELSE bfmv.reference_strain
-                  END as reference_strain,
-                  bfmv.reference_na, 
-                  decode(bfmv.is_coding, 1, 'coding', 'non-coding') is_coding, 
-                  bfmv.position_in_CDS,
-                  bfmv.position_in_protein, bfmv.reference_aa, 
-                  case when is_coding = 0 then null
-                    else decode(has_nonsynonymous_allele, 1, 'Has Non-Synonymous', 'Synonymous')
-                 end  has_nonsynonymous_allele,
-                  bfmv.gene_source_id, bfmv.gene_strand, bfmv.lflank,
-                  bfmv.lflank||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||bfmv.reference_na||'</span>'||bfmv.rflank as snp_context,
-                  bfmv.rflank, bfmv.reference_na as allele, bfmv.organism as organism_text, bfmv.ncbi_tax_id,
-                  '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
-                  REGEXP_REPLACE(SUBSTR(bfmv.organism, INSTR(bfmv.organism, ' ')), '[[:space:]]+',
-                                 chr(38) || 'nbsp;') || '</i>'
-                    AS formatted_organism,
-                  bfmv.minor_allele_frequency, bfmv.major_allele_frequency,
-                  bfmv.distinct_strain_count, bfmv.distinct_allele_count, bfmv.minor_product,
-                  bfmv.major_product,bfmv.major_allele,bfmv.minor_allele,
-                  bfmv.major_allele_count,bfmv.minor_allele_count,
-                  trim(to_char(bfmv.location,'99,999,999')) as location_text,
-                  CASE WHEN bfmv.gene_strand = 'reverse' and bfmv.rflank is not null THEN apidb.reverse_complement(bfmv.rflank) 
-                       ELSE null END as lflank_gene_strand,
-                  CASE WHEN bfmv.gene_strand = 'reverse' and bfmv.lflank is not null THEN apidb.reverse_complement(bfmv.lflank) 
-                       ELSE null END as rflank_gene_strand,
-                  CASE WHEN bfmv.gene_strand = 'reverse' THEN apidb.reverse_complement(bfmv.reference_na) 
-                       ELSE null END as allele_gene_strand,
-                  CASE WHEN bfmv.gene_strand = 'reverse' THEN apidb.reverse_complement(bfmv.rflank)||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||apidb.reverse_complement(bfmv.reference_na) ||'</span>'||apidb.reverse_complement(bfmv.lflank)
-                       ELSE null END as snp_context_gene_strand
-       FROM   ApidbTuning.SnpAttributes bfmv,  apidbtuning.DatasetPresenter dsa
-       WHERE bfmv.dataset = dsa.name (+)
-             ]]>
-           </sql>
+    <sqlQuery name="SnpAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="old_source_id"/>
+      <column name="old_project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id,
+                 project_id,
+                 source_id as old_source_id,
+                 project_id AS old_project_id
+          FROM ApidbTuning.SnpAttributes
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        </sqlQuery>
-
-
-        <sqlQuery name="Browser" excludeProjects="EuPathDB">
-            <column name="source_id" />
-            <column name="project_id"/>
-            <column name="organismAbbrev"/>
-            <sql>
-            <![CDATA[
-             SELECT sa.source_id, sa.project_id, attr.public_abbrev as organismAbbrev
-             FROM apidbtuning.snpAttributes sa, apidbtuning.organismAttributes attr
-             WHERE sa.organism = attr.organism_name 
-            ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="Bfmv">
+      <column name="source_id" />
+      <column name="project_id" />
+      <column name="dataset" ignoreCase="true"/>
+      <column name="seq_source_id"  sortingColumn="chromosome_order_num"/>
+      <column name="location"  sortingColumn="location" />
+      <column name="location_text"  sortingColumn="location" />
+      <column name="chromosome_order_num"  sortingColumn="chromosome_order_num" />
+      <column name="is_coding"  />
+      <column name="position_in_CDS"  />
+      <column name="position_in_protein"  />
+      <column name="has_nonsynonymous_allele"  />
+      <column name="gene_source_id"  ignoreCase="true"/>
+      <column name="gene_strand"  />
+      <column name="lflank"  ignoreCase="true"/>
+      <column name="allele"  sortingColumn="reference_na" ignoreCase="true"/>
+      <column name="rflank"  ignoreCase="true"/>
+      <column name="lflank_gene_strand"  sortingColumn="lflank" ignoreCase="true"/>
+      <column name="allele_gene_strand"  sortingColumn="allele" ignoreCase="true"/>
+      <column name="rflank_gene_strand"  sortingColumn="rflank" ignoreCase="true"/>
+      <column name="organism_text"  ignoreCase="true"/>
+      <column name="formatted_organism"  sortingColumn="organism_text" />
+      <column name="ncbi_tax_id"  />
+      <column name="minor_allele_frequency"  />
+      <column name="major_allele_frequency"  />
+      <column name="distinct_strain_count"  />
+      <column name="distinct_allele_count"/>
+      <column name="minor_product"  />
+      <column name="major_product"  />
+      <column name="minor_allele"  />
+      <column name="major_allele"  />
+      <column name="minor_allele_count"  />
+      <column name="major_allele_count"  />
+      <column name="reference_na"  />
+      <column name="snp_context"  />
+      <column name="snp_context_gene_strand"  />
+      <column name="reference_aa"  />
+      <column name="reference_strain"  />
+      <column name="lc_project_id"  />
+      <column name="context_start"  />
+      <column name="context_end"  />
+      <column name="align_context_start"  />
+      <column name="align_context_end"  />
+      <sqlParamValue  name="dataset_display_names">
+        WHEN 'InsertSnps.pm NGS SNPs INTERNAL' THEN 'HTS SNPs'
+      </sqlParamValue>
+      <sql>
+        <![CDATA[
+          SELECT bfmv.source_id, bfmv.project_id
+            , bfmv.chromosome_order_num, lower(bfmv.project_id) as lc_project_id
+            , coalesce(
+                dsa.display_name
+                , CASE bfmv.dataset &&dataset_display_names&& ELSE bfmv.dataset END
+              ) as dataset
+            , bfmv.seq_source_id, bfmv.location
+            , bfmv.location - 5000 as context_start
+            , bfmv.location + 5000 as context_end
+            , greatest(bfmv.location - 29) as align_context_start
+            , bfmv.location + 30 as align_context_end
+            , CASE
+                WHEN bfmv.reference_strain = 'iowa_II' THEN 'IOWA II'
+                WHEN bfmv.reference_strain = 'md' THEN 'MD'
+                WHEN bfmv.reference_strain = 'tu114' THEN 'TU114'
+                ELSE bfmv.reference_strain
+              END as reference_strain
+            , bfmv.reference_na
+            , CASE bfmv.is_coding WHEN 1 THEN 'coding' ELSE 'non-coding' END is_coding
+            , bfmv.position_in_CDS
+            , bfmv.position_in_protein, bfmv.reference_aa
+            , CASE
+                WHEN is_coding = 0 then null
+                ELSE CASE has_nonsynonymous_allele WHEN 1 THEN 'Has Non-Synonymous' ELSE 'Synonymous' END
+              END has_nonsynonymous_allele
+            , bfmv.gene_source_id, bfmv.gene_strand, bfmv.lflank
+            , bfmv.lflank||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||bfmv.reference_na||'</span>'||bfmv.rflank as snp_context
+            , bfmv.rflank, bfmv.reference_na as allele, bfmv.organism as organism_text, bfmv.ncbi_tax_id
+            , '<i>' || SUBSTR(bfmv.organism, 1, 1) || '.' ||
+                REGEXP_REPLACE(SUBSTR(bfmv.organism, strpos(bfmv.organism, ' ')), '[[:space:]]+',
+                               chr(38) || 'nbsp;') || '</i>'
+              AS formatted_organism
+            , bfmv.minor_allele_frequency, bfmv.major_allele_frequency
+            , bfmv.distinct_strain_count, bfmv.distinct_allele_count, bfmv.minor_product
+            , bfmv.major_product,bfmv.major_allele,bfmv.minor_allele
+            , bfmv.major_allele_count,bfmv.minor_allele_count
+            , trim(to_char(bfmv.location,'99,999,999')) as location_text
+            , CASE
+                WHEN bfmv.gene_strand = 'reverse' and bfmv.rflank is not null THEN apidb.reverse_complement(bfmv.rflank)
+              END as lflank_gene_strand
+            , CASE
+                WHEN bfmv.gene_strand = 'reverse' and bfmv.lflank is not null THEN apidb.reverse_complement(bfmv.lflank)
+              END as rflank_gene_strand
+            , CASE WHEN bfmv.gene_strand = 'reverse' THEN apidb.reverse_complement(bfmv.reference_na) END as allele_gene_strand
+            , CASE
+                WHEN bfmv.gene_strand = 'reverse' THEN apidb.reverse_complement(bfmv.rflank)||'<span style="color: red;font-weight: 500;background-color: #CCCCCC">'||apidb.reverse_complement(bfmv.reference_na) ||'</span>'||apidb.reverse_complement(bfmv.lflank)
+              END as snp_context_gene_strand
+          FROM ApidbTuning.SnpAttributes bfmv
+            LEFT JOIN apidbtuning.DatasetPresenter dsa ON bfmv.dataset = dsa.name
+        ]]>
+      </sql>
+    </sqlQuery>
 
 
-        <sqlQuery name="Sequence" excludeProjects="EuPathDB" doNotTest="1">
-            <column name="source_id" />
-            <column name="project_id" />
-            <column name="lflank"/>
-            <column name="allele"/>
-            <column name="rflank"/>
-            <sql>
-            <![CDATA[    
-            SELECT snp.source_id, snp.project_id,
-                   SUBSTR(nas.sequence,snp.location - 60,60) as lflank,
-                   SUBSTR(nas.sequence,snp.location,1) as allele,
-                   SUBSTR(nas.sequence,snp.location + 1,60) as rflank
-            FROM   dots.nasequence nas, apidbtuning.SNPAttributes snp
-            WHERE  snp.na_sequence_id = nas.na_sequence_id
-             ]]>
-           </sql>
-        </sqlQuery>
-    </querySet>
+    <sqlQuery name="Browser" excludeProjects="EuPathDB">
+      <column name="source_id" />
+      <column name="project_id"/>
+      <column name="organismAbbrev"/>
+      <sql>
+        <![CDATA[
+          SELECT sa.source_id, sa.project_id, attr.public_abbrev as organismAbbrev
+          FROM apidbtuning.snpAttributes sa, apidbtuning.organismAttributes attr
+          WHERE sa.organism = attr.organism_name
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <sqlQuery name="Sequence" excludeProjects="EuPathDB" doNotTest="1">
+      <column name="source_id" />
+      <column name="project_id" />
+      <column name="lflank"/>
+      <column name="allele"/>
+      <column name="rflank"/>
+      <sql>
+        <![CDATA[
+          SELECT snp.source_id, snp.project_id,
+                 SUBSTR(nas.sequence,snp.location - 60,60) as lflank,
+                 SUBSTR(nas.sequence,snp.location,1) as allele,
+                 SUBSTR(nas.sequence,snp.location + 1,60) as rflank
+          FROM   dots.nasequence nas, apidbtuning.SNPAttributes snp
+          WHERE  snp.na_sequence_id = nas.na_sequence_id
+        ]]>
+      </sql>
+    </sqlQuery>
+  </querySet>
 </wdkModel>

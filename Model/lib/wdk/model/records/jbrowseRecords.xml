@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wdkModel>
+  <recordClassSet name="JbrowseRecordClasses">
+
+    <recordClass name="JbrowseGeneRecordClass"
+                 urlName="jbrowse-gene"
+                 displayName="Gene" >
+
+      <primaryKey aliasQueryRef="GeneAttributes.GeneAlias">
+        <!-- order here matters: gene_source_id must come first for proper sorting -->
+        <columnRef>source_id</columnRef>
+      </primaryKey>
+
+      <idAttribute name="primary_key"
+                   displayName="Gene ID"
+                   attributeCategory="deep">
+        <text>
+          <![CDATA[
+                   $$source_id$$
+          ]]>
+        </text>
+      </idAttribute>
+
+      <attributesList summary="location_text,product"
+                      sorting="location_text asc"
+                      />
+
+      <reporter name="json"  displayName="json: choose from columns and/or tables" scopes=""
+                implementation="org.gusdb.wdk.model.report.reporter.JSONReporter">
+      </reporter>
+
+      <attributeQueryRef ref="GeneAttributes.Bfmv">
+        <linkAttribute name="link" displayName="Gene ID" >
+          <displayText>
+            <![CDATA[ $$source_id$$ ]]>
+          </displayText>
+          <url>
+            <![CDATA[ app/record/gene/$$source_id$$ ]]>
+          </url>
+        </linkAttribute>
+
+        <columnAttribute name="product" displayName="Product Description"/>
+
+        <textAttribute name="organism" displayName="Organism"
+		       help="The biological sample used to sequence this genome" >
+          <display><![CDATA[ <i>$$organism_text$$</i>  ]]></display>
+          <text><![CDATA[ $$organism_text$$  ]]></text>
+        </textAttribute>
+
+        <columnAttribute name="name" displayName="Gene Name or Symbol" align="center"/>
+ 	
+        <columnAttribute name="orthomcl_link" displayName="Ortholog Group"  help="orthomcl.org identifier OR other identifier for a group of orthologs"  truncateTo="4000"/>
+
+        <columnAttribute name="organism_text" displayName="Organism" inReportMaker="false"/>
+
+	<columnAttribute name="so_term_name" displayName="SO Term Name" />
+
+        <columnAttribute name="location_text" displayName="Genomic Location" help="Contig/Chromosome:start-end(strand)" />
+
+      </attributeQueryRef>
+
+      <table name="GeneTranscripts"
+             displayName="Transcripts"
+             inReportMaker="false"
+             internal="false"
+             queryRef="GeneTables.GeneTranscripts">
+        <columnAttribute name="transcript_id" displayName="Transcript"/>
+        <columnAttribute name="exon_count" displayName="# exons"/>
+        <columnAttribute name="length" displayName="Transcript length"/>
+        <columnAttribute name="protein_length" displayName="Protein length"/>
+        <columnAttribute name="transcript_type" displayName="Transcript Type"/>
+      </table>
+
+      <table name="GOTerms"
+             displayName="GO Terms"
+             inReportMaker="true"
+             queryRef="GeneTables.GOTerms">
+
+        <columnAttribute name="ontology" displayName="Ontology" help="Top level ontology term for this GO ID"/>
+        <columnAttribute name="go_id" displayName="GO ID" internal="true"/>
+        <linkAttribute name="go_id_link" displayName="GO ID" help="GO term ID" >
+          <displayText>
+            <![CDATA[
+                     $$go_id$$
+            ]]>
+          </displayText>
+          <url>
+            <![CDATA[%%goTermPageUrl%%$$go_id$$]]>
+          </url>
+        </linkAttribute>
+        <columnAttribute name="is_not" displayName="Is Not" help="NOT is used to make an explicit note that the gene product is not associated with the GO term."/>
+        <columnAttribute name="go_term_name" displayName="GO Term Name"/>
+        <columnAttribute name="source" displayName="Source" help="VEuPathDB obtained the gene-to-GO term association from this resource (e.g. GeneDB) or tool (e.g. InterPro)."/>
+        <columnAttribute name="evidence_code" displayName="Evidence Code" help="The evidence code reflects the type of work or analysis described in the cited reference which supports the association of the GO term to the gene product. More information on evidence codes can be found on http://www.geneontology.org/page/guide-go-evidence-codes. "/>
+        <columnAttribute name="reference" displayName="Reference" help="The reference indicates the source, such as a publication or database record, that is cited as an authority for the association of GO term to the gene product. If the source is GeneDB, then the reference is manually assigned by curators."/>
+	<columnAttribute name="evidence_code_parameter" displayName="Support for Evidence Code Assignment" help="The data record that supports the assignment of the GO term evidence code to the gene product."/>
+        <columnAttribute name="sort_key" internal="true"/>
+        <columnAttribute displayName="Transcript ID(s)" name="transcript_ids"/>
+        <propertyList name="includeInDumper"><value>true</value></propertyList>
+      </table>
+      
+
+    </recordClass>
+
+  </recordClassSet>
+</wdkModel>

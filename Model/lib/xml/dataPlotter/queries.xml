@@ -43,26 +43,29 @@
     ]]>
     </query>
 
+
     <query name="profile_set_names">
     <![CDATA[
-      select DISTINCT pt.profile_set_name, pt.profile_type
+      select DISTINCT pt.profile_set_name || ' [' || pt.node_type || ']' as profile_set_name, 
+             profile_type
       from apidbtuning.profiletype pt
-        ,  (select distinct sl.study_id
-            from study.studylink sl, apidbtuning.PanResults panr
+        ,  (select distinct sl.node_set_id
+            from study.nodeNodeSet sl, apidbtuning.PanResults panr
             where sl.protocol_app_node_id = panr.pan_id
             and panr.result_table =
-              'Results::NAFeatureDiffResult') dr
+              'Results::NAFeatureExpression') dr
         , apidbtuning.DatasetNameTaxon dnt
       where dnt.dataset_presenter_id = '$datasetPresenterId'
       and pt.dataset_name = dnt.name
-      and pt.profile_study_id = dr.study_id (+)
-      and dr.study_id is null
+      and pt.profile_study_id = dr.node_set_id
+      --and dr.study_id is null
     ]]>
     </query>
 
     <query name="profile_set_names_by_source_id">
     <![CDATA[
-      select DISTINCT pt.profile_set_name, pt.profile_type
+      select DISTINCT pt.profile_set_name || ' [' || pt.node_type || ']' as profile_set_name
+           , pt.profile_type
       from apidbtuning.profiletype pt, apidbtuning.profile p
         ,  (select distinct sl.study_id
             from study.studylink sl, apidbtuning.PanResults panr
@@ -110,26 +113,31 @@
     <query name="profile_set">
     <![CDATA[
        select $colsToReturn
-       from (select rownum as element_order, ps.*
-             FROM (SELECT protocol_app_node_name AS name
+       from (
+select pts.name, vals.oneval as value, pts.profile_set_name || ' [' ||  pts.node_type || ']' as profile_set_name, pts.profile_type, pts.node_order_num as element_order
+from (select row_number() OVER () as rn, points.* from (
+                   SELECT distinct protocol_app_node_name AS name
                         , study_name as profile_set_name
-                        , profile_type
+                        , profile_type, node_type 
+                        , node_order_num, dataset_name, study_id as profile_study_id
                    FROM  apidbtuning.ProfileSamples
-                   WHERE  study_name = '$profileSetName'
-                   AND profile_type = '$profileType'
-                   ORDER  BY node_order_num) ps) samplenames,
-            (select distinct rownum as element_order
-                  , trim(regexp_substr(t.profile_as_string, '[^' || CHR(9) || ']+', 1, levels.column_value)) as value
-                  , profile_set_name, profile_type
-             from (SELECT profile_AS_STRING, profile_set_name
-                        , profile_type
+                   WHERE node_type like  'htseq-union%'
+                   AND profile_type = 'values'
+                   ORDER  BY node_order_num) points
+                   )pts,
+    ( select row_number() OVER () as rn, vs.* from (
+                SELECT profile_study_id, dataset_name,  p.profile_set_name, p.profile_type, p.node_type,
+                       unnest( STRING_TO_ARRAY(p.profile_AS_STRING, chr(9) ,'')) as oneval
                    FROM apidbtuning.Profile p 
-                   WHERE p.source_id  = '$sourceId'
-                   AND p.profile_set_name = '$profileSetName'
-                   AND p.profile_type = '$profileType') t
-                 , table(cast(multiset(select level from dual connect by level <= length (regexp_replace(t.profile_as_string, '[^' || CHR(9) || ']+'))  + 1) as sys.OdciNumberList)) levels) samplevalues
-       where samplenames.element_order = samplevalues.element_order
-       and value is not null
+                   where p.profile_type = 'values'
+                   and p.node_type like  'htseq-union%'
+                   ) vs
+          ) vals
+where pts.rn = vals.rn
+and pts.dataset_name = vals.dataset_name
+and pts.node_type=vals.node_type
+and pts.profile_study_id = vals.profile_study_id
+) samplenames
     ]]>
     </query>
 
@@ -140,9 +148,9 @@
            , samplenames.element_order
       from (select  rownum as element_order, ps.* 
             FROM (SELECT protocol_app_node_name AS name
-                       , study_name as profile_set_name, profile_type
+                       , '$profileSetName' as profile_set_name, profile_type
                   FROM  apidbtuning.ProfileSamples
-                  WHERE  study_name = '$profileSetName'
+                  WHERE  study_name || ' [' || node_type || ']' = '$profileSetName'
                   AND profile_type = '$profileType'
                   ORDER  BY node_order_num) ps) samplenames,
            (select distinct rownum as element_order 

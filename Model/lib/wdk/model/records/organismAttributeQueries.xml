@@ -1,137 +1,136 @@
 <wdkModel>
-    <querySet name="OrganismAttributes" queryType="attribute" isCacheable="false">
+  <querySet name="OrganismAttributes" queryType="attribute" isCacheable="false">
 
-      <defaultTestParamValues includeProjects="AmoebaDB">
-  <paramValue name="source_id">edisSAW760</paramValue>
-  <paramValue name="project_id">AmoebaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="AmoebaDB">
+      <paramValue name="source_id">edisSAW760</paramValue>
+      <paramValue name="project_id">AmoebaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="CryptoDB">
-  <paramValue name="source_id">cmurRN66</paramValue>
-  <paramValue name="project_id">CryptoDB</paramValue>
-      </defaultTestParamValues>
-      
-      <defaultTestParamValues includeProjects="GiardiaDB">
-  <paramValue name="source_id">gassAWB</paramValue>
-  <paramValue name="project_id">GiardiaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="CryptoDB">
+      <paramValue name="source_id">cmurRN66</paramValue>
+      <paramValue name="project_id">CryptoDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="MicrosporidiaDB">
-  <paramValue name="source_id">ecunEC1</paramValue>
-  <paramValue name="project_id">MicrosporidiaDB</paramValue>
-      </defaultTestParamValues>
-      
-      <defaultTestParamValues includeProjects="PiroplasmaDB">
-  <paramValue name="source_id">tannAnkara</paramValue>
-  <paramValue name="project_id">PiroplasmaDB</paramValue>
-      </defaultTestParamValues>
+    <defaultTestParamValues includeProjects="GiardiaDB">
+      <paramValue name="source_id">gassAWB</paramValue>
+      <paramValue name="project_id">GiardiaDB</paramValue>
+    </defaultTestParamValues>
 
-      <defaultTestParamValues includeProjects="PlasmoDB">
-  <paramValue name="source_id">pfal3D7</paramValue>
-  <paramValue name="project_id">PlasmoDB</paramValue>
-      </defaultTestParamValues>
-      
-      <defaultTestParamValues includeProjects="ToxoDB">
-  <paramValue name="source_id">tgonME49</paramValue>
-  <paramValue name="project_id">ToxoDB</paramValue>
-      </defaultTestParamValues>
-      
-      <defaultTestParamValues includeProjects="TriTrypDB">
-  <paramValue name="source_id">lmajFriedlin</paramValue>
-  <paramValue name="project_id">TriTrypDB</paramValue>
-      </defaultTestParamValues>
-            
-      <testRowCountSql excludeProjects="EuPathDB">
-  select count(*) from apidb.organism
-      </testRowCountSql>
-      
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-       <!--Organism alias -->  
-       <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <defaultTestParamValues includeProjects="MicrosporidiaDB">
+      <paramValue name="source_id">ecunEC1</paramValue>
+      <paramValue name="project_id">MicrosporidiaDB</paramValue>
+    </defaultTestParamValues>
 
-        <sqlQuery name="OrganismAlias" doNotTest="true">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="old_source_id"/>
-            <column name="old_project_id"/>
-            <sql>
-              <![CDATA[
-                SELECT source_id, 
-                       project_id,
-                       source_id as old_source_id,
-                       project_id AS old_project_id
-                FROM ApidbTuning.OrganismAttributes 
-              ]]>
-            </sql>
-        </sqlQuery>
-      
+    <defaultTestParamValues includeProjects="PiroplasmaDB">
+      <paramValue name="source_id">tannAnkara</paramValue>
+      <paramValue name="project_id">PiroplasmaDB</paramValue>
+    </defaultTestParamValues>
 
-       <sqlQuery name="organismAttrs">
-          <column name="project_id" ignoreCase="true"/>
-          <column name="source_id" ignoreCase="true"/> 
-          <column name="database_version" ignoreCase="true"/>
+    <defaultTestParamValues includeProjects="PlasmoDB">
+      <paramValue name="source_id">pfal3D7</paramValue>
+      <paramValue name="project_id">PlasmoDB</paramValue>
+    </defaultTestParamValues>
 
-<!--
-          <column name="genus" ignoreCase="true"/>
--->
-          <column name="name_for_filenames" ignoreCase="true"/>
-          <column name="orthomcl_abbrev"/>
-          <column name="strain" ignoreCase="true"/>
-          <column name="species_display" ignoreCase="true"/>
-          <column name="species" ignoreCase="true"/>
-          <column name="megabps"/>
-          <column name="ncbi_tax_id"/>
-          <column name="species_ncbi_tax_id"/>
-          <column name="contigCount"/>
-          <column name="supercontigCount"/>
-          <column name="chromosomeCount"/>
-          <column name="genecount" sortingColumn="genecount_number"/>
-          <column name="genecount_number"/>
-          <column name="pseudogenecount"/>
-          <column name="codinggenecount"/>
-          <column name="othergenecount"/>
-          <column name="arraygenecount"/>
-          <column name="ecnumbercount"/>
-          <column name="rnaseqcount"/>
-          <column name="snpcount"/>
-          <column name="estcount"/>
-          <column name="popsetcount"/>
-          <column name="chipchipgenecount"/>
-          <column name="rtpcrcount"/>
-          <column name="orthologcount"/>
-          <column name="tfbscount"/>
-          <column name="gocount"/>
-          <column name="proteomicscount"/>
-          <column name="communitycount"/>
-          <column name="organism_name"/>
-          <column name="organism_full"/>
-          <column name="isOrganellar_flag"/>
-          <column name="array_flag"/>
-          <column name="chipchip_flag"/>
-          <column name="rnaseq_flag"/>
-          <column name="est_flag"/>
-          <column name="snp_flag"/>
-          <column name="go_flag"/>
-          <column name="ec_flag"/>
-          <column name="rtpcr_flag"/>
-          <column name="ortholog_flag"/>
-          <column name="community_flag"/>
-          <column name="tfbs_flag"/>
-          <column name="hasHTSIsolate_flag"/>
-          <column name="hasPopset_flag"/>
-          <column name="proteomics_flag"/> 
-          <column name="is_annotated_genome"/> 
-          <column name="is_reference_strain"/> 
-          <column name="download_link"/> 
-          <sql>
-          <![CDATA[
+    <defaultTestParamValues includeProjects="ToxoDB">
+      <paramValue name="source_id">tgonME49</paramValue>
+      <paramValue name="project_id">ToxoDB</paramValue>
+    </defaultTestParamValues>
+
+    <defaultTestParamValues includeProjects="TriTrypDB">
+      <paramValue name="source_id">lmajFriedlin</paramValue>
+      <paramValue name="project_id">TriTrypDB</paramValue>
+    </defaultTestParamValues>
+
+    <testRowCountSql excludeProjects="EuPathDB">
+      select count(*) from apidb.organism
+    </testRowCountSql>
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--Organism alias -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+    <sqlQuery name="OrganismAlias" doNotTest="true">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="old_source_id"/>
+      <column name="old_project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT source_id,
+                 project_id,
+                 source_id as old_source_id,
+                 project_id AS old_project_id
+          FROM ApidbTuning.OrganismAttributes
+        ]]>
+      </sql>
+    </sqlQuery>
+
+
+    <sqlQuery name="organismAttrs">
+      <column name="project_id" ignoreCase="true"/>
+      <column name="source_id" ignoreCase="true"/>
+      <column name="database_version" ignoreCase="true"/>
+      <!--
+                <column name="genus" ignoreCase="true"/>
+      -->
+      <column name="name_for_filenames" ignoreCase="true"/>
+      <column name="orthomcl_abbrev"/>
+      <column name="strain" ignoreCase="true"/>
+      <column name="species_display" ignoreCase="true"/>
+      <column name="species" ignoreCase="true"/>
+      <column name="megabps"/>
+      <column name="ncbi_tax_id"/>
+      <column name="species_ncbi_tax_id"/>
+      <column name="contigCount"/>
+      <column name="supercontigCount"/>
+      <column name="chromosomeCount"/>
+      <column name="genecount" sortingColumn="genecount_number"/>
+      <column name="genecount_number"/>
+      <column name="pseudogenecount"/>
+      <column name="codinggenecount"/>
+      <column name="othergenecount"/>
+      <column name="arraygenecount"/>
+      <column name="ecnumbercount"/>
+      <column name="rnaseqcount"/>
+      <column name="snpcount"/>
+      <column name="estcount"/>
+      <column name="popsetcount"/>
+      <column name="chipchipgenecount"/>
+      <column name="rtpcrcount"/>
+      <column name="orthologcount"/>
+      <column name="tfbscount"/>
+      <column name="gocount"/>
+      <column name="proteomicscount"/>
+      <column name="communitycount"/>
+      <column name="organism_name"/>
+      <column name="organism_full"/>
+      <column name="isOrganellar_flag"/>
+      <column name="array_flag"/>
+      <column name="chipchip_flag"/>
+      <column name="rnaseq_flag"/>
+      <column name="est_flag"/>
+      <column name="snp_flag"/>
+      <column name="go_flag"/>
+      <column name="ec_flag"/>
+      <column name="rtpcr_flag"/>
+      <column name="ortholog_flag"/>
+      <column name="community_flag"/>
+      <column name="tfbs_flag"/>
+      <column name="hasHTSIsolate_flag"/>
+      <column name="hasPopset_flag"/>
+      <column name="proteomics_flag"/>
+      <column name="is_annotated_genome"/>
+      <column name="is_reference_strain"/>
+      <column name="download_link"/>
+      <sql>
+        <![CDATA[
           SELECT source_id,
                  project_id,
                  oa.species,
                  replace(replace(oa.species, '[', ''), ']', '') as species_display,
                  oa.strain,
-                 decode(oa.is_reference_strain,0,'no',1,'yes') as is_reference_strain,
-		 oa.orthomcl_abbrev,
+                 CASE oa.is_reference_strain WHEN 0 THEN 'no' WHEN 1 THEN 'yes' END as is_reference_strain,
+		         oa.orthomcl_abbrev,
                  oa.name_for_filenames,
                  '<a href="@WEBAPP_BASE_URL@/downloads/Current_Release/' || oa.name_for_filenames || '/">Data files</a>' as download_link,
                  organism_name,
@@ -162,81 +161,83 @@
                  nullif(oa.tfbscount,0) as tfbscount,
                  nullif(oa.proteomicscount,0) as proteomicscount,
                  nullif(oa.communitycount,0) as communitycount,
-                 decode(oa.isOrganellar, 0, 'no','yes') as isOrganellar_flag,
-                 decode(oa.arraygenecount, 0, 'none','yes') as array_flag,
-                 decode(oa.chipchipgenecount, 0, 'none','yes') as chipchip_flag,
-                 decode(oa.rnaseqcount, 0, 'none','yes') as rnaseq_flag,
-                 decode(oa.estcount, 0, 'none','yes') as est_flag,
-                 decode(oa.snpcount, 0, 'none','yes') as snp_flag,
-                 decode(oa.ecnumbercount, 0, 'none','yes') as ec_flag,
-                 decode(oa.gocount, 0, 'none','yes') as go_flag,
-                 decode(oa.rtpcrcount, 0, 'none','yes') as rtpcr_flag,
-                 decode(oa.orthologcount, 0, 'none','yes') as ortholog_flag,
-                 decode(oa.communitycount, 0, 'none','yes') as community_flag,
-                 decode(oa.tfbscount, 0, 'none','yes') as tfbs_flag,
-                 decode(oa.hasHTSIsolate, 0, 'none','yes') as hasHTSIsolate_flag,
-                 decode(oa.hasPopset, 0, 'none','yes') as hasPopset_flag,
-                 decode(oa.proteomicscount, 0, 'none','yes') as proteomics_flag,
+                 CASE oa.isOrganellar WHEN 0 THEN 'no' ELSE 'yes' END as isOrganellar_flag,
+                 CASE oa.arraygenecount WHEN 0 THEN 'none' ELSE 'yes' END as array_flag,
+                 CASE oa.chipchipgenecount WHEN 0 THEN 'none' ELSE 'yes' END as chipchip_flag,
+                 CASE oa.rnaseqcount WHEN 0 THEN 'none' ELSE 'yes' END as rnaseq_flag,
+                 CASE oa.estcount WHEN 0 THEN 'none' ELSE 'yes' END as est_flag,
+                 CASE oa.snpcount WHEN 0 THEN 'none' ELSE 'yes' END as snp_flag,
+                 CASE oa.ecnumbercount WHEN 0 THEN 'none' ELSE 'yes' END as ec_flag,
+                 CASE oa.gocount WHEN 0 THEN 'none' ELSE 'yes' END as go_flag,
+                 CASE oa.rtpcrcount WHEN 0 THEN 'none' ELSE 'yes' END as rtpcr_flag,
+                 CASE oa.orthologcount WHEN 0 THEN 'none' ELSE 'yes' END as ortholog_flag,
+                 CASE oa.communitycount WHEN 0 THEN 'none' ELSE 'yes' END as community_flag,
+                 CASE oa.tfbscount WHEN 0 THEN 'none' ELSE 'yes' END as tfbs_flag,
+                 CASE oa.hasHTSIsolate WHEN 0 THEN 'none' ELSE 'yes' END as hasHTSIsolate_flag,
+                 CASE oa.hasPopset WHEN 0 THEN 'none' ELSE 'yes' END as hasPopset_flag,
+                 CASE oa.proteomicscount WHEN 0 THEN 'none' ELSE 'yes' END as proteomics_flag,
                  oa.is_annotated_genome
           FROM   apidbtuning.organismAttributes oa
-          ]]>
-          </sql>
-      </sqlQuery>
+        ]]>
+      </sql>
+    </sqlQuery>
 
+    <sqlQuery name="GenomeAnnotationVersion">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="annotation_version"/>
+      <column name="annotation_source"/>
+      <sql>
+        <![CDATA[
+          SELECT oa.source_id, oa.project_id, v.annotation_version, v.annotation_source
+          FROM apidbtuning.organismattributes oa
+            LEFT JOIN (
+              SELECT oa.source_id, oa.project_id,dsh.annotation_version,dsh.annotation_source
+              FROM (
+                  SELECT max(dsh.build_number) bld, dsh.dataset_presenter_id
+                  FROM apidbtuning.datasethistory dsh
+                  WHERE dsh.annotation_version is not null
+                  GROUP BY dsh.dataset_presenter_id
+                ) dpb
+                , apidbtuning.datasethistory dsh
+                , apidbtuning.datasetnametaxon dnt
+                , apidbtuning.organismattributes oa
+              WHERE dpb.bld = dsh.BUILD_NUMBER
+                AND dpb.dataset_presenter_id = dsh.DATASET_PRESENTER_ID
+                AND dsh.dataset_presenter_id = dnt.dataset_presenter_id
+                AND dnt.name like oa.internal_abbrev || '\_primary_genome%' escape '\'
+            ) v ON oa.source_id = v.source_id AND oa.project_id = v.project_id
+        ]]>
+      </sql>
+    </sqlQuery>
 
-
-
-
-
-        <sqlQuery name="GenomeAnnotationVersion">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="annotation_version"/>
-            <column name="annotation_source"/>
-            <sql>
-            <![CDATA[
-select oa.source_id, oa.project_id, v.annotation_version, v.annotation_source
-from apidbtuning.organismattributes oa left join
-(select oa.source_id, oa.project_id,dsh.annotation_version,dsh.annotation_source
-from (select max(dsh.build_number) bld, dsh.dataset_presenter_id
-      from apidbtuning.datasethistory dsh
-      where dsh.annotation_version is not null
-      group by dsh.dataset_presenter_id
-      ) dpb, apidbtuning.datasethistory dsh, apidbtuning.datasetnametaxon dnt, apidbtuning.organismattributes oa
-where dpb.bld = dsh.BUILD_NUMBER
-and dpb.dataset_presenter_id = dsh.DATASET_PRESENTER_ID
-and dsh.dataset_presenter_id = dnt.dataset_presenter_id
-and dnt.name like oa.internal_abbrev || '\_primary_genome%' escape '\') v
-on oa.source_id = v.source_id
-and oa.project_id = v.project_id
-             ]]>
-           </sql>
-        </sqlQuery>
-
-        <sqlQuery name="GenomeVersion">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="genome_version"/>
-            <column name="genome_source"/>
-            <sql>
-            <![CDATA[
-select oa.source_id, oa.project_id, v.genome_version,v.genome_source
-from apidbtuning.organismattributes oa left join
-(select oa.source_id, oa.project_id,dsh.genome_version,dsh.genome_source
-from (select max(dsh.build_number) bld, dsh.dataset_presenter_id
-      from apidbtuning.datasethistory dsh
-      where dsh.genome_version is not null
-      group by dsh.dataset_presenter_id
-      ) dpb, apidbtuning.datasethistory dsh, apidbtuning.datasetnametaxon dnt, apidbtuning.organismattributes oa
-where dpb.bld = dsh.BUILD_NUMBER
-and dpb.dataset_presenter_id = dsh.DATASET_PRESENTER_ID
-and dsh.dataset_presenter_id = dnt.dataset_presenter_id
-and dnt.name like oa.internal_abbrev || '\_primary_genome%' escape '\') v
-on oa.source_id = v.source_id
-and oa.project_id = v.project_id
-             ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="GenomeVersion">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="genome_version"/>
+      <column name="genome_source"/>
+      <sql>
+        <![CDATA[
+          SELECT oa.source_id, oa.project_id, v.genome_version,v.genome_source
+          FROM apidbtuning.organismattributes oa
+            LEFT JOIN (
+              SELECT oa.source_id, oa.project_id,dsh.genome_version,dsh.genome_source
+              FROM (
+                SELECT max(dsh.build_number) bld, dsh.dataset_presenter_id
+                FROM apidbtuning.datasethistory dsh
+                WHERE dsh.genome_version is not null
+                GROUP BY dsh.dataset_presenter_id
+              ) dpb
+              , apidbtuning.datasethistory dsh, apidbtuning.datasetnametaxon dnt
+              , apidbtuning.organismattributes oa
+              WHERE dpb.bld = dsh.BUILD_NUMBER
+                AND dpb.dataset_presenter_id = dsh.DATASET_PRESENTER_ID
+                AND dsh.dataset_presenter_id = dnt.dataset_presenter_id
+                AND dnt.name like oa.internal_abbrev || '\_primary_genome%' escape '\'
+            ) v ON oa.source_id = v.source_id AND oa.project_id = v.project_id
+        ]]>
+      </sql>
+    </sqlQuery>
 
         <sqlQuery name="BuscoGenomeCounts">
             <column name="source_id"/>
@@ -245,34 +246,33 @@ and oa.project_id = v.project_id
             <column name="busco_lineage_dataset"/>
             <sql>
             <![CDATA[
-SELECT o.source_id, o.project_id, busco_genome, lineage_dataset as busco_lineage_dataset
-FROM apidbtuning.organismattributes o,
-     (WITH busco_data AS (
-            SELECT
-                oa.source_id,
-                sequence_type, lineage_dataset,
-                to_char(c_score /(c_score + f_score + m_score) * 100, '990.9') AS c_per,
-                to_char(s_score /(c_score + f_score + m_score) * 100, '990.9') AS s_per,
-                to_char(d_score /(c_score + f_score + m_score) * 100, '990.9') AS d_per,
-                to_char(f_score /(c_score + f_score + m_score) * 100, '990.9') AS f_per,
-                to_char(m_score /(c_score + f_score + m_score) * 100, '990.9') AS m_per,
-                ( c_score + f_score + m_score )                        AS total
-            FROM
-                apidbtuning.organismattributes oa,
-                apidb.organism                 o,
-                apidb.busco                    b
-            WHERE b.organism_id = o.organism_id
-              AND o.taxon_id = oa.component_taxon_id
-        )
-        SELECT  oa.source_id, lineage_dataset,
-            'C:' || b.c_per || '%[S:' || b.s_per || '%,D:' || b.d_per || '%],F:' || b.f_per || '%,M:' || b.m_per || '%,n:' || b.total AS busco_genome
-        FROM apidbtuning.organismattributes oa,
-             busco_data                     b
-        WHERE   b.sequence_type = 'genome'
-            AND b.source_id = oa.source_id
-    ) busco
-WHERE  o.source_id = busco.source_id (+)
-             ]]>
+              SELECT o.source_id, o.project_id, busco_genome, lineage_dataset as busco_lineage_dataset
+              FROM apidbtuning.organismattributes o
+                   LEFT JOIN (WITH busco_data AS (
+                          SELECT
+                              oa.source_id,
+                              sequence_type, lineage_dataset,
+                              to_char(c_score /(c_score + f_score + m_score) * 100, '990.9') AS c_per,
+                              to_char(s_score /(c_score + f_score + m_score) * 100, '990.9') AS s_per,
+                              to_char(d_score /(c_score + f_score + m_score) * 100, '990.9') AS d_per,
+                              to_char(f_score /(c_score + f_score + m_score) * 100, '990.9') AS f_per,
+                              to_char(m_score /(c_score + f_score + m_score) * 100, '990.9') AS m_per,
+                              ( c_score + f_score + m_score )                        AS total
+                          FROM
+                              apidbtuning.organismattributes oa,
+                              apidb.organism                 o,
+                              apidb.busco                    b
+                          WHERE b.organism_id = o.organism_id
+                            AND o.taxon_id = oa.component_taxon_id
+                      )
+                      SELECT  oa.source_id, lineage_dataset,
+                          'C:' || b.c_per || '%[S:' || b.s_per || '%,D:' || b.d_per || '%],F:' || b.f_per || '%,M:' || b.m_per || '%,n:' || b.total AS busco_genome
+                      FROM apidbtuning.organismattributes oa,
+                           busco_data                     b
+                      WHERE   b.sequence_type = 'genome'
+                          AND b.source_id = oa.source_id
+                  ) busco ON o.source_id = busco.source_id
+            ]]>
            </sql>
         </sqlQuery>
 
@@ -283,8 +283,8 @@ WHERE  o.source_id = busco.source_id (+)
             <sql>
             <![CDATA[
 SELECT o.source_id, o.project_id, busco_protein
-FROM apidbtuning.organismattributes o,
-     (WITH busco_data AS (
+FROM apidbtuning.organismattributes o
+     LEFT JOIN (WITH busco_data AS (
             SELECT
                 oa.source_id,
                 sequence_type,
@@ -307,8 +307,7 @@ FROM apidbtuning.organismattributes o,
              busco_data                     b
         WHERE   b.sequence_type = 'protein'
             AND b.source_id = oa.source_id
-    ) busco
-WHERE  o.source_id = busco.source_id (+)
+    ) busco ON o.source_id = busco.source_id
              ]]>
            </sql>
         </sqlQuery>
@@ -338,89 +337,91 @@ WHERE  o.source_id = busco.source_id (+)
         </sqlQuery>
 
 
-        <sqlQuery name="ReleasePolicy">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="release_policy"/>
-            <sql>
-            <![CDATA[
-               SELECT o.source_id, o.project_id, p.release_policy
-               FROM apidbtuning.datasetnametaxon dt,
-                    apidbtuning.organismattributes o,
-                    apidb.datasource ds,
-                    apidbtuning.datasetpresenter p
-               WHERE o.component_taxon_id  = dt.taxon_id
-                AND dt.name       = ds.name
-                AND ds.type       = 'genome'
-                AND dt.dataset_presenter_id = p.dataset_presenter_id
-             ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="ReleasePolicy">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="release_policy"/>
+      <sql>
+        <![CDATA[
+          SELECT o.source_id, o.project_id, p.release_policy
+          FROM apidbtuning.datasetnametaxon dt,
+              apidbtuning.organismattributes o,
+              apidb.datasource ds,
+              apidbtuning.datasetpresenter p
+          WHERE o.component_taxon_id  = dt.taxon_id
+            AND dt.name       = ds.name
+            AND ds.type       = 'genome'
+            AND dt.dataset_presenter_id = p.dataset_presenter_id
+        ]]>
+      </sql>
+    </sqlQuery>
 
 
-        <sqlQuery name="BuildFirstLast">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="build_introduced"/>
-            <column name="build_latest_update"/>
-            <sql excludeProjects="EuPathDB">
-            <![CDATA[
-             SELECT  o.source_id,o.project_id, MIN(h.build_introduced) AS build_introduced,
-                     h.build_latest_update
-               FROM apidbtuning.datasetnametaxon dt,
-                    apidbtuning.organismattributes o,
-                    apidb.datasource ds,
-                    (select dataset_presenter_id, min(build_number) as build_introduced, max(build_number) as build_latest_update
-                      from apidbtuning.datasethistory 
-                       group by dataset_presenter_id) h
-               WHERE o.component_taxon_id  = dt.taxon_id
-                AND dt.name       = ds.name
-                AND ds.type       = 'genome'
-                AND dt.dataset_presenter_id = h.dataset_presenter_id
-               GROUP BY o.source_id, o.project_id, h.build_latest_update 
-             ]]>
-           </sql>
-            <sql includeProjects="EuPathDB">
-            <![CDATA[
-             SELECT  o.source_id,o.project_id, MIN(h.build_introduced) AS build_introduced,
-                     h.build_latest_update
-               FROM apidbtuning.datasetnametaxon dt,
-                    apidbtuning.organismattributes o,
-                    apidb.datasource ds,
-                    (select dataset_presenter_id, min(build_number) as build_introduced, max(build_number) as build_latest_update
-                      from apidbtuning.datasethistory 
-                       group by dataset_presenter_id) h
-               WHERE o.component_taxon_id  = dt.taxon_id
-                AND dt.name       = ds.name
-                AND ds.type       = 'genome'
-                AND dt.dataset_presenter_id = h.dataset_presenter_id
-                AND ds.project_id = o.project_id
-               GROUP BY o.source_id, o.project_id, h.build_latest_update 
-             ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="BuildFirstLast">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="build_introduced"/>
+      <column name="build_latest_update"/>
+      <sql excludeProjects="EuPathDB">
+        <![CDATA[
+          SELECT  o.source_id,o.project_id, MIN(h.build_introduced) AS build_introduced,
+                 h.build_latest_update
+          FROM apidbtuning.datasetnametaxon dt,
+              apidbtuning.organismattributes o,
+              apidb.datasource ds,
+              (
+                SELECT dataset_presenter_id, min(build_number) as build_introduced, max(build_number) as build_latest_update
+                FROM apidbtuning.datasethistory
+                GROUP BY dataset_presenter_id
+              ) h
+          WHERE o.component_taxon_id  = dt.taxon_id
+            AND dt.name       = ds.name
+            AND ds.type       = 'genome'
+            AND dt.dataset_presenter_id = h.dataset_presenter_id
+          GROUP BY o.source_id, o.project_id, h.build_latest_update
+        ]]>
+      </sql>
+      <sql includeProjects="EuPathDB">
+        <![CDATA[
+          SELECT  o.source_id,o.project_id, MIN(h.build_introduced) AS build_introduced,
+                 h.build_latest_update
+          FROM apidbtuning.datasetnametaxon dt,
+                apidbtuning.organismattributes o,
+                apidb.datasource ds,
+                (
+                  SELECT dataset_presenter_id, min(build_number) as build_introduced, max(build_number) as build_latest_update
+                  FROM apidbtuning.datasethistory
+                  GROUP BY dataset_presenter_id
+                ) h
+          WHERE o.component_taxon_id  = dt.taxon_id
+            AND dt.name       = ds.name
+            AND ds.type       = 'genome'
+            AND dt.dataset_presenter_id = h.dataset_presenter_id
+            AND ds.project_id = o.project_id
+          GROUP BY o.source_id, o.project_id, h.build_latest_update
+        ]]>
+      </sql>
+    </sqlQuery>
 
-        <sqlQuery name="IsApolloGenome">
-            <column name="source_id"/>
-            <column name="project_id"/>
-            <column name="apolloidurl"/>
-            <column name="is_in_apollo"/>
-            <sql>
-            <![CDATA[
-             SELECT oa.source_id, oa.project_id,
-             CASE WHEN (aid.apolloid IS NOT NULL)
-                        THEN 'Apollo'
-                        ELSE 'N/A' END AS is_in_apollo,
-             CASE WHEN (aid.apolloid IS NOT NULL)
-                        THEN 'https://apollo.veupathdb.org/annotator/loadLink?organism='||aid.apolloid
-                        ELSE '@WEBAPP_BASE_URL@/static-content/faq.html#apollo10' END AS apolloidurl
-             from apidbtuning.organismattributes oa, apidbtuning.ApolloID aid
-             where oa.organism_name = aid.organism(+)
-             ]]>
-           </sql>
-        </sqlQuery>
+    <sqlQuery name="IsApolloGenome">
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="apolloidurl"/>
+      <column name="is_in_apollo"/>
+      <sql>
+        <![CDATA[
+          SELECT oa.source_id, oa.project_id,
+          CASE WHEN (aid.apolloid IS NOT NULL)
+                    THEN 'Apollo'
+                    ELSE 'N/A' END AS is_in_apollo,
+          CASE WHEN (aid.apolloid IS NOT NULL)
+                    THEN 'https://apollo.veupathdb.org/annotator/loadLink?organism='||aid.apolloid
+                    ELSE '@WEBAPP_BASE_URL@/static-content/faq.html#apollo10' END AS apolloidurl
+          FROM apidbtuning.organismattributes oa
+            LEFT JOIN apidbtuning.ApolloID aid ON oa.organism_name = aid.organism
+        ]]>
+      </sql>
+    </sqlQuery>
 
-
-
-    </querySet>
+  </querySet>
 </wdkModel>

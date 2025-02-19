@@ -1,123 +1,125 @@
 <wdkModel>
-    <querySet name="JunctionTables" queryType="table" isCacheable="false" excludeProjects="EuPathDB,VEuPathDB">
+  <querySet name="JunctionTables" queryType="table" isCacheable="false" excludeProjects="EuPathDB,VEuPathDB">
 
-<!--
-      <defaultTjunctionParamValues includeProjects="PlasmoDB">
-         <paramValue name="source_id">AU087658</paramValue>
-         <paramValue name="project_id">PlasmoDB</paramValue>
-      </defaultTjunctionParamValues>
+    <!--
+          <defaultTjunctionParamValues includeProjects="PlasmoDB">
+             <paramValue name="source_id">AU087658</paramValue>
+             <paramValue name="project_id">PlasmoDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="ToxoDB">
-         <paramValue name="source_id">AA011889</paramValue>
-         <paramValue name="project_id">ToxoDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="ToxoDB">
+             <paramValue name="source_id">AA011889</paramValue>
+             <paramValue name="project_id">ToxoDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="CryptoDB">
-         <paramValue name="source_id">AA555430</paramValue>
-         <paramValue name="project_id">CryptoDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="CryptoDB">
+             <paramValue name="source_id">AA555430</paramValue>
+             <paramValue name="project_id">CryptoDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="GiardiaDB">
-         <paramValue name="source_id">AT002319</paramValue>
-         <paramValue name="project_id">GiardiaDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="GiardiaDB">
+             <paramValue name="source_id">AT002319</paramValue>
+             <paramValue name="project_id">GiardiaDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="TrichDB">
-         <paramValue name="source_id">CV202110</paramValue>
-         <paramValue name="project_id">TrichDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="TrichDB">
+             <paramValue name="source_id">CV202110</paramValue>
+             <paramValue name="project_id">TrichDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="TriTrypDB">
-         <paramValue name="source_id">AA601817</paramValue>
-         <paramValue name="project_id">TriTrypDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="TriTrypDB">
+             <paramValue name="source_id">AA601817</paramValue>
+             <paramValue name="project_id">TriTrypDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="AmoebaDB">
-         <paramValue name="source_id">CX080252</paramValue>
-         <paramValue name="project_id">AmoebaDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="AmoebaDB">
+             <paramValue name="source_id">CX080252</paramValue>
+             <paramValue name="project_id">AmoebaDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="MicrosporidiaDB">
-         <paramValue name="source_id">ES880893</paramValue>
-         <paramValue name="project_id">MicrosporidiaDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="MicrosporidiaDB">
+             <paramValue name="source_id">ES880893</paramValue>
+             <paramValue name="project_id">MicrosporidiaDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="PiroplasmaDB">
-         <paramValue name="source_id">AJ922568</paramValue>
-         <paramValue name="project_id">PiroplasmaDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="PiroplasmaDB">
+             <paramValue name="source_id">AJ922568</paramValue>
+             <paramValue name="project_id">PiroplasmaDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="FungiDB">
-         <paramValue name="source_id">FS238575</paramValue>
-         <paramValue name="project_id">FungiDB</paramValue>
-      </defaultTjunctionParamValues>
+          <defaultTjunctionParamValues includeProjects="FungiDB">
+             <paramValue name="source_id">FS238575</paramValue>
+             <paramValue name="project_id">FungiDB</paramValue>
+          </defaultTjunctionParamValues>
 
-      <defaultTjunctionParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
-         <paramValue name="source_id"></paramValue>
-         <paramValue name="project_id"></paramValue>
-      </defaultTjunctionParamValues>
--->
+          <defaultTjunctionParamValues includeProjects="SchistoDB,UniDB,VectorBase,InitDB">
+             <paramValue name="source_id"></paramValue>
+             <paramValue name="project_id"></paramValue>
+          </defaultTjunctionParamValues>
+    -->
 
-        <!-- JunctionTables.SampleInfo-->
-        <sqlQuery name="SampleInfo"  isCacheable='false' excludeProjects="EuPathDB">
-            <column name="intron_feature_id" />
-            <column name="exp_name" />
-            <column name="sample_name" />
-            <column name="unique_reads" />
-            <column name="isrpm" />
-            <column name="isr_coverage_ratio" />
-            <column name="percent_max" />
-            <sql>
-            <![CDATA[
-select gij.intron_feature_id, nm.exp_name, nm.sample_name, j.unique_reads, round(j.unique_reads * nm.multiplier,2) as isrpm,
-CASE
+    <!-- JunctionTables.SampleInfo-->
+    <sqlQuery name="SampleInfo" isCacheable='false' excludeProjects="EuPathDB">
+      <column name="intron_feature_id"/>
+      <column name="exp_name"/>
+      <column name="sample_name"/>
+      <column name="unique_reads"/>
+      <column name="isrpm"/>
+      <column name="isr_coverage_ratio"/>
+      <column name="percent_max"/>
+      <sql>
+        <![CDATA[
+          SELECT gij.intron_feature_id, nm.exp_name, nm.sample_name
+              , j.unique_reads, round(j.unique_reads * nm.multiplier,2) as isrpm
+              , CASE
                 WHEN nafe.value > 0
                   THEN round(j.unique_reads
-                             / ((nafe.value * nm.mapped_reads / 1000000) * (nm.read_length / 1000)), 2)
-                  ELSE -1
-              END as isr_coverage_ratio,
-case when maxi.max_isrpm > 0 then to_char(round(100 * round(j.unique_reads * nm.multiplier,2) / maxi.max_isrpm,2)) else 'NA' end as percent_max
-from apidbtuning.GeneIntronJunction gij, apidb.intronjunction j, apidbtuning.namemappinggij nm, results.NaFeatureExpression nafe, apidbtuning.GeneMaxIntronGIJ maxi
-where gij.na_sequence_id = j.na_sequence_id
-and gij.segment_start = j.segment_start
-and gij.segment_end = j.segment_end
-and gij.is_reversed = j.is_reversed
-and j.unique_reads > 0
-and j.protocol_app_node_id = nm.junctions_pan_id
-and gij.gene_na_feature_id = nafe.na_feature_id(+)
-and nm.exp_pan_id = nafe.protocol_app_node_id(+)
-and nm.junctions_pan_id = j.protocol_app_node_id
-and gij.gene_source_id = maxi.gene_source_id(+)
-and j.protocol_app_node_id = maxi.protocol_app_node_id(+)
-order by exp_name, sample_name
-            ]]>
-            </sql>
-        </sqlQuery>
+                               / ((nafe.value * nm.mapped_reads / 1000000) * (nm.read_length / 1000)), 2)
+                ELSE -1
+              END as isr_coverage_ratio
+              , CASE
+                WHEN maxi.max_isrpm > 0 THEN round(100 * round(j.unique_reads * nm.multiplier,2) / maxi.max_isrpm,2)::varchar
+                ELSE 'NA'
+              END as percent_max
+          FROM apidbtuning.GeneIntronJunction gij
+            INNER JOIN apidb.intronjunction j ON
+              gij.na_sequence_id = j.na_sequence_id
+              AND gij.segment_start = j.segment_start
+              AND gij.segment_end = j.segment_end
+              AND gij.is_reversed = j.is_reversed
+            INNER JOIN apidbtuning.namemappinggij nm ON j.protocol_app_node_id = nm.junctions_pan_id
+            LEFT JOIN results.NaFeatureExpression nafe ON gij.gene_na_feature_id = nafe.na_feature_id AND nm.exp_pan_id = nafe.protocol_app_node_id
+            LEFT JOIN apidbtuning.GeneMaxIntronGIJ maxi ON gij.gene_source_id = maxi.gene_source_id AND j.protocol_app_node_id = maxi.protocol_app_node_id
+          WHERE j.unique_reads > 0
+          ORDER BY exp_name, sample_name
+        ]]>
+      </sql>
+    </sqlQuery>
 
-      <sqlQuery name="AllResults" isCacheable="false" includeProjects="EuPathDB">
-            <paramRef ref="recordParams.junction_answer"/>
-            <column name="source_id"/>
-            <column name="wdk_weight"/>
-            <sql>
-                <![CDATA[
-                    SELECT c.intron_junction_id, c.wdk_weight
-                    FROM $$junction_answer$$ c
-                ]]>
-            </sql>
-        </sqlQuery>
+    <sqlQuery name="AllResults" isCacheable="false" includeProjects="EuPathDB">
+      <paramRef ref="recordParams.junction_answer"/>
+      <column name="source_id"/>
+      <column name="wdk_weight"/>
+      <sql>
+        <![CDATA[
+          SELECT c.intron_junction_id, c.wdk_weight
+          FROM $$junction_answer$$ c
+        ]]>
+      </sql>
+    </sqlQuery>
 
-      <!-- this is not a filter query, it is the query used for basket function -->
-<!--
-      <sqlQuery name="AllJunctions" isCacheable="false" doNotTest="true">
-            <column name="source_id"/>
-            <sql>
-                <![CDATA[
-                    SELECT sa.intron_feature_id
-                    FROM ApidbTuning.JunctionAttributes sa
-                ]]>
-            </sql>
-     </sqlQuery>
--->
+    <!-- this is not a filter query, it is the query used for basket function -->
+    <!--
+          <sqlQuery name="AllJunctions" isCacheable="false" doNotTest="true">
+                <column name="source_id"/>
+                <sql>
+                    <![CDATA[
+                        SELECT sa.intron_feature_id
+                        FROM ApidbTuning.JunctionAttributes sa
+                    ]]>
+                </sql>
+         </sqlQuery>
+    -->
 
-    </querySet>
+  </querySet>
 </wdkModel>

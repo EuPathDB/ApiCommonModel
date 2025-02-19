@@ -1,417 +1,416 @@
 <wdkModel>
 
-   <!-- notes
+  <!-- notes
 
-      - in SourceId query changed 'sequence' and 'contig' param to 'sharedParams.genomicSequence'
+     - in SourceId query changed 'sequence' and 'contig' param to 'sharedParams.genomicSequence'
 
-      - in taxon query changed apidb's seqorganism to organism
+     - in taxon query changed apidb's seqorganism to organism
 
-      - assumes that NAsequence table has source_id
+     - assumes that NAsequence table has source_id
 
-   -->
+  -->
   <querySet name="SequenceIds" queryType="id" isCacheable="true">
-    
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- Query for AllGenomicSeqs Question (NEEDED for SiteSearch tests) -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Query for AllGenomicSeqs Question (NEEDED for SiteSearch tests) -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
     <sqlQuery name="AllGenomicSeqs">
-        <column name="source_id"/>
-        <column name="project_id"/>
-       <sql>
-         <![CDATA[
-select s.source_id, s.project_id
-from apidbtuning.GenomicSeqAttributes s
-         ]]>
-       </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <sql>
+        <![CDATA[
+          SELECT s.source_id, s.project_id
+          FROM apidbtuning.GenomicSeqAttributes s
+        ]]>
+      </sql>
     </sqlQuery>
 
     <!-- ************************************************************ -->
-    <!-- SourceId -->  
+    <!-- SourceId -->
     <!-- ************************************************************ -->
- 
+
     <sqlQuery name="SequenceBySourceId" doNotTest="true" excludeProjects="EuPathDB">
-        <paramRef ref="genomicParams.sequenceId" default="TGME49_chrIa" includeProjects="ToxoDB"/> 
-        <paramRef ref="genomicParams.sequenceId" default="Pf3D7_04_v3" includeProjects="PlasmoDB"/> 
-        <paramRef ref="genomicParams.sequenceId" default="TGME49_chrIa,Pf3D7_04_v3" includeProjects="UniDB"/>
-        <paramRef ref="genomicParams.sequenceId" excludeProjects="UniDB,ToxoDB,PlasmoDB"/> 
-        <column name="source_id"/>
-        <column name="project_id"/>
-	<column name="input_id"/>
-        <sql>
+      <paramRef ref="genomicParams.sequenceId" default="TGME49_chrIa" includeProjects="ToxoDB"/>
+      <paramRef ref="genomicParams.sequenceId" default="Pf3D7_04_v3" includeProjects="PlasmoDB"/>
+      <paramRef ref="genomicParams.sequenceId" default="TGME49_chrIa,Pf3D7_04_v3" includeProjects="UniDB"/>
+      <paramRef ref="genomicParams.sequenceId" excludeProjects="UniDB,ToxoDB,PlasmoDB"/>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <column name="input_id"/>
+      <sql>
         <![CDATA[
-            SELECT DISTINCT t.sequence AS source_id,
-               apidb.tab_to_string(set(CAST(COLLECT(t.source_id) AS apidb.varchartab)), ', ') AS input_id,
-               sa.project_id
-              FROM ApidbTuning.GenomicSeqAttributes sa,
-                 (SELECT DISTINCT ds.source_id, si.sequence
-                  FROM ApidbTuning.GenomicSequenceId si, ($$sequenceId$$) ds
-                  WHERE LOWER(si.id) LIKE REGEXP_REPLACE(REPLACE(LOWER(ds.source_id), '*', '%'), '[[:space:]]', '')) t
-             WHERE t.sequence = sa.source_id
-               AND ('@PROJECT_ID@' = 'UniDB' OR sa.project_id = '@PROJECT_ID@')
-            GROUP BY t.sequence, sa.project_id
-           ]]>
-        </sql>
+          SELECT DISTINCT t.sequence AS source_id,
+             string_agg(t.source_id, ', ') AS input_id,
+             sa.project_id
+            FROM ApidbTuning.GenomicSeqAttributes sa,
+               (SELECT DISTINCT ds.source_id, si.sequence
+                FROM ApidbTuning.GenomicSequenceId si, ($$sequenceId$$) ds
+                WHERE LOWER(si.id) LIKE REGEXP_REPLACE(REPLACE(LOWER(ds.source_id), '*', '%'), '[[:space:]]', '')) t
+           WHERE t.sequence = sa.source_id
+             AND ('@PROJECT_ID@' = 'UniDB' OR sa.project_id = '@PROJECT_ID@')
+          GROUP BY t.sequence, sa.project_id
+        ]]>
+      </sql>
     </sqlQuery>
-    
+
     <processQuery name="SequenceBySourceId" includeProjects="EuPathDB" doNotTest="true"
-        processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin"> 
-        <paramRef ref="genomicParams.sequenceId" noTranslation="true"/>
-        <wsColumn name="source_id" width="32" wsName="source_id"/>
-        <wsColumn name="project_id" width="32" wsName="project_id"/>
-        <wsColumn name="input_id" width="32"/>
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <paramRef ref="genomicParams.sequenceId" noTranslation="true"/>
+      <wsColumn name="source_id" width="32" wsName="source_id"/>
+      <wsColumn name="project_id" width="32" wsName="project_id"/>
+      <wsColumn name="input_id" width="32"/>
     </processQuery>
-    
-    
+
+
     <!-- ************************************************************ -->
-    <!-- Species -->  
+    <!-- Species -->
     <!-- ************************************************************ -->
 
     <sqlQuery name="SequencesByTaxon" excludeProjects="EuPathDB" >
 
-       <paramRef ref="organismParams.organism" queryRef="organismVQ.withSequenceStrains" />
-        <!-- TEMPLATE_ANCHOR genomicOrganismOverride -->
+      <paramRef ref="organismParams.organism" queryRef="organismVQ.withSequenceStrains" />
+      <!-- TEMPLATE_ANCHOR genomicOrganismOverride -->
 
-        <column name="source_id"/>
-        <column name="project_id"/>
-        <sql includeProjects="PlasmoDB,ToxoDB,CryptoDB,TrichDB,TriTrypDB,AmoebaDB,MicrosporidiaDB,FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB,PiroplasmaDB,GiardiaDB">
-            <![CDATA[
-            SELECT ens.source_id, atr.project_id
-            FROM dots.NaSequence ens,ApidbTuning.GenomicSeqAttributes atr
-            WHERE ens.taxon_id IN ($$organism$$)
-               AND atr.na_sequence_id = ens.na_sequence_id
-               AND atr.is_top_level = 1
-           ]]>
-        </sql>
+      <column name="source_id"/>
+      <column name="project_id"/>
+      <sql includeProjects="PlasmoDB,ToxoDB,CryptoDB,TrichDB,TriTrypDB,AmoebaDB,MicrosporidiaDB,FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB,PiroplasmaDB,GiardiaDB">
+        <![CDATA[
+          SELECT ens.source_id, atr.project_id
+          FROM dots.NaSequence ens,ApidbTuning.GenomicSeqAttributes atr
+          WHERE ens.taxon_id IN ($$organism$$)
+             AND atr.na_sequence_id = ens.na_sequence_id
+             AND atr.is_top_level = 1
+        ]]>
+      </sql>
     </sqlQuery>
-    
-<!-- crypto has a genomic sequence : chTU502N_jtg7180000000334f_7180000000400f -->
+
+    <!-- crypto has a genomic sequence : chTU502N_jtg7180000000334f_7180000000400f -->
     <processQuery name="SequencesByTaxon" includeProjects="EuPathDB"
-        processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-        <!-- TEMPLATE_ANCHOR genomicOrganismOverridePortal -->
-<paramRef ref="organismParams.organism" queryRef="organismVQ.withSequenceStrains"/>
-        <wsColumn name="source_id" width="100" wsName="source_id"/>
-        <wsColumn name="project_id" width="32" wsName="project_id"/>            
-    </processQuery>
- 
-    
-    <!-- ************************************************************ -->
-    <!-- Similarity -->  
-    <!-- ************************************************************ -->
-    
-    <processQuery name="SequencesBySimilarity" 
-        processName="org.apidb.apicomplexa.wsfplugin.blast.EuPathBlastPlugin">
-
-        <testParamValues includeProjects="AmoebaDB">
-            <paramValue name="BlastQuerySequence">AAGAATTTGCAGATAAATATATTGATAATTGGATTGCAATGTCAA</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="CryptoDB">
-            <paramValue name="BlastQuerySequence">CGTATTCAAGAGAGTAGTCCATTTGGAATTGATTTCTGTCAAAGT</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="ToxoDB">
-            <paramValue name="BlastQuerySequence">TGTCGCAAAAAAGCGCAACAACAGCCATTCAGCGCTGCACGTCTCCCCCGCGTCTCCAAGGAA</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Toxoplasma gondii ME49</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="GiardiaDB">
-            <paramValue name="BlastQuerySequence">AGAGATCATCAGGATTAGTGATTGGAATTACTTAACTCGAACAAGATAGTATATGGTCCTTCATCTTCAGGCCGTTGTATAGACATGCGAGAATTTGTTCAAGGCTATAGAGCTCTAAAT</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Giardia Assemblage A isolate WB</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="PlasmoDB">
-            <paramValue name="BlastQuerySequence">ATGGTGACGCAAAGTAGTGGTGGGGGTGCTGCTGGTAGTAGTGGTGAGGAAGATGCCAAACATGTATTGGATGAATTTGGGCAACAAGTGTACAATGAAAAAGTGGAAAAGTATGCTAATTCTAAAATATATAAAGAGGCGTTGAAAGGAGATTT</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Plasmodium falciparum 3D7</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-        <testParamValues includeProjects="TrichDB">
-            <paramValue name="BlastQuerySequence">GAAAAATGATATTTCAAAAGAATGGGAATATATTAGAAAGCAAATGGAAAGGTTGAATGATGTTAAACGTGAACAAATTAATTCGGGGCTCATGAATTTTAAACAAGGGGATAAAGTTT</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Trichomonas vaginalis G3</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="MicrosporidiaDB">
-           <paramValue name="BlastQuerySequence">GTTTTGGCAGACGGTATGTTTAACAGGAAAATCTCCCATGAATCTGACGGGAATATTCATAGTATTGATTTCCATGGCCTAACCATGTGTGATATTCCGGTGATAAAAAGAGACAGATATAC</paramValue>
-	   <paramValue name="BlastDatabaseOrganism">Encephalitozoon cuniculi GB-M1</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="PiroplasmaDB">
-           <paramValue name="BlastQuerySequence">TATGCAATCAGGTATCTATCTCATCAATCCTTACGCTCAGCGCTGCCCAATTGGGAAGAGCAAATGTGGACCTGAGCATGATTCCACCCTAGGAAAGTGTGCCATGTACTCTGGTTG</paramValue>
-	   <paramValue name="BlastDatabaseOrganism">Babesia bovis T2Bo</paramValue>
-        </testParamValues>
-
-        <!-- TODO copied from Toxo -->
-         <testParamValues includeProjects="TriTrypDB,EuPathDB">
-            <paramValue name="BlastQuerySequence">ATGCAACTCCAAAGGTTGGGTGCTCCACTACTTAAAAGGCTTGTGGGGGGATGCATACGC</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Trypanosoma brucei TREU927</paramValue>
-            <paramValue name="BlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB">
-           <paramValue name="BlastQuerySequence"></paramValue>
-	   <paramValue name="BlastDatabaseOrganism"></paramValue>
-        </testParamValues>
-
-        <paramRef ref="sharedParams.BlastDatabaseType" quote="false" noTranslation="false" default="Genome"/>
-        <paramRef ref="sharedParams.BlastAlgorithm" quote="false" noTranslation="false" />
-        <paramRef ref="sharedParams.BlastDatabaseOrganism" quote="false" noTranslation="false" default="%%primaryOrthoOrganism%%" />
-        <paramRef ref="sharedParams.BlastQuerySequence"/>
-        <paramRef ref="sharedParams.BlastRecordClass" default="SequenceRecordClasses.SequenceRecordClass" />
-        <paramRef ref="sharedParams.-e"/>
-<!--        <paramRef ref="sharedParams.-v"/> -->
-        <paramRef ref="sharedParams.-b"/>
-        <paramRef ref="sharedParams.-filter" quote="false" />
-        
-       <wsColumn name="source_id" width="60" wsName="identifier"/>
-       <wsColumn name="project_id" width="32"/>
-       <wsColumn name="summary" width="3000"/>
-       <wsColumn name="alignment" columnType="clob"/>
-       <wsColumn name="evalue_mant" columnType="float" />
-       <wsColumn name="evalue_exp" columnType="number" />
-       <wsColumn name="score" columnType="float" />
-    </processQuery>
-
-    <!-- ************************************************************ -->
-    <!-- MultiBlast -->  
-    <!-- ************************************************************ -->
-
-   <processQuery name="SequencesByMultiBlast" 
-        processName="org.apidb.apicomplexa.wsfplugin.blast.EuPathMultiBlastServicePlugin">
-
-        <testParamValues includeProjects="AmoebaDB">
-            <paramValue name="BlastQuerySequence">AAGAATTTGCAGATAAATATATTGATAATTGGATTGCAATGTCAA</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="CryptoDB">
-            <paramValue name="BlastQuerySequence">CGTATTCAAGAGAGTAGTCCATTTGGAATTGATTTCTGTCAAAGT</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="ToxoDB">
-            <paramValue name="BlastQuerySequence">TGTCGCAAAAAAGCGCAACAACAGCCATTCAGCGCTGCACGTCTCCCCCGCGTCTCCAAGGAA</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Toxoplasma gondii ME49</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="GiardiaDB">
-            <paramValue name="BlastQuerySequence">AGAGATCATCAGGATTAGTGATTGGAATTACTTAACTCGAACAAGATAGTATATGGTCCTTCATCTTCAGGCCGTTGTATAGACATGCGAGAATTTGTTCAAGGCTATAGAGCTCTAAAT</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Giardia Assemblage A isolate WB</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="PlasmoDB">
-            <paramValue name="BlastQuerySequence">ATGGTGACGCAAAGTAGTGGTGGGGGTGCTGCTGGTAGTAGTGGTGAGGAAGATGCCAAACATGTATTGGATGAATTTGGGCAACAAGTGTACAATGAAAAAGTGGAAAAGTATGCTAATTCTAAAATATATAAAGAGGCGTTGAAAGGAGATTT</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Plasmodium falciparum 3D7</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-        <testParamValues includeProjects="TrichDB">
-            <paramValue name="BlastQuerySequence">GAAAAATGATATTTCAAAAGAATGGGAATATATTAGAAAGCAAATGGAAAGGTTGAATGATGTTAAACGTGAACAAATTAATTCGGGGCTCATGAATTTTAAACAAGGGGATAAAGTTT</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Trichomonas vaginalis G3</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="MicrosporidiaDB">
-           <paramValue name="BlastQuerySequence">GTTTTGGCAGACGGTATGTTTAACAGGAAAATCTCCCATGAATCTGACGGGAATATTCATAGTATTGATTTCCATGGCCTAACCATGTGTGATATTCCGGTGATAAAAAGAGACAGATATAC</paramValue>
-	   <paramValue name="BlastDatabaseOrganism">Encephalitozoon cuniculi GB-M1</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="PiroplasmaDB">
-           <paramValue name="BlastQuerySequence">TATGCAATCAGGTATCTATCTCATCAATCCTTACGCTCAGCGCTGCCCAATTGGGAAGAGCAAATGTGGACCTGAGCATGATTCCACCCTAGGAAAGTGTGCCATGTACTCTGGTTG</paramValue>
-	   <paramValue name="BlastDatabaseOrganism">Babesia bovis T2Bo</paramValue>
-        </testParamValues>
-
-         <testParamValues includeProjects="TriTrypDB,EuPathDB">
-            <paramValue name="BlastQuerySequence">ATGCAACTCCAAAGGTTGGGTGCTCCACTACTTAAAAGGCTTGTGGGGGGATGCATACGC</paramValue>
-            <paramValue name="BlastDatabaseOrganism">Trypanosoma brucei TREU927</paramValue>
-            <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
-        </testParamValues>
-
-        <testParamValues includeProjects="FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB">
-           <paramValue name="BlastQuerySequence"></paramValue>
-	   <paramValue name="BlastDatabaseOrganism"></paramValue>
-        </testParamValues>
-
-        <paramRef ref="sharedParams.MultiBlastDatabaseType" quote="false" noTranslation="false" default="Genome"/>
-        <paramRef ref="sharedParams.BlastAlgorithm" quote="false" noTranslation="false" />
-        <paramRef ref="sharedParams.BlastDatabaseOrganism" quote="false" noTranslation="false" default="%%primaryOrthoOrganism%%" 
-                                                           queryRef="SharedVQ.MultiBlastOrganismFiles"
-                                                          dependedParamRef="sharedParams.MultiBlastDatabaseType" />
-        <paramRef ref="sharedParams.BlastQuerySequence"/>
-        <paramRef ref="sharedParams.BlastJobDescription"/>
-
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.ExpectationValue"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.NumQueryResults"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.MaxMatchesQueryRange"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.WordSize"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.ScoringMatrix"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.MatchMismatchScore"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.GapCosts"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.CompAdjust"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.FilterLowComplex"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.SoftMask"/>
-       <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.LowerCaseMask"/>
- 
-       <wsColumn name="source_id" width="60" wsName="identifier"/>
-       <wsColumn name="project_id" width="32"/>
-       <wsColumn name="summary" width="3000"/>
-       <wsColumn name="alignment" columnType="clob"/>
-       <wsColumn name="evalue_mant" columnType="float" />
-       <wsColumn name="evalue_exp" columnType="number" />
-       <wsColumn name="score" columnType="float" />
+                  processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+      <!-- TEMPLATE_ANCHOR genomicOrganismOverridePortal -->
+      <paramRef ref="organismParams.organism" queryRef="organismVQ.withSequenceStrains"/>
+      <wsColumn name="source_id" width="100" wsName="source_id"/>
+      <wsColumn name="project_id" width="32" wsName="project_id"/>
     </processQuery>
 
 
-    
-<!--
-    <processQuery name="SequencesBySimilarity" includeProjects="EuPathDB" 
-        processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
-        <paramRef ref="sharedParams.BlastDatabaseType"/>
-        <paramRef ref="genomicSimilarityParams.BlastDatabaseOrganism"/>
-        <paramRef ref="sharedParams.BlastAlgorithm"/>
-        <paramRef ref="sharedParams.BlastQuerySequence"/>
-        <paramRef ref="sharedParams.-e"/>
-        <paramRef ref="sharedParams.-v"/>
-        <paramRef ref="sharedParams.-b"/>
-        <paramRef ref="sharedParams.-filter"/>
-        
-        <wsColumn name="source_id" width="60" wsName="source_id"/>
-        <wsColumn name="project_id" width="32" wsName="project_id"/>
-        <wsColumn name="TabularRow" width="3000"/>
-        <wsColumn name="Alignment" width="4000"/>
-        <wsColumn name="Header" width="3000"/>
-        <wsColumn name="Footer" width="3000"/>
+    <!-- ************************************************************ -->
+    <!-- Similarity -->
+    <!-- ************************************************************ -->
+
+    <processQuery name="SequencesBySimilarity"
+                  processName="org.apidb.apicomplexa.wsfplugin.blast.EuPathBlastPlugin">
+
+      <testParamValues includeProjects="AmoebaDB">
+        <paramValue name="BlastQuerySequence">AAGAATTTGCAGATAAATATATTGATAATTGGATTGCAATGTCAA</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="CryptoDB">
+        <paramValue name="BlastQuerySequence">CGTATTCAAGAGAGTAGTCCATTTGGAATTGATTTCTGTCAAAGT</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="ToxoDB">
+        <paramValue name="BlastQuerySequence">TGTCGCAAAAAAGCGCAACAACAGCCATTCAGCGCTGCACGTCTCCCCCGCGTCTCCAAGGAA</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Toxoplasma gondii ME49</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="GiardiaDB">
+        <paramValue name="BlastQuerySequence">AGAGATCATCAGGATTAGTGATTGGAATTACTTAACTCGAACAAGATAGTATATGGTCCTTCATCTTCAGGCCGTTGTATAGACATGCGAGAATTTGTTCAAGGCTATAGAGCTCTAAAT</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Giardia Assemblage A isolate WB</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="PlasmoDB">
+        <paramValue name="BlastQuerySequence">ATGGTGACGCAAAGTAGTGGTGGGGGTGCTGCTGGTAGTAGTGGTGAGGAAGATGCCAAACATGTATTGGATGAATTTGGGCAACAAGTGTACAATGAAAAAGTGGAAAAGTATGCTAATTCTAAAATATATAAAGAGGCGTTGAAAGGAGATTT</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Plasmodium falciparum 3D7</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+      <testParamValues includeProjects="TrichDB">
+        <paramValue name="BlastQuerySequence">GAAAAATGATATTTCAAAAGAATGGGAATATATTAGAAAGCAAATGGAAAGGTTGAATGATGTTAAACGTGAACAAATTAATTCGGGGCTCATGAATTTTAAACAAGGGGATAAAGTTT</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Trichomonas vaginalis G3</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="MicrosporidiaDB">
+        <paramValue name="BlastQuerySequence">GTTTTGGCAGACGGTATGTTTAACAGGAAAATCTCCCATGAATCTGACGGGAATATTCATAGTATTGATTTCCATGGCCTAACCATGTGTGATATTCCGGTGATAAAAAGAGACAGATATAC</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Encephalitozoon cuniculi GB-M1</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="PiroplasmaDB">
+        <paramValue name="BlastQuerySequence">TATGCAATCAGGTATCTATCTCATCAATCCTTACGCTCAGCGCTGCCCAATTGGGAAGAGCAAATGTGGACCTGAGCATGATTCCACCCTAGGAAAGTGTGCCATGTACTCTGGTTG</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Babesia bovis T2Bo</paramValue>
+      </testParamValues>
+
+      <!-- TODO copied from Toxo -->
+      <testParamValues includeProjects="TriTrypDB,EuPathDB">
+        <paramValue name="BlastQuerySequence">ATGCAACTCCAAAGGTTGGGTGCTCCACTACTTAAAAGGCTTGTGGGGGGATGCATACGC</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Trypanosoma brucei TREU927</paramValue>
+        <paramValue name="BlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB">
+        <paramValue name="BlastQuerySequence"></paramValue>
+        <paramValue name="BlastDatabaseOrganism"></paramValue>
+      </testParamValues>
+
+      <paramRef ref="sharedParams.BlastDatabaseType" quote="false" noTranslation="false" default="Genome"/>
+      <paramRef ref="sharedParams.BlastAlgorithm" quote="false" noTranslation="false" />
+      <paramRef ref="sharedParams.BlastDatabaseOrganism" quote="false" noTranslation="false" default="%%primaryOrthoOrganism%%" />
+      <paramRef ref="sharedParams.BlastQuerySequence"/>
+      <paramRef ref="sharedParams.BlastRecordClass" default="SequenceRecordClasses.SequenceRecordClass" />
+      <paramRef ref="sharedParams.-e"/>
+      <!--        <paramRef ref="sharedParams.-v"/> -->
+      <paramRef ref="sharedParams.-b"/>
+      <paramRef ref="sharedParams.-filter" quote="false" />
+
+      <wsColumn name="source_id" width="60" wsName="identifier"/>
+      <wsColumn name="project_id" width="32"/>
+      <wsColumn name="summary" width="3000"/>
+      <wsColumn name="alignment" columnType="clob"/>
+      <wsColumn name="evalue_mant" columnType="float" />
+      <wsColumn name="evalue_exp" columnType="number" />
+      <wsColumn name="score" columnType="float" />
     </processQuery>
-    
--->
+
+    <!-- ************************************************************ -->
+    <!-- MultiBlast -->
+    <!-- ************************************************************ -->
+
+    <processQuery name="SequencesByMultiBlast"
+                  processName="org.apidb.apicomplexa.wsfplugin.blast.EuPathMultiBlastServicePlugin">
+
+      <testParamValues includeProjects="AmoebaDB">
+        <paramValue name="BlastQuerySequence">AAGAATTTGCAGATAAATATATTGATAATTGGATTGCAATGTCAA</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="CryptoDB">
+        <paramValue name="BlastQuerySequence">CGTATTCAAGAGAGTAGTCCATTTGGAATTGATTTCTGTCAAAGT</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="ToxoDB">
+        <paramValue name="BlastQuerySequence">TGTCGCAAAAAAGCGCAACAACAGCCATTCAGCGCTGCACGTCTCCCCCGCGTCTCCAAGGAA</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Toxoplasma gondii ME49</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="GiardiaDB">
+        <paramValue name="BlastQuerySequence">AGAGATCATCAGGATTAGTGATTGGAATTACTTAACTCGAACAAGATAGTATATGGTCCTTCATCTTCAGGCCGTTGTATAGACATGCGAGAATTTGTTCAAGGCTATAGAGCTCTAAAT</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Giardia Assemblage A isolate WB</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="PlasmoDB">
+        <paramValue name="BlastQuerySequence">ATGGTGACGCAAAGTAGTGGTGGGGGTGCTGCTGGTAGTAGTGGTGAGGAAGATGCCAAACATGTATTGGATGAATTTGGGCAACAAGTGTACAATGAAAAAGTGGAAAAGTATGCTAATTCTAAAATATATAAAGAGGCGTTGAAAGGAGATTT</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Plasmodium falciparum 3D7</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+      <testParamValues includeProjects="TrichDB">
+        <paramValue name="BlastQuerySequence">GAAAAATGATATTTCAAAAGAATGGGAATATATTAGAAAGCAAATGGAAAGGTTGAATGATGTTAAACGTGAACAAATTAATTCGGGGCTCATGAATTTTAAACAAGGGGATAAAGTTT</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Trichomonas vaginalis G3</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="MicrosporidiaDB">
+        <paramValue name="BlastQuerySequence">GTTTTGGCAGACGGTATGTTTAACAGGAAAATCTCCCATGAATCTGACGGGAATATTCATAGTATTGATTTCCATGGCCTAACCATGTGTGATATTCCGGTGATAAAAAGAGACAGATATAC</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Encephalitozoon cuniculi GB-M1</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="PiroplasmaDB">
+        <paramValue name="BlastQuerySequence">TATGCAATCAGGTATCTATCTCATCAATCCTTACGCTCAGCGCTGCCCAATTGGGAAGAGCAAATGTGGACCTGAGCATGATTCCACCCTAGGAAAGTGTGCCATGTACTCTGGTTG</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Babesia bovis T2Bo</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="TriTrypDB,EuPathDB">
+        <paramValue name="BlastQuerySequence">ATGCAACTCCAAAGGTTGGGTGCTCCACTACTTAAAAGGCTTGTGGGGGGATGCATACGC</paramValue>
+        <paramValue name="BlastDatabaseOrganism">Trypanosoma brucei TREU927</paramValue>
+        <paramValue name="MultiBlastDatabaseType">Genome</paramValue>
+      </testParamValues>
+
+      <testParamValues includeProjects="FungiDB,HostDB,SchistoDB,UniDB,VectorBase,InitDB">
+        <paramValue name="BlastQuerySequence"></paramValue>
+        <paramValue name="BlastDatabaseOrganism"></paramValue>
+      </testParamValues>
+
+      <paramRef ref="sharedParams.MultiBlastDatabaseType" quote="false" noTranslation="false" default="Genome"/>
+      <paramRef ref="sharedParams.BlastAlgorithm" quote="false" noTranslation="false" />
+      <paramRef ref="sharedParams.BlastDatabaseOrganism" quote="false" noTranslation="false" default="%%primaryOrthoOrganism%%"
+                queryRef="SharedVQ.MultiBlastOrganismFiles"
+                dependedParamRef="sharedParams.MultiBlastDatabaseType" />
+      <paramRef ref="sharedParams.BlastQuerySequence"/>
+      <paramRef ref="sharedParams.BlastJobDescription"/>
+
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.ExpectationValue"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.NumQueryResults"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.MaxMatchesQueryRange"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.WordSize"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.ScoringMatrix"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.MatchMismatchScore"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.GapCosts"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.CompAdjust"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.FilterLowComplex"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.SoftMask"/>
+      <paramRef groupRef="paramGroups.advancedParams"  ref="sharedParams.LowerCaseMask"/>
+
+      <wsColumn name="source_id" width="60" wsName="identifier"/>
+      <wsColumn name="project_id" width="32"/>
+      <wsColumn name="summary" width="3000"/>
+      <wsColumn name="alignment" columnType="clob"/>
+      <wsColumn name="evalue_mant" columnType="float" />
+      <wsColumn name="evalue_exp" columnType="number" />
+      <wsColumn name="score" columnType="float" />
+    </processQuery>
+
+
+
+    <!--
+        <processQuery name="SequencesBySimilarity" includeProjects="EuPathDB"
+            processName="org.apidb.apicomplexa.wsfplugin.apifed.ApiFedPlugin">
+            <paramRef ref="sharedParams.BlastDatabaseType"/>
+            <paramRef ref="genomicSimilarityParams.BlastDatabaseOrganism"/>
+            <paramRef ref="sharedParams.BlastAlgorithm"/>
+            <paramRef ref="sharedParams.BlastQuerySequence"/>
+            <paramRef ref="sharedParams.-e"/>
+            <paramRef ref="sharedParams.-v"/>
+            <paramRef ref="sharedParams.-b"/>
+            <paramRef ref="sharedParams.-filter"/>
+
+            <wsColumn name="source_id" width="60" wsName="source_id"/>
+            <wsColumn name="project_id" width="32" wsName="project_id"/>
+            <wsColumn name="TabularRow" width="3000"/>
+            <wsColumn name="Alignment" width="4000"/>
+            <wsColumn name="Header" width="3000"/>
+            <wsColumn name="Footer" width="3000"/>
+        </processQuery>
+
+    -->
 
     <processQuery name="GenomicSeqByText"
-          processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
-       <paramRef ref="organismParams.text_search_organism"/>
-       <paramRef ref="sharedParams.text_expression"/>
-       <paramRef ref="sharedParams.document_type" default="genomic-sequence"/>
-       <paramRef ref="sharedParams.text_fields"/>
-       <!-- the parameter below caches the results for 30 minutes -->
-       <paramRef ref="sharedParams.timestamp" interval="1800" />
-       <wsColumn name="source_id" width="50"/>
-       <wsColumn name="project_id" width="20" excludeProjects="UniDB"/>
-       <wsColumn name="max_score" width="10" columnType="float"/>
+                  processName="org.apidb.apicomplexa.wsfplugin.solrsearch.SiteSearchPlugin">
+      <paramRef ref="organismParams.text_search_organism"/>
+      <paramRef ref="sharedParams.text_expression"/>
+      <paramRef ref="sharedParams.document_type" default="genomic-sequence"/>
+      <paramRef ref="sharedParams.text_fields"/>
+      <!-- the parameter below caches the results for 30 minutes -->
+      <paramRef ref="sharedParams.timestamp" interval="1800" />
+      <wsColumn name="source_id" width="50"/>
+      <wsColumn name="project_id" width="20" excludeProjects="UniDB"/>
+      <wsColumn name="max_score" width="10" columnType="float"/>
     </processQuery>
 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- Query that retrieves all sequences by organism -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Query that retrieves all sequences by organism -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="SequenceDumpQuery"  excludeProjects="EuPathDB">
-        <paramRef ref="organismParams.gff_organism" queryRef="organismVQ.withGenesGFF"/>
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <sql>
-            <!-- use CDATA because query includes angle brackets -->
-            <![CDATA[
-            SELECT DISTINCT sa.source_id, sa.project_id
-            FROM  
-                 ApidbTuning.GenomicSeqAttributes sa
-            WHERE sa.ncbi_tax_id IN (SELECT ncbi_tax_id FROM sres.taxon where taxon_id in ($$gff_organism$$))
-              AND sa.is_top_level = 1
-            ]]>
-        </sql>
+      <paramRef ref="organismParams.gff_organism" queryRef="organismVQ.withGenesGFF"/>
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <sql>
+        <!-- use CDATA because query includes angle brackets -->
+        <![CDATA[
+          SELECT DISTINCT sa.source_id, sa.project_id
+          FROM ApidbTuning.GenomicSeqAttributes sa
+          WHERE sa.ncbi_tax_id IN (SELECT ncbi_tax_id FROM sres.taxon where taxon_id in ($$gff_organism$$))
+            AND sa.is_top_level = 1
+        ]]>
+      </sql>
     </sqlQuery>
 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!-- Query that retrieves whatever sequence we initially loaded into Dots -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Query that retrieves whatever sequence we initially loaded into Dots -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
 
     <sqlQuery name="ExternalSequenceDumpQuery"  excludeProjects="EuPathDB">
-        <!-- TEMPLATE_ANCHOR genomicOrganismOverride -->
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <sql>
-            <![CDATA[
-            SELECT DISTINCT sa.source_id, sa.project_id
-            from dots.externalnasequence nas, ApidbTuning.GenomicSeqAttributes sa 
-            where sa.ncbi_tax_id IN (SELECT ncbi_tax_id FROM sres.taxon where taxon_id in ($$organism$$))
-            and nas.na_sequence_id = sa.na_sequence_id
-            ]]>
-        </sql>
+      <!-- TEMPLATE_ANCHOR genomicOrganismOverride -->
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <sql>
+        <![CDATA[
+          SELECT DISTINCT sa.source_id, sa.project_id
+          FROM dots.externalnasequence nas, ApidbTuning.GenomicSeqAttributes sa
+          WHERE sa.ncbi_tax_id IN (SELECT ncbi_tax_id FROM sres.taxon WHERE taxon_id IN ($$organism$$))
+            AND nas.na_sequence_id = sa.na_sequence_id
+        ]]>
+      </sql>
     </sqlQuery>
-    
-    
+
+
     <sqlQuery name="ByWeightFilter"  doNotTest="true">
-        <paramRef ref="genomicParams.sequence_result"/>
-        <paramRef ref="sharedParams.min_weight" default="0"/>
-        <paramRef ref="sharedParams.max_weight" default="100"/>
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <column name="wdk_weight" />
-        <sql>
-            <![CDATA[
-            SELECT a.source_id, a.project_id, a.wdk_weight
-            FROM $$sequence_result$$ a
-            WHERE a.wdk_weight >= $$min_weight$$
-              AND a.wdk_weight <= $$max_weight$$
-            ]]>
-       </sql>
+      <paramRef ref="genomicParams.sequence_result"/>
+      <paramRef ref="sharedParams.min_weight" default="0"/>
+      <paramRef ref="sharedParams.max_weight" default="100"/>
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <column name="wdk_weight" />
+      <sql>
+        <![CDATA[
+          SELECT a.source_id, a.project_id, a.wdk_weight
+          FROM $$sequence_result$$ a
+          WHERE a.wdk_weight >= $$min_weight$$
+            AND a.wdk_weight <= $$max_weight$$
+        ]]>
+      </sql>
     </sqlQuery>
-    
+
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
     <!-- Ploidy                                                   -->
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
     <sqlQuery name="ByCopyNumber"  includeProjects="AmoebaDB,TriTrypDB,PlasmoDB,ToxoDB,CryptoDB,FungiDB,UniDB">
-        <paramRef ref="organismParams.organismSinglePickCnv"/> <!-- queryRef="organismVQ.CNV"/ -->
-        <paramRef ref="sharedParams.CNV_strain"/>
-        <paramRef ref="genomicParams.chrCopyNumber"/>
-        <paramRef ref="genomicParams.medianOrIndividual"/>
-        <column name="project_id"/>
-        <column name="source_id"/>
-        <column name="median_all"/>
-        <column name="median_hits"/>
-        <column name="strains"/>
-        <sql>
-            <![CDATA[
-            WITH bySample AS (
-                SELECT sa.source_id
-                , sa.project_id
-                , ccn.chr_copy_number
-                , pan.name
-                FROM apidb.chrcopynumber ccn
-                , study.protocolappnode pan
-                , dots.nasequence ns
-                , apidbtuning.genomicseqattributes sa
-                WHERE ccn.protocol_app_node_id in ($$CNV_strain$$)
-                AND ccn.protocol_app_node_id = pan.protocol_app_node_id
-                AND ns.na_sequence_id = ccn.na_sequence_id
-                AND ns.source_id = sa.source_id
-                AND sa.chromosome IS NOT NULL
-            )
-            , median AS (
-                SELECT DISTINCT s.source_id 
-                , MEDIAN(s.chr_copy_number) AS median
-                FROM bySample s
-                GROUP BY s.source_id
-            )
+      <paramRef ref="organismParams.organismSinglePickCnv"/> <!-- queryRef="organismVQ.CNV"/ -->
+      <paramRef ref="sharedParams.CNV_strain"/>
+      <paramRef ref="genomicParams.chrCopyNumber"/>
+      <paramRef ref="genomicParams.medianOrIndividual"/>
+      <column name="project_id"/>
+      <column name="source_id"/>
+      <column name="median_all"/>
+      <column name="median_hits"/>
+      <column name="strains"/>
+      <sql>
+        <![CDATA[
+          WITH bySample AS (
+            SELECT sa.source_id
+              , sa.project_id
+              , ccn.chr_copy_number
+              , pan.name
+            FROM apidb.chrcopynumber ccn
+              , study.protocolappnode pan
+              , dots.nasequence ns
+              , apidbtuning.genomicseqattributes sa
+            WHERE ccn.protocol_app_node_id in ($$CNV_strain$$)
+              AND ccn.protocol_app_node_id = pan.protocol_app_node_id
+              AND ns.na_sequence_id = ccn.na_sequence_id
+              AND ns.source_id = sa.source_id
+              AND sa.chromosome IS NOT NULL
+          )
+          , median AS (
             SELECT DISTINCT s.source_id
-            , s.project_id
-            , MEDIAN(s.chr_copy_number) AS median_hits
-            , CAST(LISTAGG(REGEXP_REPLACE(s.name, '_[A-Za-z0-9]+ (.+)$', ''), ', ' ON OVERFLOW TRUNCATE '...') WITHIN GROUP (ORDER BY s.name) AS VARCHAR2(4000)) AS strains
-            , m.median AS median_all
+              , percentile_cont(0.5) WITHIN GROUP (ORDER BY s.chr_copy_number) AS median
             FROM bySample s
+            GROUP BY s.source_id
+          )
+          SELECT DISTINCT s.source_id
+            , s.project_id
+            , percentile_cont(0.5) WITHIN GROUP (ORDER BY s.chr_copy_number) AS median_hits
+            , string_agg(REGEXP_REPLACE(s.name, '_[A-Za-z0-9]+ (.+)$', ''), ', ' ORDER BY s.name)  AS strains
+            , m.median AS median_all
+          FROM bySample s
             , median m
-            WHERE m.source_id = s.source_id
+          WHERE m.source_id = s.source_id
             AND s.chr_copy_number >= $$chrCopyNumber$$
             AND CASE WHEN $$medianOrIndividual$$ = 'median' AND m.median >= $$chrCopyNumber$$ THEN 1
                      WHEN $$medianOrIndividual$$ = 'sample' THEN 1
                      ELSE 0
                      END = 1
-            GROUP BY s.source_id, s.project_id, m.median
-            ]]>
-        </sql>
+          GROUP BY s.source_id, s.project_id, m.median
+        ]]>
+      </sql>
     </sqlQuery>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -427,8 +426,8 @@ from apidbtuning.GenomicSeqAttributes s
             <![CDATA[
       SELECT gsa.project_id, gsa.source_id
       FROM apidbtuning.genomicseqattributes gsa, apidb.organism o,
-        (SELECT MAX(length) AS ML, taxon_id 
-         FROM apidbtuning.genomicseqattributes 
+        (SELECT MAX(length) AS ML, taxon_id
+         FROM apidbtuning.genomicseqattributes
          GROUP BY taxon_id ) info
       WHERE info.taxon_id = gsa.taxon_id
       AND info.ml = gsa.length
@@ -440,5 +439,4 @@ from apidbtuning.GenomicSeqAttributes s
     </sqlQuery>
 
   </querySet>
-
 </wdkModel>

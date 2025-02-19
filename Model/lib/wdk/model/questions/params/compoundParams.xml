@@ -301,7 +301,6 @@ lower expression in the comparator as compared to the reference.</li>
                FROM  ApidbTuning.CompoundTypeAheads
              UNION
                SELECT 'N/A' AS internal, 'N/A' AS term, 'N/A' AS display
-               FROM dual
             </sql>
         </sqlQuery>
 
@@ -350,11 +349,11 @@ lower expression in the comparator as compared to the reference.</li>
             <column name="internal" />
             <column name="term" />
             <sql>
-            SELECT 'up or down regulated' as term, 'abs' as internal from dual
+            SELECT 'up or down regulated' as term, 'abs' as internal
             UNION
-            SELECT 'down-regulated' as term, '-' as internal from dual
+            SELECT 'down-regulated' as term, '-' as internal
             UNION
-            SELECT 'up-regulated' as term, '+' as internal from dual
+            SELECT 'up-regulated' as term, '+' as internal
             </sql>
         </sqlQuery>
 
@@ -425,7 +424,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN  '$$regulated_dir$$' = 'abs' 
                               THEN 1 
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'minimum' as term, 
                             'min' as internal, 
@@ -436,7 +434,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN '$$regulated_dir$$' = '-'
                               THEN 2
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'maximum' as term, 
                             'max' as internal, 
@@ -447,7 +444,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN '$$regulated_dir$$' = '+'
                               THEN 2
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'median' as term, 
                             'median' as internal, 
@@ -456,19 +452,18 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN  '$$regulated_dir$$' = 'abs' 
                               THEN 1 
                             ELSE 3 END as so 
-                     from dual
-                   ) p, 
-                   ( select 'abs' as type from dual
+                   ) p,
+                   ( select 'abs' as type
                      union
-                     select '+' as type  from dual
+                     select '+' as type
                      union
-                     select '-' as type from dual
+                     select '-' as type
                    ) t, 
-                   ( select 1 as so  from dual 
+                   ( select 1 as so
                      union 
-                     select 2 as so from dual 
+                     select 2 as so
                      union 
-                     select 3 as so from dual
+                     select 3 as so
                    ) o
                where p.so = o.so and type = '$$regulated_dir$$'
                order by p.so, p.display
@@ -500,7 +495,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN  '$$regulated_dir$$' = 'abs' 
                               THEN 1 
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'minimum' as term, 
                             'min' as internal, 
@@ -511,7 +505,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN '$$regulated_dir$$' = '+'
                               THEN 2
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'maximum' as term, 
                             'max' as internal, 
@@ -522,7 +515,6 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN '$$regulated_dir$$' = '-'
                               THEN 2
                             ELSE 3 END as so 
-                     from dual
                      union
                      select 'median' as term, 
                             'median' as internal, 
@@ -531,19 +523,18 @@ lower expression in the comparator as compared to the reference.</li>
                               WHEN  '$$regulated_dir$$' = 'abs' 
                               THEN 1 
                             ELSE 3 END as so 
-                     from dual
-                   ) p, 
-                   ( select 'abs' as type from dual
+                   ) p,
+                   ( select 'abs' as type
                      union
-                     select '+' as type  from dual
+                     select '+' as type
                      union
-                     select '-' as type from dual
+                     select '-' as type
                    ) t, 
-                   ( select 1 as so  from dual 
+                   ( select 1 as so
                      union 
-                     select 2 as so from dual 
+                     select 2 as so
                      union 
-                     select 3 as so from dual
+                     select 3 as so
                    ) o
                where p.so = o.so and type = '$$regulated_dir$$'
                order by p.so, p.display
