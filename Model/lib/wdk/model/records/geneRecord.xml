@@ -153,6 +153,11 @@
          <reporter name="singleGene" displayName="Arbitrary information about a single gene (multiple formats provided)" scopes=""
                     implementation="org.apidb.apicommon.model.report.SingleGeneReporter">
           </reporter>
+
+	  <reporter name="aiExpression" displayName="AI summary of transcriptomics data for a single gene" scopes=""
+		    implementation="org.apidb.apicommon.model.report.ai.SingleGeneAiExpressionReporter">
+	  </reporter>
+
 <!--
           <reporter name="fullRecordDump" displayName="Text SLOW: choose from columns and/or tables"
                     
