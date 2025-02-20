@@ -49,11 +49,13 @@ sub new {
         $self->setDisplayType("JBrowse/View/Track/Wiggle/XYPlot");
         $self->setTrackTypeDisplay("Coverage");
     }
-    else {
+    elsif ($self->getApplicationType() eq 'jbrowse2'){
         $self->setTrackType("QuantitativeTrack");
         $self->setDisplayType("LinearWiggleDisplay");
 
         $self->setTrackTypeDisplay("Coverage");
+    } else {
+      die "Invalid application type '$self->getApplicationType()'\n";
     }
 
     # These are optional

@@ -8,10 +8,10 @@ use ApiCommonModel::Model::JBrowseUtil;
 # NOTE:  if nameOrId is an organismAbbrev it MUST be the public_abbrev because this service is in a public facing URL
 
 
-my ($nameOrId, $projectName, $isPbrowse, $tracks) = @ARGV;
+my ($nameOrId, $projectName, $isPbrowse, $tracks, $trackListOnly) = @ARGV; #trackListOnly is optional.
 
 my $jbrowseUtil = ApiCommonModel::Model::JBrowseUtil->new({projectName => $projectName});
-my $dbh = $jbrowseUtil->getDbh();   
+my $dbh = $jbrowseUtil->getDbh();
 
 my $sql;
 
@@ -46,7 +46,7 @@ $dbh->disconnect();
 
 die "Could not determine unique organism for: $nameOrId" unless($organismCount == 1);
 
-my (@include, $refSeqs, $namesUrl);
+my (@include, $refSeqs, $namesUrl, @trackCommandList);
 
 if(lc($isPbrowse) eq 'true') {
   $refSeqs = "/a/service/jbrowse/store?data=${organismNameForFiles}/fasta/AnnotatedProteins.fasta.fai";
@@ -56,18 +56,18 @@ if(lc($isPbrowse) eq 'true') {
   if($tracks eq 'proteinPropertyTracks') {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/aa/tracks.conf",
                 "/a/jbrowse/jbrowse_embed.conf");
-
   }
   elsif($tracks eq 'proteomicsTracks') {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/aa/tracks.conf",
                 "/a/service/jbrowse/organismSpecificPbrowse/${organismAbbrev}",
                 "/a/jbrowse/jbrowse_embed.conf");
-
+    @trackCommandList = ("jbrowseOrganismSpecificPbrowseTracks");
   }
   else {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/aa/tracks.conf",
                 "/a/service/jbrowse/organismSpecificPbrowse/${organismAbbrev}"
         );
+    @trackCommandList = ("jbrowseOrganismSpecificPbrowseTracks");
   }
 
 }
@@ -81,24 +81,28 @@ else {
                 "/a/service/jbrowse/organismSpecific/${organismAbbrev}",
                 "/a/jbrowse/jbrowse_embed.conf"
         );
+    @trackCommandList = ("jbrowseOrganismSpecificTracks", "jbrowseRNASeqJunctionTracks");
   }
   elsif($tracks eq 'syntenyTracks' || $tracks eq 'geneticVariationTracks') {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/tracks.conf",
                 "/a/service/jbrowse/organismSpecific/${organismAbbrev}",
                 "/a/jbrowse/jbrowse_embed.conf"
         );
+    @trackCommandList = ("jbrowseOrganismSpecificTracks");
   }
   elsif($tracks eq 'rnaseqTracks') {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/tracks.conf",
                 "/a/service/jbrowse/rnaseq/${organismAbbrev}",
                 "/a/jbrowse/jbrowse_embed.conf"
         );
+    @trackCommandList = ("jbrowseRnaSeqTracks");
   }
   elsif($tracks eq 'blatAlignmentTracks') {
     @include = ("/a/jbrowse/tracks/${organismAbbrev}/tracks.conf",
                 "/a/service/jbrowse/organismSpecific/${organismAbbrev}",
                 "/a/jbrowse/jbrowse_embed.conf"
         );
+    @trackCommandList = ("jbrowseOrganismSpecificTracks");
   }
   elsif($tracks eq 'phenotypeTracks') {
   @include = ("/a/jbrowse/tracks/${organismAbbrev}/tracks.conf",
@@ -108,6 +112,7 @@ else {
               "/a/service/jbrowse/rnaseqJunctions/${organismAbbrev}",
               "/a/service/jbrowse/organismSpecific/${organismAbbrev}",
               "/a/jbrowse/jbrowse_embed.conf"
+    @trackCommandList = ("jbrowseDNASeqTracks", "jbrowseRnaSeqTracks", "jbrowseChipSeqTracks", "jbrowseRNASeqJunctionTracks", "jbrowseOrganismSpecificTracks");
       );
   }
   else {
@@ -119,16 +124,20 @@ else {
               "/a/service/jbrowse/organismSpecific/${organismAbbrev}",
               "/a/service/users/current/user-datasets-jbrowse/${organismNameForFiles}"
       );
+    @trackCommandList = ("jbrowseDNASeqTracks", "jbrowseRnaSeqTracks", "jbrowseChipSeqTracks", "jbrowseRNASeqJunctionTracks", "jbrowseOrganismSpecificTracks");
   }
 }
 
-my $result = {"names" => {"type" => "REST", 
-                          "url" => $namesUrl
-              }, 
-              "tracks" => [], 
-              "refSeqs" => $refSeqs,
-              "include" => \@include,
-};
 
-print encode_json($result);
-
+if ($trackCommandListOnly) {
+  print join(",", @trackCommandList);
+} else {
+  my $result = {"names" => {"type" => "REST", 
+			    "url" => $namesUrl
+			   }, 
+		"tracks" => [], 
+		"refSeqs" => $refSeqs,
+		"include" => \@include,
+	       };
+  print encode_json($result);
+}
